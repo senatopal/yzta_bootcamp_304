@@ -1,0 +1,119 @@
+## Takım İsmi
+Voltra
+
+# Ürün İle İlgili Bilgiler
+
+## Takım Elemanları
+- Merve Günsay: Product Owner (ayrıca Frontend – UX/UI katkısı)
+- Senanur Topal: Scrum Master (ayrıca Backend geliştirmeye katkı)
+- Yasemin Koçbıyık: Team Member / ML & Model Geliştirici
+- Reyyan Temel: Team Member / Veri & Backend Geliştirici
+- Betül İrem Yardımcı: Team Member / Arayüz & LLM Entegrasyon
+
+## Ürün İsmi
+--Volti--
+
+## Ürün Açıklaması
+- Volti; bir hanenin veya küçük işletmenin elektrik tüketimini geçmiş akıllı sayaç verisinden öğrenip tahmin eden, dinamik (zamana bağlı) tarifeye göre "neyi ne zaman çalıştırırsan ne kadar tasarruf edersin" diye hesaplayan ve bu önerileri sade, gündelik dille anlatan yapay zekâ destekli bir enerji tasarruf koçudur. Kullanıcının hem elektrik faturasını hem karbon ayak izini düşürmesine somut ve kişiselleştirilmiş önerilerle yardımcı olur. Volti'yi bir veri analizi çalışmasından ayıran şey karar/aksiyon katmanıdır: sadece "tüketimin şöyle" demez, "şimdi ne yapmalısın" der.
+
+## Ürün Özellikleri
+
+- **Tüketim Tahmini** 
+— Hane bazında geçmiş veriden öğrenip gelecek dönem elektrik tüketimini öngörür; "bu ay ne kadar harcayacağım?" sorusunu yanıtlar.
+
+- **Dinamik Tarife & Maliyet Analizi** 
+— Zamana bağlı tarifeye göre günlük/aylık maliyeti hesaplar, günün en pahalı ve en ucuz saatlerini net biçimde gösterir.
+
+- **Akıllı Yük Kaydırma Önerileri** 
+— "Çamaşırı 02:00'de çalıştır, ~X tasarruf et" tarzında, doğrudan uygulanabilir somut aksiyonlar sunar.
+
+- **Anomali & İsraf Uyarısı** 
+— Olağandışı yüksek tüketimi yakalar; olası arıza veya boşa harcamayı kullanıcı fark etmeden önce bildirir.
+
+- **Sade Dilli Yapay Zekâ Koçu** 
+— Teknik sonuçları herkesin anlayacağı gündelik dile çevirir; yalnızca gerçek verilere dayanır, sayı uydurmaz (grounding).
+
+- **Tasarruf & Karbon Etkisi** 
+— Kazancı hem **£ (sterlin)** hem **kg CO₂** olarak gösterir; para tasarrufunu çevresel katkıyla birlikte sunar.
+
+- **Tek Ekran Panel** 
+— Tüketim grafiği, öneriler ve koç mesajını tek bir sade arayüzde toplar.
+
+- **Kişiselleştirilmiş Deneyim** 
+— Her hane kendi tüketim geçmişine ve profiline göre öneri alır; genel tavsiyeler değil, sana özel içgörüler.
+
+> **Not:** Veri seti Londra'ya ait olduğundan tüm maliyet/tasarruf hesapları **sterlin (£/pence)** cinsindendir (veri setindeki dinamik tarife pence/kWh olarak verilir).
+
+## Hedef Kitle
+
+ **Dinamik Tarifeli Haneler** 
+ — Zamana bağlı (Time-of-Use) tarife kullanan ve elektriğin saate göre ucuzlayıp pahalandığını fırsata çevirmek isteyen evler. *(Birincil kitle)*
+
+**Maliyet-Duyarlı Küçük İşletmeler** 
+— Kafe, atölye, ofis gibi elektrik gideri yüksek ama enerji uzmanı olmayan işletmeler; faturasını düşürecek net öneriler arar.
+
+**Prosumer Kullanıcılar** 
+— Çatı güneş paneli veya elektrikli aracı olan, üretim-tüketim dengesini ve şarj/kullanım zamanlamasını optimize etmek isteyen ileri kullanıcılar.
+
+**Sürdürülebilirlik-Duyarlı Bireyler** 
+— Tasarrufu yalnızca para olarak değil, karbon ayak izini azaltma fırsatı olarak da gören çevre bilincine sahip kullanıcılar.
+
+**Dijitale Yatkın Bireyler (18–65)** 
+— Bir panel/uygulama üzerinden önerileri takip edip uygulayabilen, teknolojiyle rahat kullanıcılar.
+
+## Product Backlog URL
+Ürünün tüm kullanıcı hikâyeleri, öncelikleri (Must/Should/Could) ve puanlarıyla birlikte Trello panomuzda takip edilmektedir:
+
+ https://trello.com/b/Fn8EetTL/volti-proje-geli%C5%9Ftime
+
+> Puanlama: Sprint 1 keşif ve planlama sprintiydi (fikir seçimi, araştırma ve backlog oluşturma). Geliştirme iki sprint'e planlanmıştır — Sprint 2 ≈ 42 puan (veri hazırlığı + tahmin modeli + tarife maliyeti + arayüz iskeleti) ve Sprint 3 ≈ 47 puan (yük kaydırma + LLM koç + gerçek veri entegrasyonu + teslim). Model eğitilirken arayüz iskeleti örnek veriyle paralel kurulduğu için iki sprint dengelidir; Sprint 3'teki Should işleri (anomali, karbon, testler) kapasiteye göre esnektir — önce MVP garanti altına alınır, ekstralar zaman kalırsa eklenir.
+
+---
+
+# Sprint 1
+
+- **Sprint Notu:** Sprint 1 keşif ve karar odaklıydı; hedef, "yeterli veriye sahip, AI entegrasyonu yapılabilir ve 1 ayda (3 sprintte) bitebilir" bir proje seçmekti. Bu hedefe ulaşıldı ve proje **Volti** olarak kesinleşti.
+
+- **Backlog düzeni ve Story seçimleri:** Backlog, ilk yapılacak story'lere göre önceliklendirilmiştir (MoSCoW). Sprint başına tahmin edilen toplam puanı geçmeyecek şekilde sıradan seçimler yapılır; her story'nin puanı, sprint toplam puanının yarısından az tutulur. Story'ler yapılacak işlere (task) bölünür. 
+
+- **Daily Scrum**: Daily Scrum toplantıları slack üzerinden yapılmıştır. Daily Scrum toplantısı görsel kanıtları ve özetleri için: https://github.com/senatopal/yzta_bootcamp_304/tree/52efb3fff4fdad0ca1da9ce5d502d9e7db85f6ad/Sprint%201 
+
+- **Sprint board update:** Sprint 1 süreci slack ve notiondan takip edilmiştir. Slackteki görseller Sprint 1 başlığında Scrum_ olarak yüklenmiştir. Çalışmalarımız ve görevlerimiz notionda bulunuyor:
+
+https://fortunate-infinity-26e.notion.site/GENEL-3897fe6d9df780458100d3ac3d4b7dc6?source=copy_link
+
+Bundan sonraki görev takibi Trello ağırlıklı ilerleyecektir.
+
+ 
+
+- **Ürün Durumu:** Ürün Sprint 1 sonunda "tanımlanmış ve planlanmış" aşamasındadır. Proje fikri kesinleşti, veri kaynağı (Londra akıllı sayaç seti) belirlenip erişilebilirliği doğrulandı, roller ve ürün kimliği belgelendi, backlog oluşturuldu ve repo iskeleti kuruldu. Çalışan bir yazılım çıktısı Sprint 2'de üretilecektir; bu, keşif odaklı ilk sprint için beklenen bir durumdur. 
+
+- **Sprint Review:**
+  Alınan kararlar: Üç aday fikirden, veri uygunluğu ve AI entegrasyonu kriterleriyle Volti seçildi. Veri kaynağı olarak Londra akıllı sayaç seti doğrulandı. Teknik geliştirmenin (veri temizleme + baseline tahmin) Sprint 2'de başlamasına karar verildi. Proje 3 sprintlik olduğu için geliştirme Sprint 2–3'e sıkıştırıldı; canlı fiyat entegrasyonu gibi özellikler "stretch" olarak işaretlendi.
+  Sprint Review katılımcıları: Merve Günsay, Senanur Topal, Yasemin Koçbıyık, Reyyan Temel, Betül İrem Yardımcı.
+
+- **Sprint Retrospective:**
+  - Fikre karar vermek beklenenden uzun sürdü; veri uygunluğu ilk toplantılarda daha erken kontrol edilmeli.
+  - Görev dağılımı fikrin geç karar verilmesinden dolayı sürecin sonuna doğru netleşti.
+  - Ekibin yeniden takımlaştırılmasından dolayı doğan zaman kaybı daha çok göz önünde bulundurulabilinir.
+  
+
+---
+
+# Sprint 2
+
+**Planlanan hedef:** Temizlenmiş veri + baseline'a karşı ölçülmüş ilk tüketim tahmin modeli + tarife maliyet simülasyonunun ilk sürümü.
+
+---
+
+# Sprint 3
+
+**Planlanan hedef:** Yük kaydırma önerisi + anomali tespiti + grounding'li LLM koç katmanı + tüketim/öneri paneli (dashboard) + karbon etkisi + çalışan demo ve sunum.
+
+---
+
+# Teknik Bilgiler
+
+- **Veri Seti:** [Smart Meters in London](https://www.kaggle.com/datasets/jeanmidev/smart-meters-in-london) — 5.566 hane, yarım-saatlik tüketim + hava durumu + dinamik (Time-of-Use) tarife (pence/kWh).
+
+
