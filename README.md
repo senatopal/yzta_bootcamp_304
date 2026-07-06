@@ -82,6 +82,16 @@ Voltra
 
 https://fortunate-infinity-26e.notion.site/GENEL-3897fe6d9df780458100d3ac3d4b7dc6?source=copy_link
 
+Sprint Board Ekran Görüntüleri:
+
+<img width="1920" height="931" alt="Sprint 1 Board" src="https://github.com/user-attachments/assets/f771f1ff-857e-413b-9c73-4f905c7f88da" />
+
+<img width="1920" height="924" alt="Sprint 1 Board 1 1" src="https://github.com/user-attachments/assets/404fe78c-c596-4469-833c-ad690921dc1a" />
+
+<img width="1920" height="922" alt="Sprint 1 Board 2" src="https://github.com/user-attachments/assets/7f10f025-c36c-41fc-ad5b-216e392b99e3" />
+
+<img width="1920" height="923" alt="Sprint 1 Board Trello" src="https://github.com/user-attachments/assets/50381348-bbc8-4d7e-b74f-4560f9c6220f" />
+
 Bundan sonraki görev takibi Trello ağırlıklı ilerleyecektir.
 
  
@@ -96,6 +106,9 @@ Bundan sonraki görev takibi Trello ağırlıklı ilerleyecektir.
   - Fikre karar vermek beklenenden uzun sürdü; veri uygunluğu ilk toplantılarda daha erken kontrol edilmeli.
   - Görev dağılımı fikrin geç karar verilmesinden dolayı sürecin sonuna doğru netleşti.
   - Ekibin yeniden takımlaştırılmasından dolayı doğan zaman kaybı daha çok göz önünde bulundurulabilinir.
+ 
+
+  Projemizi geliştirdikçe, ürünümüzden görüntüler ve bilgiler ekleyeceğiz.
   
 
 ---
