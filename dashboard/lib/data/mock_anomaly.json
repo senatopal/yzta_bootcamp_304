@@ -1,0 +1,8 @@
+{
+  "anomali_var": true,
+  "saat": "18:30",
+  "beklenen_kwh": 1.2,
+  "gerceklesen_kwh": 2.1,
+  "sapma_yuzde": 75,
+  "mesaj": "18:30'da tuketim normalin %75 uzerinde!"
+}

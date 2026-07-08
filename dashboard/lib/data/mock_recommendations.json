@@ -1,0 +1,34 @@
+[
+  {
+    "cihaz": "Camasir Makinesi",
+    "ikon": "👕",
+    "mevcut_saat": "18:00",
+    "onerilen_saat": "02:00",
+    "tasarruf_sterlin": 0.85,
+    "tasarruf_co2_kg": 0.18
+  },
+  {
+    "cihaz": "Bulasik Makinesi",
+    "ikon": "🍽️",
+    "mevcut_saat": "19:30",
+    "onerilen_saat": "03:00",
+    "tasarruf_sterlin": 0.62,
+    "tasarruf_co2_kg": 0.13
+  },
+  {
+    "cihaz": "Elektrikli Arac Sarj",
+    "ikon": "🔌",
+    "mevcut_saat": "17:00",
+    "onerilen_saat": "01:00",
+    "tasarruf_sterlin": 1.45,
+    "tasarruf_co2_kg": 0.31
+  },
+  {
+    "cihaz": "Kurutma Makinesi",
+    "ikon": "🌀",
+    "mevcut_saat": "20:00",
+    "onerilen_saat": "04:00",
+    "tasarruf_sterlin": 0.53,
+    "tasarruf_co2_kg": 0.11
+  }
+]
