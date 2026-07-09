@@ -1,0 +1,40 @@
+# Big Data & Raw Datasets
+archive/
+archive.zip
+eda_plots/
+*.zip
+*.csv.gz
+
+# Unwanted files for now
+Sprint 2/
+yzta-bootcamp.ipynb
+gorev_paylasimi.md
+
+# Ignore raw CSVs to prevent accidental pushes of multi-gigabyte files
+# (If you need to commit a specific CSV, you can force it with: git add -f filename.csv)
+*.csv
+
+# Python Cache & Compiled Files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# IDE & Editor Settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS Metadata
+.DS_Store
+Thumbs.db
+
+# Logs & Temp Files
+*.log
+scratch/
+verify.py
+inspect_notebook.py
