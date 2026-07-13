@@ -6,7 +6,7 @@ eda_plots/
 *.csv.gz
 
 # Unwanted files for now
-Sprint 2/
+Sprint 2/veri_hazirligi/
 yzta-bootcamp.ipynb
 gorev_paylasimi.md
 
