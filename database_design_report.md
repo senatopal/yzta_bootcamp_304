@@ -1,6 +1,6 @@
 # Database Design & Migration Report (PostgreSQL/TimescaleDB)
 
-This report documents the database schema design, optimization choices, and high-performance loading mechanics implemented for the **Volti** project (Sprint 2 - Reyyan's Task 2).
+This report documents the database schema design, optimization choices, and high-performance loading mechanics implemented for the **Volti** project 
 
 ---
 
@@ -62,7 +62,7 @@ To optimize the backend REST APIs (FastAPI) and simulation requests, we implemen
 ## 3. High-Performance Bulk Data Loader
 
 Traditional `INSERT` commands execute one row at a time, taking hours for 6 million rows due to database roundtrips and transaction overhead.
-- **Action:** In [load_data.py](Sprint%202/veritabani/load_data.py), we utilize the **PostgreSQL COPY protocol** through `cursor.copy_expert()` combined with an in-memory buffer (`io.StringIO`).
+- **Action:** In [load_data.py](file:///c:/Users/ryntm/Desktop/bootcamp/yzta_bootcamp_304/Sprint%202/veritabani/load_data.py), we utilize the **PostgreSQL COPY protocol** through `cursor.copy_expert()` combined with an in-memory buffer (`io.StringIO`).
 - **Mechanism:**
   1. The Python script reads a `.parquet` file into a Pandas DataFrame.
   2. The DataFrame is converted directly into an in-memory CSV/tab-delimited string stream in RAM.
