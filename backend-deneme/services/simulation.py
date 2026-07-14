@@ -3,11 +3,11 @@ from typing import Dict, List, Any
 
 class SimulationService:
     @staticmethod
-    def calculate_tariffs(df: pd.DataFrame, consumption_col: str = 'energy_kwh', price_col: str = 'price_pence') -> Dict[str, float]:
+    def calculate_tariffs(df: pd.DataFrame, consumption_col: str = 'energy(kWh/hh)', price_col: str = 'price_pence') -> Dict[str, float]:
         """
-         Yarım saatlik tüketim maliyetini sterlin cinsinden hesaplanır.
+        Yarım saatlik tüketim maliyetini sterlin (£) cinsinden hesaplar.
         """
-        # Maliyet hesaplama: tüketim (kWh) * fiyat (pence)
+        df = df.copy()
         df['cost_pence'] = df[consumption_col] * df[price_col]
         
         total_pence = df['cost_pence'].sum()
@@ -21,10 +21,11 @@ class SimulationService:
         }
 
     @staticmethod
-    def analyze_critical_hours(df: pd.DataFrame, timestamp_col: str = 'tstp', consumption_col: str = 'energy_kwh', price_col: str = 'price_pence') -> Dict[str, List[Dict[str, Any]]]:
+    def analyze_critical_hours(df: pd.DataFrame, timestamp_col: str = 'tstp', consumption_col: str = 'energy(kWh/hh)', price_col: str = 'price_pence') -> Dict[str, List[Dict[str, Any]]]:
         """
-         Günün en ucuz ve en pahalı 3 zaman dilimini listeler.
+        Günün en ucuz ve en pahalı 3 zaman dilimini listeler.
         """
+        df = df.copy()
         if not pd.api.types.is_datetime64_any_dtype(df[timestamp_col]):
             df[timestamp_col] = pd.to_datetime(df[timestamp_col])
             
