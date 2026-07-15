@@ -38,3 +38,6 @@ Thumbs.db
 scratch/
 verify.py
 inspect_notebook.py
+
+# Ignore That Large Parquet file
+dataset/combined_data.parquet
