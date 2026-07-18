@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Volti Backend API"
-    API_V1_STR: str = "/api"
+    API_V1_STR: str = "/api/v1"
     
     # Database Settings
     DB_HOST: str = os.getenv("VOLTI_DB_HOST", "localhost")
