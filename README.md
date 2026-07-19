@@ -111,11 +111,53 @@ Bundan sonraki görev takibi Trello ağırlıklı ilerleyecektir.
   Projemizi geliştirdikçe, ürünümüzden görüntüler ve bilgiler ekleyeceğiz.
   
 
----
 
 # Sprint 2
 
 **Planlanan hedef:** Temizlenmiş veri + baseline'a karşı ölçülmüş ilk tüketim tahmin modeli + tarife maliyet simülasyonunun ilk sürümü.
+- **Sprint Notu:** Sprint 2, ilk gerçek geliştirme sprintiydi. Hedef; veriyi kullanılabilir hale getirmek, tahmin modelinin temelini atmak ve arayüz iskeletini paralel kurmaktı. Ayrıca ürünün yönünü sağlamlaştırmak için hedef kitle & UX analizi tamamlandı.
+
+- **Backlog Dağıtma Mantığı:** İşler MoSCoW önceliğine ve beceriye göre dağıtıldı. Veri hattı ve veritabanı Veri/Backend geliştiricide (Reyyan)  tahmin modeli ML geliştiricide (Yasemin), arayüz iskeleti arayüz geliştiricide (Betül), persona/UX analizi ve dokümantasyon PO'da (Merve); süreç ve backend desteği Scrum Master'da (Senanur). Model eğitilirken arayüz iskeleti örnek veriyle paralel kuruldu, böylece zaman daha efektif değerlendirildi.
+
+- **Daily Scrum:** Daily scrum'lar Slack, huddle ve whatsapp üzerinden yürütüldü; notlar ve projenin görsel ilerleyişi Notion'da 'Daily Scrum' başlığı altında tutuluyor. Her kişi kendi adına açılmış sayfalara çelaışmalarını eklediler.
+  🔗 **Daily Scrum & İlerleme Notları (Notion):** https://fortunate-infinity-26e.notion.site/GENEL-3897fe6d9df780458100d3ac3d4b7dc6?source=copy_link
+  🔗 **Ekip toplantı notları ve görselleri (Slack-huddle- whatsapp):** https://fortunate-infinity-26e.notion.site/EK-P-TOPLANTISI-NOTLARI-3977fe6d9df780c688efc822f4dd11dc?source=copy_link
+
+- **Sprint Board Update:** Görevler Trello'da "Product Backlog → Sprint 2 → Sprint 3 → Stretch → Done" akışında takip ediliyor. Sprint 2'de veri temizleme tamamlandı, arayüz iskeleti temel düzeyde oluşturuldu, persona analizi tamamlandı.
+  🔗 **Sprint Board (Trello):** https://trello.com/b/Fn8EetTL
+
+  <img width="1920" height="882" alt="Volti Proje Geliştime _ Trello ve diğer 7 sayfa - Kişisel - Microsoft​ Edge 19 07 2026 21_00_58" src="https://github.com/user-attachments/assets/a88d5228-9cbe-484a-87a1-f34a4410c86e" />
+
+
+- **Ürün Durumu:** Sprint 2 sonunda üründeki gelişmeler:
+
+  - Veri hazırlığı: https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/Sprint%202/veri_hazirligi)
+  - Veritabanı tasarımı ve kurulumu: https://github.com/senatopal/yzta_bootcamp_304/blob/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/database_design_report.md
+  - Backend / API: https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/backend
+  - Veri seti (parquet): https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/dataset
+  - Arayüz iskeleti (dashboard): https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/dashboard/lib
+
+  **Arayüz Tasarımı (Mockup — geliştirme sürüyor):**
+
+  > Aşağıdaki ekran görüntüleri mevcut tasarım taslağıdır (mockup). Arayüz, Sprint 3'te gerçek veriyle çalışan sürüme dönüştürülecek ve geri bildirimlere göre değişebilir.
+
+  <img width="2618" height="942" alt="image (16)" src="https://github.com/user-attachments/assets/8335a4d1-c272-4e21-9dc0-9e4dea579240" />
+
+  <img width="2652" height="976" alt="image (17)" src="https://github.com/user-attachments/assets/82c00c9e-476d-4f82-a78e-b67077ff6d24" />
+
+  <img width="2622" height="912" alt="image (18)" src="https://github.com/user-attachments/assets/d9cfdee3-464d-47ea-984b-07e69d5830c7" />
+
+  <img width="1472" height="1006" alt="WhatsApp Image 2026-07-12 at 18 20 24 (1)" src="https://github.com/user-attachments/assets/e10c6b1c-cba8-4786-b6f2-08c771701800" />
+
+
+
+- **Sprint Review:**
+  Tamamlananlar: veri temizleme + birleştirme, veritabanı tasarımı, backend ilk sürümü, arayüz iskeleti, hedef kitle & UX analizi ve ekran tasarımları. Alınan kararlar: tahmin modelinin backend'e entegrasyonu ve gerçek verinin panele bağlanması Sprint 3'e planlandı; video/sunum da Sprint 3'e alındı.
+
+- **Sprint Retrospective:**
+  - **İyi giden:** Model hazırlığı ile arayüz iskeleti paralel yürüdü; kimse birbirini beklemedi. Veri hattı ve veritabanı zamanında tamamlandı.
+  - **Geliştirilecek:** Model çıktısı ile arayüzün beklediği veri formatı baştan netleştirilmeli (Sprint 3'te entegrasyonu hızlandırmak için).
+  - **Aksiyon (Sprint 3):** Önce gerçek veri–panel entegrasyonunu bitirip MVP'yi garantiye almak; anomali, karbon ve canlı fiyat gibi Should/Could işlerini kapasiteye göre eklemek.
 
 ---
 
