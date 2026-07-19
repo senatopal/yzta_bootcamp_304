@@ -114,22 +114,26 @@ Bundan sonraki görev takibi Trello ağırlıklı ilerleyecektir.
 
 # Sprint 2
 
-**Planlanan hedef:** Temizlenmiş veri + baseline'a karşı ölçülmüş ilk tüketim tahmin modeli + tarife maliyet simülasyonunun ilk sürümü.
 - **Sprint Notu:** Sprint 2, ilk gerçek geliştirme sprintiydi. Hedef; veriyi kullanılabilir hale getirmek, tahmin modelinin temelini atmak ve arayüz iskeletini paralel kurmaktı. Ayrıca ürünün yönünü sağlamlaştırmak için hedef kitle & UX analizi tamamlandı.
 
-- **Backlog Dağıtma Mantığı:** İşler MoSCoW önceliğine ve beceriye göre dağıtıldı. Veri hattı ve veritabanı Veri/Backend geliştiricide (Reyyan)  tahmin modeli ML geliştiricide (Yasemin), arayüz iskeleti arayüz geliştiricide (Betül), persona/UX analizi ve dokümantasyon PO'da (Merve); süreç ve backend desteği Scrum Master'da (Senanur). Model eğitilirken arayüz iskeleti örnek veriyle paralel kuruldu, böylece zaman daha efektif değerlendirildi.
+- **Backlog Dağıtma Mantığı:** İşler MoSCoW önceliğine ve beceriye göre dağıtıldı. Veri hattı ve veritabanı Veri/Backend geliştiricide (Reyyan), tahmin modeli ML geliştiricide (Yasemin), arayüz iskeleti arayüz geliştiricide (Betül), persona/UX analizi ve dokümantasyon PO'da (Merve); süreç ve backend desteği Scrum Master'da (Senanur). Model eğitilirken arayüz iskeleti örnek veriyle paralel kuruldu, böylece zaman daha efektif değerlendirildi.
 
 - **Daily Scrum:** Daily scrum'lar Slack, huddle ve whatsapp üzerinden yürütüldü; notlar ve projenin görsel ilerleyişi Notion'da 'Daily Scrum' başlığı altında tutuluyor. Her kişi kendi adına açılmış sayfalara çelaışmalarını eklediler.
   🔗 **Daily Scrum & İlerleme Notları (Notion):** https://fortunate-infinity-26e.notion.site/GENEL-3897fe6d9df780458100d3ac3d4b7dc6?source=copy_link
-  🔗 **Ekip toplantı notları ve görselleri (Slack-huddle- whatsapp):** https://fortunate-infinity-26e.notion.site/EK-P-TOPLANTISI-NOTLARI-3977fe6d9df780c688efc822f4dd11dc?source=copy_link
+  🔗 **Ekip toplantı notları ve görselleri (Slack-huddle-whatsapp):** https://fortunate-infinity-26e.notion.site/EK-P-TOPLANTISI-NOTLARI-3977fe6d9df780c688efc822f4dd11dc?source=copy_link
 
-- **Sprint Board Update:** Görevler Trello'da "Product Backlog → Sprint 2 → Sprint 3 → Stretch → Done" akışında takip ediliyor. Sprint 2'de veri temizleme tamamlandı, arayüz iskeleti temel düzeyde oluşturuldu, persona analizi tamamlandı.
+- **Sprint Board Update:** Görevler Trello'da "Product Backlog → Sprint 2 → Sprint 3 → Stretch → Done" akışında takip ediliyor. Sprint 2'de veri temizleme tamamlandı, arayüz iskeleti temel düzeyde oluşturuldu, persona analizi tamamlandı. (Kişiler kendi kolaylıklarına göre de kartlar eklediler.)
   🔗 **Sprint Board (Trello):** https://trello.com/b/Fn8EetTL
-
+  
+Sprint Board Ekran Görüntüleri
   <img width="1920" height="882" alt="Volti Proje Geliştime _ Trello ve diğer 7 sayfa - Kişisel - Microsoft​ Edge 19 07 2026 21_00_58" src="https://github.com/user-attachments/assets/a88d5228-9cbe-484a-87a1-f34a4410c86e" />
+
+  <img width="1444" height="866" alt="Volti Proje Geliştime _ Trello ve diğer 9 sayfa - Kişisel - Microsoft​ Edge 19 07 2026 22_22_44" src="https://github.com/user-attachments/assets/0b10a0ee-3c0d-4bad-a12b-41f7b1d449ff" />
+
 
 
 - **Ürün Durumu:** Sprint 2 sonunda üründeki gelişmeler:
+  Repomuzda ürünün gelişim aşamalarını eklenen dosyalarda yakından takip edebilirsiniz. Bulması daha kolay olsun diye limkleri aşağıda eklendi:
 
   - Veri hazırlığı: https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/Sprint%202/veri_hazirligi)
   - Veritabanı tasarımı ve kurulumu: https://github.com/senatopal/yzta_bootcamp_304/blob/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/database_design_report.md
