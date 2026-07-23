@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.database import engine, Base
-from app.api.endpoints import health, households, simulation, consumption
+from app.api.endpoints import health, households, simulation, consumption, forecast
 
 # Initialize database tables automatically if using SQLite fallback
 if settings.DATABASE_URL.startswith("sqlite"):
@@ -30,6 +30,7 @@ app.include_router(health.router)
 app.include_router(households.router, prefix=settings.API_V1_STR)
 app.include_router(simulation.router, prefix=settings.API_V1_STR)
 app.include_router(consumption.router, prefix=settings.API_V1_STR)
+app.include_router(forecast.router, prefix=settings.API_V1_STR)
 
 if __name__ == "__main__":
     # Start web server on port 8000
