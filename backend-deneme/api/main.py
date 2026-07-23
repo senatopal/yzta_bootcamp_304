@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from datetime import datetime
-from typing import List
+from typing import Dict, List, Optional
 import pandas as pd
 from services.simulation import SimulationService
 
@@ -18,6 +18,7 @@ class HouseholdConsumptionInput(BaseModel):
 class SimulationRequest(BaseModel):
     household_id: str
     data: List[HouseholdConsumptionInput]
+    devices: Optional[Dict[str, Dict[str, float]]] = None
 
 @app.post("/api/v1/simulation/costs")
 async def calculate_household_costs(payload: SimulationRequest):
@@ -30,6 +31,7 @@ async def calculate_household_costs(payload: SimulationRequest):
     return {
         "household_id": payload.household_id,
         **metrics,
+        "carbon_impact": SimulationService.calculate_carbon_impact(metrics["total_consumption_kwh"]),
         "message": "Maliyet simülasyonu tamamlandı."
     }
 
@@ -45,3 +47,17 @@ async def analyze_peak_hours(payload: SimulationRequest):
         "household_id": payload.household_id,
         **analysis_results
     }
+
+@app.post("/api/v1/recommendations/load-shift")
+async def load_shift_recommendations(payload: SimulationRequest):
+    if not payload.data:
+        raise HTTPException(status_code=400, detail="Veri listesi boş olamaz.")
+    df = pd.DataFrame([item.model_dump(by_alias=True) for item in payload.data])
+    return SimulationService.generate_load_shift_recommendations(df, payload.household_id, payload.devices)
+
+@app.post("/api/v1/alerts/anomaly")
+async def anomaly_alert(payload: SimulationRequest):
+    if not payload.data:
+        raise HTTPException(status_code=400, detail="Veri listesi boş olamaz.")
+    df = pd.DataFrame([item.model_dump(by_alias=True) for item in payload.data])
+    return SimulationService.detect_anomaly(df, payload.household_id)

@@ -4,3 +4,4 @@ pydantic
 pandas
 pyarrow
 numpy
+httpx2
