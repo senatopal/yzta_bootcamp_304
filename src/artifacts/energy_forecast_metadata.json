@@ -1,0 +1,96 @@
+{
+  "schema_version": "1.0",
+  "model_type": "LightGBM",
+  "target_column": "energy(kWh/hh)",
+  "feature_columns": [
+    "stdorToU",
+    "Acorn_grouped",
+    "price_pence",
+    "visibility",
+    "windBearing",
+    "temperature",
+    "dewPoint",
+    "pressure",
+    "apparentTemperature",
+    "windSpeed",
+    "precipType",
+    "icon",
+    "humidity",
+    "summary",
+    "lag_1",
+    "lag_2",
+    "lag_48",
+    "lag_336",
+    "hour",
+    "day_of_week",
+    "month",
+    "is_weekend"
+  ],
+  "categorical_columns": [
+    "stdorToU",
+    "Acorn_grouped",
+    "precipType",
+    "icon",
+    "summary"
+  ],
+  "category_levels": {
+    "stdorToU": [
+      "Std",
+      "ToU"
+    ],
+    "Acorn_grouped": [
+      "ACORN-",
+      "ACORN-U",
+      "Adversity",
+      "Affluent",
+      "Comfortable"
+    ],
+    "precipType": [
+      "rain",
+      "snow"
+    ],
+    "icon": [
+      "clear-day",
+      "clear-night",
+      "cloudy",
+      "fog",
+      "partly-cloudy-day",
+      "partly-cloudy-night",
+      "wind"
+    ],
+    "summary": [
+      "Breezy",
+      "Breezy and Mostly Cloudy",
+      "Breezy and Overcast",
+      "Breezy and Partly Cloudy",
+      "Clear",
+      "Foggy",
+      "Mostly Cloudy",
+      "Overcast",
+      "Partly Cloudy",
+      "Windy and Mostly Cloudy",
+      "Windy and Partly Cloudy"
+    ]
+  },
+  "anomaly_threshold": 0.7038516463543447,
+  "best_iteration": 499,
+  "interval_minutes": 30,
+  "metrics": {
+    "mae": 0.10215843905929814,
+    "rmse": 0.2046140112896014,
+    "r2": 0.7502892199693227
+  },
+  "train_period": {
+    "start": "2011-11-23 13:00:00",
+    "end": "2013-08-05 16:30:00"
+  },
+  "validation_period": {
+    "start": "2013-08-05 17:00:00",
+    "end": "2013-11-14 18:00:00"
+  },
+  "test_period": {
+    "start": "2013-11-14 18:30:00",
+    "end": "2014-02-28 00:00:00"
+  },
+  "created_at": "2026-07-24T18:59:58.533404+00:00"
+}
