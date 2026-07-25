@@ -12,7 +12,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("⚡ Volti — Enerji Tasarruf Kocun")
+st.title("Volti — Enerji Tasarruf Kocun")
 st.caption("Akilli sayac verinle tasarruf firsatlarini kesfet")
 
 # ============================================================
