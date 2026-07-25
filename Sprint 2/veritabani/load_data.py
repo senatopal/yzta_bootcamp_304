@@ -1,4 +1,20 @@
 import os
+
+# Load environment variables from backend/.env if it exists
+env_path = os.path.abspath(
+    os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+        "backend", ".env"
+    )
+)
+if os.path.exists(env_path):
+    with open(env_path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                key, val = line.split("=", 1)
+                os.environ[key.strip()] = val.strip().strip('"').strip("'")
+
 import io
 import sys
 import glob
@@ -45,6 +61,15 @@ def get_db_connection():
         sys.exit(1)
 
 
+def clean_val(val):
+    """
+    Safely converts NaN, NaT, or Null values to Python None for SQL database compatibility.
+    """
+    if pd.isna(val):
+        return None
+    return val
+
+
 def load_households(conn, parquet_files):
     """
     Extracts distinct households from all Parquet files and loads them.
@@ -65,14 +90,15 @@ def load_households(conn, parquet_files):
     
     # Bulk insert households using ON CONFLICT DO NOTHING
     query = """
-        INSERT INTO households (LCLid, stdorToU, acorn_grouped)
+        INSERT INTO households ("LCLid", "stdorToU", acorn_grouped)
         VALUES (%s, %s, %s)
-        ON CONFLICT (LCLid) DO NOTHING;
+        ON CONFLICT ("LCLid") DO NOTHING;
     """
     
     data_tuples = [
-        (row["LCLid"], row["stdorToU"], row["Acorn_grouped"])
+        (clean_val(row["LCLid"]), clean_val(row["stdorToU"]), clean_val(row["Acorn_grouped"]))
         for _, row in combined_hh.iterrows()
+        if not pd.isna(row["LCLid"])
     ]
     
     from psycopg2.extras import execute_batch
@@ -102,7 +128,7 @@ def load_weather(conn, parquet_files):
     combined_weather = pd.concat(all_weather).drop_duplicates(subset=["tstp"])
     
     # Handle NaNs in weather columns (convert to None for SQL null compatibility)
-    combined_weather = combined_weather.replace({np.nan: None})
+    combined_weather = combined_weather.dropna(subset=["tstp"])
     print(f"    - Found {len(combined_weather)} unique half-hourly weather timestamps.")
     
     cursor = conn.cursor()
@@ -117,9 +143,9 @@ def load_weather(conn, parquet_files):
     
     data_tuples = [
         (
-            row["tstp"], row["visibility"], row["windBearing"], row["temperature"],
-            row["dewPoint"], row["pressure"], row["apparentTemperature"],
-            row["windSpeed"], row["precipType"], row["icon"], row["humidity"], row["summary"]
+            clean_val(row["tstp"]), clean_val(row["visibility"]), clean_val(row["windBearing"]), clean_val(row["temperature"]),
+            clean_val(row["dewPoint"]), clean_val(row["pressure"]), clean_val(row["apparentTemperature"]),
+            clean_val(row["windSpeed"]), clean_val(row["precipType"]), clean_val(row["icon"]), clean_val(row["humidity"]), clean_val(row["summary"])
         )
         for _, row in combined_weather.iterrows()
     ]
@@ -149,7 +175,7 @@ def bulk_copy_consumption(conn, file_path):
     
     # High-speed COPY command execution
     copy_query = r"""
-        COPY consumption_readings (tstp, LCLid, energy_kwh, price_pence, cost_pounds)
+        COPY consumption_readings (tstp, "LCLid", energy_kwh, price_pence, cost_pounds)
         FROM STDIN WITH (FORMAT CSV, DELIMITER E'\t', NULL '\N');
     """
     

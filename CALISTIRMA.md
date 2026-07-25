@@ -26,10 +26,25 @@ pip install -r backend/requirements.txt
 
 ## 2. PostgreSQL Veritabanı Yapılandırması ve Veri Yükleme
 
-Volti projesi artık tümüyle PostgreSQL kullanmaktadır. Veritabanını hazırlamak için şu adımları izleyin:
+Volti projesi artık tümüyle PostgreSQL kullanmaktadır. Veritabanı bağlantı bilgilerini yapılandırmak için iki yöntem mevcuttur:
 
-### A. Ortam Değişkenleri (Environment Variables)
-Backend ve veri yükleme aracı, veritabanına bağlanmak için aşağıdaki ortam değişkenlerini okur. Kendi PostgreSQL bilgilerinize göre terminalinizde tanımlayabilirsiniz:
+### A. `.env` Dosyası ile Yapılandırma (Önerilen)
+
+`backend/` klasörünün altında `.env` adında bir dosya oluşturun ve PostgreSQL bağlantı bilgilerinizi buraya yazın:
+
+```env
+VOLTI_DB_HOST=localhost
+VOLTI_DB_PORT=5432
+VOLTI_DB_NAME=volti_db
+VOLTI_DB_USER=postgres
+VOLTI_DB_PASS=sifreniz_buraya
+```
+
+Hem backend sunucusu hem de veritabanı yükleme script'i bu dosyayı otomatik olarak okuyacaktır.
+
+### B. Ortam Değişkenleri (Environment Variables - Alternatif)
+
+Eğer `.env` dosyası kullanmak istemiyorsanız, terminalinizde şu komutları çalıştırarak ortam değişkenlerini el ile tanımlayabilirsiniz:
 
 #### Windows (PowerShell):
 ```powershell
@@ -49,15 +64,16 @@ export VOLTI_DB_USER="postgres"
 export VOLTI_DB_PASS="sifreniz_buraya"
 ```
 
-### B. Şemaları ve Örnek Verileri Yükleme
+### C. Şemaları ve Örnek Verileri Yükleme
+
 Örnek Parquet verilerini PostgreSQL veritabanına aktarmak için:
 
-1. PostgreSQL üzerinde `volti_db` adında boş bir veritabanı oluşturun.
-2. `Sprint 2/veritabani/schema.sql` dosyasındaki tabloları veritabanınızda çalıştırarak tabloları oluşturun.
-3. Aşağıdaki komutla verileri aktarın:
+1. PostgreSQL üzerinde `volti_db` adında boş bir veritabanı oluşturun (Tablolar backend başlatıldığında SQLAlchemy tarafından otomatik olarak oluşturulacaktır. Dilerseniz `Sprint 2/veritabani/schema.sql` dosyasını manuel de çalıştırabilirsiniz).
+2. Proje kök dizinindeyken aşağıdaki komutla verileri aktarın:
    ```bash
    python "Sprint 2/veritabani/load_data.py"
    ```
+
 
 ---
 
@@ -78,13 +94,24 @@ Sunucu başarıyla başladığında tarayıcınızdan şu adreslere erişebilirs
 
 ## 4. Backend Testlerini Çalıştırma
 
-Geliştirilen tüketim geçmişi API'sinin (`/api/v1/consumption/history`) ve diğer servislerin düzgün çalıştığını test etmek için:
+Backend üzerinde geliştirilen tüketim geçmişi, yapay zeka koçu, anomali tespiti ve makine öğrenmesi tahmin modellerinin düzgün çalıştığını test etmek için aşağıdaki komutları çalıştırabilirsiniz:
 
 ```bash
+# Tüketim geçmişi API testleri
 python backend/test_consumption.py
+
+# Makine öğrenmesi ve baseline tahmin testleri
+python backend/test_forecast.py
+
+# Karbon ayak izi, yük kaydırma ve anomali tespiti testleri
+python backend/test_insights.py
+
+# Yapay zeka koçu (LLM Grounding Context) testleri
+python backend/test_coach.py
 ```
 
-Test aracı, geçici bir test veritabanı oluşturarak tüm uçları test edecek ve işlem bitiminde temizleyecektir.
+Test araçları, geçici SQLite test veritabanları oluşturarak tüm uçları izole şekilde test eder ve işlem bitiminde bu dosyaları otomatik temizler.
+
 
 ---
 
