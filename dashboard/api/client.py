@@ -171,7 +171,7 @@ class VoltiAPIClient:
 
         return self._request(
             "POST",
-            "/simulation/recommendations/load-shift",
+            "/recommendations/load-shift",
             json=payload,
         )
 
@@ -189,7 +189,7 @@ class VoltiAPIClient:
 
         return self._request(
             "POST",
-            "/simulation/alerts/anomaly",
+            "/alerts/anomaly",
             json=payload,
         )
 

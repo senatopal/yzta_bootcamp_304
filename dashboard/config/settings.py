@@ -6,7 +6,7 @@ load_dotenv()
 
 BACKEND_URL = os.getenv(
     "VOLTI_API_URL",
-    "http://localhost:8000/api/v1",
+    "http://127.0.0.1:8000/api/v1",
 ).rstrip("/")
 
 API_TIMEOUT = int(os.getenv("VOLTI_API_TIMEOUT", "15"))

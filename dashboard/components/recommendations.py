@@ -2,6 +2,13 @@ from typing import Any
 
 import streamlit as st
 
+DEVICE_NAMES = {
+    "Çamaşır Makinesi": "Washing Machine",
+    "Bulaşık Makinesi": "Dishwasher",
+    "Kurutma Makinesi": "Tumble Dryer",
+    "Elektrikli Araç Şarjı": "Electric Vehicle Charging",
+}
+
 
 def render_recommendations(
     recommendations_data: dict[str, Any],
@@ -39,7 +46,13 @@ def render_recommendations(
 
         for column, item in zip(columns, row_items):
             with column:
-                device = item.get("device", "Unknown device")
+                raw_device = item.get("device", "")
+
+                device = DEVICE_NAMES.get(
+                    raw_device,
+                    raw_device or "Unknown device",
+                )
+                
                 icon = item.get("icon", "⚡")
                 current_hour = item.get(
                     "current_hour",

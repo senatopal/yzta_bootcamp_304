@@ -19,6 +19,7 @@ gorev_paylasimi.md
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
 
 # Jupyter Notebook Checkpoints
 .ipynb_checkpoints/
@@ -41,4 +42,4 @@ verify.py
 inspect_notebook.py
 
 # Ignore That Large Parquet file
-dataset/combined_data.parquet
+dataset/combined_data.parquetdashboard/lib/
