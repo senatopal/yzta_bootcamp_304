@@ -1,5 +1,5 @@
 import os
-import pickle
+import joblib
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
@@ -7,38 +7,45 @@ from typing import List, Dict, Any
 from sqlalchemy.orm import Session
 from sqlalchemy import func, extract
 from app.models.consumption import ConsumptionReading
+from app.models.household import Household
+from app.models.weather import WeatherReading
 from app.schemas.forecast import ForecastDataPoint
 
-MODEL_PATH = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-    "models", "saved_models", "forecast_model.pkl"
+MODEL_PATH = os.path.abspath(
+    os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
+        "src", "artifacts", "energy_forecast_bundle.joblib"
+    )
 )
 
 class ForecastService:
     _model = None
+    _metadata = None
     _model_loaded = False
 
     @classmethod
     def load_model(cls):
         """
-        Attempts to load the ML model from the saved path.
+        Attempts to load the ML model bundle from the saved path.
         """
         if cls._model_loaded:
             return cls._model
         
         if os.path.exists(MODEL_PATH):
             try:
-                with open(MODEL_PATH, "rb") as f:
-                    cls._model = pickle.load(f)
+                bundle = joblib.load(MODEL_PATH)
+                cls._model = bundle["model"]
+                cls._metadata = bundle["metadata"]
                 cls._model_loaded = True
                 print(f"[OK] Forecast model loaded successfully from {MODEL_PATH}")
             except Exception as e:
                 print(f"[!] Error loading forecast model: {e}")
                 cls._model = None
+                cls._metadata = None
                 cls._model_loaded = False
         else:
-            # Model file not found yet (expected until Yasemin commits it)
             cls._model = None
+            cls._metadata = None
             cls._model_loaded = False
             
         return cls._model
@@ -63,35 +70,135 @@ class ForecastService:
         current_dt = start_date
         data_points = []
 
-        if model is not None:
-            # ML Model Prediction Logic
+        if model is not None and cls._metadata is not None:
             print(f"[*] Running ML model forecast for {household_id} starting at {start_date}")
             try:
-                features = []
-                temp_dt = start_date
-                for _ in range(intervals_count):
-                    features.append({
-                        "LCLid": household_id,
-                        "tstp": temp_dt,
-                        "hour": temp_dt.hour,
-                        "minute": temp_dt.minute,
-                        "dayofweek": temp_dt.weekday(),
-                        "month": temp_dt.month
-                    })
-                    temp_dt += timedelta(minutes=30)
+                # 1. Retrieve household profile details
+                hh = db.query(Household).filter(Household.LCLid == household_id).first()
+                stdorToU = hh.stdorToU if hh else "Std"
+                acorn_grouped = hh.acorn_grouped if hh else "Affluent"
+
+                # 2. Local cache for lag and weather lookup
+                val_history: Dict[datetime, float] = {}
                 
-                df_features = pd.DataFrame(features)
-                predictions = model.predict(df_features)
-                
-                temp_dt = start_date
-                for pred in predictions:
+                # Default weather fallback values
+                default_weather = {
+                    "visibility": 10.0,
+                    "windBearing": 180.0,
+                    "temperature": 10.0,
+                    "dewPoint": 5.0,
+                    "pressure": 1015.0,
+                    "apparentTemperature": 10.0,
+                    "windSpeed": 5.0,
+                    "precipType": "rain",
+                    "icon": "partly-cloudy-day",
+                    "humidity": 0.8,
+                    "summary": "Partly Cloudy"
+                }
+
+                def get_consumption_at(tstp_target: datetime) -> float:
+                    if tstp_target in val_history:
+                        return val_history[tstp_target]
+                    # Query DB
+                    r = db.query(ConsumptionReading.energy_kwh).filter(
+                        ConsumptionReading.LCLid == household_id,
+                        ConsumptionReading.tstp == tstp_target
+                    ).first()
+                    val = float(r[0]) if r and r[0] is not None else 0.15
+                    val_history[tstp_target] = val
+                    return val
+
+                def get_weather_at(tstp_target: datetime) -> Dict[str, Any]:
+                    w = db.query(WeatherReading).filter(WeatherReading.tstp == tstp_target).first()
+                    if w:
+                        return {
+                            "visibility": float(w.visibility) if w.visibility is not None else 10.0,
+                            "windBearing": float(w.wind_bearing) if w.wind_bearing is not None else 180.0,
+                            "temperature": float(w.temperature) if w.temperature is not None else 10.0,
+                            "dewPoint": float(w.dew_point) if w.dew_point is not None else 5.0,
+                            "pressure": float(w.pressure) if w.pressure is not None else 1015.0,
+                            "apparentTemperature": float(w.apparent_temperature) if w.apparent_temperature is not None else 10.0,
+                            "windSpeed": float(w.wind_speed) if w.wind_speed is not None else 5.0,
+                            "precipType": w.precip_type if w.precip_type is not None else "rain",
+                            "icon": w.icon if w.icon is not None else "partly-cloudy-day",
+                            "humidity": float(w.humidity) if w.humidity is not None else 0.8,
+                            "summary": w.summary if w.summary is not None else "Partly Cloudy"
+                        }
+                    return default_weather
+
+                def get_price_at(tstp_target: datetime) -> float:
+                    r = db.query(ConsumptionReading.price_pence).filter(
+                        ConsumptionReading.LCLid == household_id,
+                        ConsumptionReading.tstp == tstp_target
+                    ).first()
+                    if r and r[0] is not None:
+                        return float(r[0])
+                    return 14.23
+
+                # 3. Autoregressive loop
+                for step in range(intervals_count):
+                    step_tstp = start_date + timedelta(minutes=30 * step)
+                    
+                    w_feat = get_weather_at(step_tstp)
+                    l1 = get_consumption_at(step_tstp - timedelta(minutes=30))
+                    l2 = get_consumption_at(step_tstp - timedelta(minutes=60))
+                    l48 = get_consumption_at(step_tstp - timedelta(hours=24))
+                    l336 = get_consumption_at(step_tstp - timedelta(days=7))
+                    price = get_price_at(step_tstp)
+                    
+                    hr_val = step_tstp.hour
+                    day_of_week = step_tstp.weekday()
+                    month_val = step_tstp.month
+                    is_wknd = 1 if day_of_week >= 5 else 0
+
+                    feat_dict = {
+                        "stdorToU": stdorToU,
+                        "Acorn_grouped": acorn_grouped,
+                        "price_pence": price,
+                        "visibility": w_feat["visibility"],
+                        "windBearing": w_feat["windBearing"],
+                        "temperature": w_feat["temperature"],
+                        "dewPoint": w_feat["dewPoint"],
+                        "pressure": w_feat["pressure"],
+                        "apparentTemperature": w_feat["apparentTemperature"],
+                        "windSpeed": w_feat["windSpeed"],
+                        "precipType": w_feat["precipType"],
+                        "icon": w_feat["icon"],
+                        "humidity": w_feat["humidity"],
+                        "summary": w_feat["summary"],
+                        "lag_1": l1,
+                        "lag_2": l2,
+                        "lag_48": l48,
+                        "lag_336": l336,
+                        "hour": hr_val,
+                        "day_of_week": day_of_week,
+                        "month": month_val,
+                        "is_weekend": is_wknd
+                    }
+                    
+                    df_features = pd.DataFrame([feat_dict])
+                    
+                    # Convert categories matching levels
+                    categorical_columns = cls._metadata["categorical_columns"]
+                    category_levels = cls._metadata["category_levels"]
+                    for col in categorical_columns:
+                        df_features[col] = pd.Categorical(
+                            df_features[col].astype(str),
+                            categories=category_levels[col]
+                        )
+                        
+                    # Execute prediction
+                    pred_val = float(cls._model.predict(df_features)[0])
+                    pred_val = max(0.01, round(pred_val, 4))
+                    
+                    val_history[step_tstp] = pred_val
+                    
                     data_points.append(
                         ForecastDataPoint(
-                            timestamp=temp_dt.strftime("%Y-%m-%d %H:%M:%S"),
-                            predicted_kwh=max(0.0, round(float(pred), 4))
+                            timestamp=step_tstp.strftime("%Y-%m-%d %H:%M:%S"),
+                            predicted_kwh=pred_val
                         )
                     )
-                    temp_dt += timedelta(minutes=30)
                 return data_points
             except Exception as e:
                 print(f"[!] ML model prediction failed: {e}. Falling back to baseline model.")
