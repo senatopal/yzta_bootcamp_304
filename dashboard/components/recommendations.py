@@ -2,7 +2,7 @@ from typing import Any
 
 import streamlit as st
 
-DEVICE_NAMES = {
+device_names = {
     "Çamaşır Makinesi": "Washing Machine",
     "Bulaşık Makinesi": "Dishwasher",
     "Kurutma Makinesi": "Tumble Dryer",
@@ -48,7 +48,7 @@ def render_recommendations(
             with column:
                 raw_device = item.get("device", "")
 
-                device = DEVICE_NAMES.get(
+                device = device_names.get(
                     raw_device,
                     raw_device or "Unknown device",
                 )

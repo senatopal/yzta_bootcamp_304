@@ -2,6 +2,12 @@ from typing import Any
 
 import streamlit as st
 
+device_names = {
+    "Çamaşır Makinesi": "Washing Machine",
+    "Bulaşık Makinesi": "Dishwasher",
+    "Kurutma Makinesi": "Tumble Dryer",
+    "Elektrikli Araç Şarjı": "Electric Vehicle Charging",
+}
 
 def render_coach(coach_context: dict[str, Any]) -> None:
     st.markdown("### Volti Energy Coach")
@@ -53,11 +59,17 @@ def render_coach(coach_context: dict[str, Any]) -> None:
 
     if recommendations:
         top_recommendation = recommendations[0]
-
-        device = top_recommendation.get(
+        
+        raw_device = top_recommendation.get(
             "device",
             "an appliance",
         )
+
+        device = device_names.get(
+            raw_device,
+            raw_device,
+        )
+        
         current_hour = top_recommendation.get(
             "current_hour",
             "the current time",
