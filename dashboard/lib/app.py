@@ -3,6 +3,11 @@ import pandas as pd
 import plotly.graph_objects as go
 import json
 
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
+
 # ============================================================
 # SAYFA AYARLARI
 # ============================================================
@@ -18,16 +23,16 @@ st.caption("Akilli sayac verinle tasarruf firsatlarini kesfet")
 # ============================================================
 # VERILERI OKU
 # ============================================================
-consumption_df = pd.read_csv("data/mock_consumption.csv")
-tariff_df = pd.read_csv("data/mock_tariff.csv")
+consumption_df = pd.read_csv(DATA_DIR / "mock_consumption.csv")
+tariff_df = pd.read_csv(DATA_DIR / "mock_tariff.csv")
 
-with open("data/mock_recommendations.json", "r", encoding="utf-8") as f:
+with open(DATA_DIR / "mock_recommendations.json", encoding="utf-8") as f:
     recommendations = json.load(f)
 
-with open("data/mock_anomaly.json", "r", encoding="utf-8") as f:
+with open(DATA_DIR / "mock_anomaly.json", "r", encoding="utf-8") as f:
     anomaly = json.load(f)
 
-with open("data/mock_summary.json", "r", encoding="utf-8") as f:
+with open(DATA_DIR / "mock_summary.json", "r", encoding="utf-8") as f:
     summary = json.load(f)
 
 # Saat etiketi icin kisa format

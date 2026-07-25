@@ -4,6 +4,7 @@ archive.zip
 eda_plots/
 *.zip
 *.csv.gz
+*.csv
 
 # Unwanted files for now
 Sprint 2/veri_hazirligi/
