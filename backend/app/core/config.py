@@ -19,12 +19,7 @@ class Settings(BaseSettings):
         if env_url:
             return env_url
             
-        # Build PostgreSQL URL if custom credentials or host are set
-        # Otherwise, fall back to SQLite to make it run out-of-the-box locally.
-        if os.getenv("VOLTI_DB_HOST") or os.getenv("VOLTI_DB_PASS"):
-            return f"postgresql://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
-        
-        # SQLite local fallback
-        return "sqlite:///volti.db"
+        # Default to PostgreSQL database connection URL
+        return f"postgresql://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
 settings = Settings()
