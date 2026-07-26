@@ -1,0 +1,811 @@
+from __future__ import annotations
+
+import re
+from collections import defaultdict
+from typing import Any, TypedDict
+
+import httpx
+import reflex as rx
+
+
+FASTAPI_ROOT = "http://127.0.0.1:8000"
+FASTAPI_URL = f"{FASTAPI_ROOT}/api/v1"
+
+
+DEVICE_NAMES = {
+    "Çamaşır Makinesi": "washing machine",
+    "Bulaşık Makinesi": "dishwasher",
+    "Kurutma Makinesi": "tumble dryer",
+    "Kurutan Makine": "tumble dryer",
+    "Elektrikli Araç Şarjı": "electric vehicle charger",
+}
+
+
+class ChartPoint(TypedDict):
+    timestamp: str
+    value: float
+
+
+class RecommendationCard(TypedDict):
+    icon: str
+    device: str
+    time_shift: str
+    saving: str
+    carbon: str
+
+
+class AnomalyCard(TypedDict):
+    timestamp: str
+    usage: str
+    deviation: str
+
+
+class HourlyPoint(TypedDict):
+    hour: str
+    consumption: float
+    cost: float
+
+
+def to_float(value: Any, default: float = 0.0) -> float:
+    """Convert API values to float without crashing on null/invalid data."""
+    try:
+        return float(value if value is not None else default)
+    except (TypeError, ValueError):
+        return default
+
+
+def extract_list(
+    payload: Any,
+    keys: tuple[str, ...],
+) -> list[dict[str, Any]]:
+    if isinstance(payload, list):
+        return [item for item in payload if isinstance(item, dict)]
+
+    if isinstance(payload, dict):
+        for key in keys:
+            value = payload.get(key)
+            if isinstance(value, list):
+                return [item for item in value if isinstance(item, dict)]
+
+    return []
+
+
+def extract_consumption_rows(payload: Any) -> list[dict[str, Any]]:
+    return extract_list(
+        payload,
+        ("data", "history", "records", "consumption"),
+    )
+
+
+def create_hourly_fallback(
+    records: list[dict[str, Any]],
+) -> list[HourlyPoint]:
+    """Create an hourly chart locally when /simulation/hours is unavailable."""
+    totals: dict[str, dict[str, float]] = defaultdict(
+        lambda: {"consumption": 0.0, "cost": 0.0}
+    )
+
+    for item in records:
+        timestamp = str(item.get("timestamp", ""))
+        hour = timestamp[11:13]
+
+        if not hour:
+            continue
+
+        label = f"{hour}:00"
+        totals[label]["consumption"] += to_float(
+            item.get("consumption_kwh")
+        )
+        totals[label]["cost"] += to_float(item.get("cost_pounds"))
+
+    return [
+        {
+            "hour": hour,
+            "consumption": round(values["consumption"], 3),
+            "cost": round(values["cost"], 2),
+        }
+        for hour, values in sorted(totals.items())
+    ]
+
+
+def parse_hour_rows(payload: Any) -> list[HourlyPoint]:
+    rows = extract_list(
+        payload,
+        ("data", "hours", "hourly_data", "hourly_breakdown"),
+    )
+
+    parsed: list[HourlyPoint] = []
+
+    for item in rows:
+        raw_hour = (
+            item.get("hour")
+            or item.get("time_slot")
+            or item.get("timestamp")
+            or ""
+        )
+        hour = str(raw_hour)
+
+        if len(hour) >= 16:
+            hour = hour[11:16]
+
+        if not hour:
+            continue
+
+        parsed.append(
+            {
+                "hour": hour,
+                "consumption": round(
+                    to_float(
+                        item.get("consumption_kwh")
+                        or item.get("energy_kwh")
+                        or item.get("total_consumption_kwh")
+                    ),
+                    3,
+                ),
+                "cost": round(
+                    to_float(
+                        item.get("cost_pounds")
+                        or item.get("total_cost_pounds")
+                    ),
+                    2,
+                ),
+            }
+        )
+
+    return parsed
+
+
+def translate_device(device: Any) -> str:
+    raw_device = str(device or "appliance")
+    return DEVICE_NAMES.get(raw_device, raw_device)
+
+
+def create_coach_message(
+    coach_payload: dict[str, Any],
+    *,
+    selected_consumption_kwh: float,
+    selected_cost_pounds: float,
+    fallback_recommendation: str,
+    anomaly_detected: bool,
+) -> str:
+    """Build a deterministic English coach summary from backend context."""
+    parts: list[str] = []
+
+    weekly_summary = coach_payload.get("weekly_summary")
+    if isinstance(weekly_summary, dict):
+        weekly_consumption = to_float(
+            weekly_summary.get("total_consumption_kwh")
+        )
+        weekly_cost = to_float(weekly_summary.get("total_cost_pounds"))
+
+        parts.append(
+            "During the latest available week, your home used "
+            f"{weekly_consumption:.2f} kWh and cost approximately "
+            f"£{weekly_cost:.2f}."
+        )
+    else:
+        parts.append(
+            "For the selected period, your home used "
+            f"{selected_consumption_kwh:.2f} kWh and cost approximately "
+            f"£{selected_cost_pounds:.2f}."
+        )
+
+    recommendations = coach_payload.get("recommendations")
+    if isinstance(recommendations, list) and recommendations:
+        recommendation = recommendations[0]
+        if isinstance(recommendation, dict):
+            device = translate_device(recommendation.get("device"))
+            recommended_hour = recommendation.get(
+                "recommended_hour", "a cheaper period"
+            )
+            saving = to_float(
+                recommendation.get("estimated_savings_pounds")
+            )
+            parts.append(
+                f"Run your {device} at {recommended_hour} to save "
+                f"approximately £{saving:.2f}."
+            )
+    elif fallback_recommendation:
+        parts.append(fallback_recommendation)
+
+    coach_anomalies = coach_payload.get("anomalies")
+    has_coach_anomaly = (
+        isinstance(coach_anomalies, list) and bool(coach_anomalies)
+    )
+
+    if has_coach_anomaly or anomaly_detected:
+        parts.append(
+            "Unusual consumption was detected, so check whether an "
+            "appliance was left running."
+        )
+    else:
+        parts.append("No unusual consumption was detected.")
+
+    return " ".join(parts)
+
+
+class DashboardState(rx.State):
+    # Filters
+    household_id: str = "MAC001074"
+    start_date: str = "2012-11-01"
+    end_date: str = "2012-11-07"
+    forecast_days: int = 1
+
+    # Page state
+    is_loading: bool = False
+    error_message: str = ""
+    partial_data_message: str = ""
+    dashboard_loaded: bool = False
+
+    # Backend status
+    backend_online: bool = False
+    backend_status: str = "Checking services..."
+    households_loaded: bool = False
+
+    # Household information
+    household_ids: list[str] = []
+    available_household_count: int = 0
+    household_tariff: str = ""
+    household_group: str = ""
+
+    # Raw API responses
+    consumption_data: dict[str, Any] = {}
+    costs_data: dict[str, Any] = {}
+    recommendations_data: dict[str, Any] = {}
+    anomaly_data: dict[str, Any] = {}
+    hours_data: dict[str, Any] = {}
+    coach_context_data: dict[str, Any] = {}
+
+    # Dashboard metrics
+    total_consumption_kwh: float = 0.0
+    total_cost_pounds: float = 0.0
+    total_savings_pounds: float = 0.0
+    carbon_kg: float = 0.0
+
+    # Charts and cards
+    history_chart_data: list[ChartPoint] = []
+    forecast_chart_data: list[ChartPoint] = []
+    hourly_chart_data: list[HourlyPoint] = []
+    recommendation_cards: list[RecommendationCard] = []
+    anomaly_cards: list[AnomalyCard] = []
+
+    # Recommendation summary
+    best_action_title: str = ""
+    best_action_message: str = ""
+
+    # Anomaly summary
+    anomaly_detected: bool = False
+    anomaly_summary: str = ""
+    total_anomaly_count: int = 0
+
+    # Coach context
+    coach_message: str = ""
+    coach_prompt_context: str = ""
+    coach_context_available: bool = False
+    coach_open: bool = False
+
+    def reset_dashboard_result(self) -> None:
+        self.dashboard_loaded = False
+        self.error_message = ""
+        self.partial_data_message = ""
+
+        self.household_tariff = ""
+        self.household_group = ""
+
+        self.consumption_data = {}
+        self.costs_data = {}
+        self.recommendations_data = {}
+        self.anomaly_data = {}
+        self.hours_data = {}
+        self.coach_context_data = {}
+
+        self.total_consumption_kwh = 0.0
+        self.total_cost_pounds = 0.0
+        self.total_savings_pounds = 0.0
+        self.carbon_kg = 0.0
+
+        self.history_chart_data = []
+        self.forecast_chart_data = []
+        self.hourly_chart_data = []
+        self.recommendation_cards = []
+        self.anomaly_cards = []
+
+        self.best_action_title = ""
+        self.best_action_message = ""
+
+        self.anomaly_detected = False
+        self.anomaly_summary = ""
+        self.total_anomaly_count = 0
+
+        self.coach_message = ""
+        self.coach_prompt_context = ""
+        self.coach_context_available = False
+
+    @rx.event
+    def update_household_id(self, value: str) -> None:
+        self.household_id = value
+        self.reset_dashboard_result()
+
+    @rx.event
+    def update_start_date(self, value: str) -> None:
+        self.start_date = value
+        self.reset_dashboard_result()
+
+    @rx.event
+    def update_end_date(self, value: str) -> None:
+        self.end_date = value
+        self.reset_dashboard_result()
+
+    @rx.var
+    def total_consumption_text(self) -> str:
+        return f"{self.total_consumption_kwh:.2f} kWh"
+
+    @rx.var
+    def total_cost_text(self) -> str:
+        return f"£{self.total_cost_pounds:.2f}"
+
+    @rx.var
+    def total_savings_text(self) -> str:
+        return f"£{self.total_savings_pounds:.2f}"
+
+    @rx.var
+    def carbon_text(self) -> str:
+        return f"{self.carbon_kg:.2f} kg"
+
+    @rx.var
+    def recommendation_count_text(self) -> str:
+        count = len(self.recommendation_cards)
+        if count == 1:
+            return "1 personalised recommendation"
+        return f"{count} personalised recommendations"
+
+    @rx.var
+    def anomaly_count_text(self) -> str:
+        if self.total_anomaly_count == 1:
+            return "1 potential anomaly detected"
+        return f"{self.total_anomaly_count} potential anomalies detected"
+
+    @rx.var
+    def household_count_text(self) -> str:
+        if not self.households_loaded:
+            return "Household list unavailable"
+        return f"{self.available_household_count} households available"
+
+    @rx.var
+    def household_profile_text(self) -> str:
+        tariff = self.household_tariff or "Unknown tariff"
+        group = self.household_group or "Unknown group"
+        return f"{tariff} tariff · {group}"
+
+    @rx.event
+    async def initialize_page(self):
+        """Check backend health and load valid household identifiers."""
+        self.backend_status = "Checking services..."
+        self.households_loaded = False
+
+        async with httpx.AsyncClient(timeout=20.0) as client:
+            try:
+                health_response = await client.get(f"{FASTAPI_ROOT}/health")
+                health_response.raise_for_status()
+                self.backend_online = True
+                self.backend_status = "Services online"
+            except httpx.HTTPError:
+                self.backend_online = False
+                self.backend_status = "Backend unavailable"
+                self.household_ids = []
+                self.available_household_count = 0
+                return
+
+            try:
+                households_response = await client.get(
+                    f"{FASTAPI_URL}/households"
+                )
+                households_response.raise_for_status()
+                payload = households_response.json()
+                households = extract_list(
+                    payload,
+                    ("data", "households", "items"),
+                )
+
+                ids: list[str] = []
+                for item in households:
+                    item_id = (
+                        item.get("LCLid")
+                        or item.get("lclid")
+                        or item.get("household_id")
+                    )
+                    if item_id:
+                        ids.append(str(item_id).upper())
+
+                self.household_ids = sorted(set(ids))
+                self.available_household_count = len(self.household_ids)
+                self.households_loaded = True
+            except (httpx.HTTPError, TypeError, ValueError):
+                self.household_ids = []
+                self.available_household_count = 0
+                self.households_loaded = False
+
+    @rx.event
+    def toggle_coach(self) -> None:
+        self.coach_open = not self.coach_open
+
+    @rx.event
+    async def load_dashboard(self):
+        self.reset_dashboard_result()
+
+        household_id = self.household_id.strip().upper()
+
+        if not re.fullmatch(r"MAC\d{6}", household_id):
+            self.error_message = (
+                "Household ID must follow the format MAC000000."
+            )
+            return
+
+        if self.household_ids and household_id not in self.household_ids:
+            self.error_message = f"Household {household_id} does not exist."
+            return
+
+        if not self.start_date or not self.end_date:
+            self.error_message = "Please select both dates."
+            return
+
+        if self.start_date > self.end_date:
+            self.error_message = "Start date cannot be later than end date."
+            return
+
+        self.household_id = household_id
+        self.is_loading = True
+        yield
+
+        optional_failures: list[str] = []
+
+        try:
+            async with httpx.AsyncClient(timeout=45.0) as client:
+                # Optional household profile.
+                try:
+                    profile_response = await client.get(
+                        f"{FASTAPI_URL}/households/{household_id}"
+                    )
+                    profile_response.raise_for_status()
+                    profile_payload = profile_response.json()
+                    self.household_tariff = str(
+                        profile_payload.get("stdorToU") or "Unknown"
+                    )
+                    self.household_group = str(
+                        profile_payload.get("acorn_grouped") or "Unknown"
+                    )
+                except (httpx.HTTPError, TypeError, ValueError):
+                    self.household_tariff = "Unknown"
+                    self.household_group = "Unknown"
+                    optional_failures.append("household profile")
+
+                # Required consumption history.
+                history_response = await client.get(
+                    f"{FASTAPI_URL}/consumption/history",
+                    params={
+                        "household_id": household_id,
+                        "period": "half-hourly",
+                        "start_date": f"{self.start_date}T00:00:00",
+                        "end_date": f"{self.end_date}T23:59:59",
+                    },
+                )
+                history_response.raise_for_status()
+                history_payload = history_response.json()
+                records = extract_consumption_rows(history_payload)
+
+                if not records:
+                    self.error_message = (
+                        "No consumption data was found for "
+                        f"{household_id} in the selected date range."
+                    )
+                    return
+
+                self.consumption_data = history_payload
+                self.history_chart_data = [
+                    {
+                        "timestamp": str(item.get("timestamp", ""))[5:16],
+                        "value": round(
+                            to_float(item.get("consumption_kwh")),
+                            3,
+                        ),
+                    }
+                    for item in records
+                ]
+
+                # Optional forecast.
+                try:
+                    forecast_response = await client.get(
+                        f"{FASTAPI_URL}/consumption/forecast",
+                        params={
+                            "household_id": household_id,
+                            "days": self.forecast_days,
+                        },
+                    )
+                    forecast_response.raise_for_status()
+                    forecast_payload = forecast_response.json()
+                    forecast_rows = extract_list(
+                        forecast_payload,
+                        ("data", "forecast", "predictions"),
+                    )
+                    self.forecast_chart_data = [
+                        {
+                            "timestamp": str(
+                                item.get("timestamp", "")
+                            )[5:16],
+                            "value": round(
+                                to_float(item.get("predicted_kwh")),
+                                3,
+                            ),
+                        }
+                        for item in forecast_rows
+                    ]
+                except (httpx.HTTPError, TypeError, ValueError):
+                    self.forecast_chart_data = []
+                    optional_failures.append("forecast")
+
+                simulation_rows = [
+                    {
+                        "tstp": str(item.get("timestamp", "")).replace(
+                            " ", "T"
+                        ),
+                        "energy(kWh/hh)": to_float(
+                            item.get("consumption_kwh")
+                        ),
+                        "price_pence": to_float(
+                            item.get("avg_price_pence")
+                        ),
+                    }
+                    for item in records
+                ]
+
+                simulation_payload = {
+                    "household_id": household_id,
+                    "data": simulation_rows,
+                    "devices": {},
+                }
+
+                # Hourly view always has a local fallback.
+                self.hourly_chart_data = create_hourly_fallback(records)
+                try:
+                    hours_response = await client.post(
+                        f"{FASTAPI_URL}/simulation/hours",
+                        json=simulation_payload,
+                    )
+                    hours_response.raise_for_status()
+                    hours_payload = hours_response.json()
+                    parsed_hours = parse_hour_rows(hours_payload)
+
+                    if parsed_hours:
+                        self.hours_data = hours_payload
+                        self.hourly_chart_data = parsed_hours
+                except (httpx.HTTPError, TypeError, ValueError):
+                    # This endpoint is optional; local aggregation remains visible.
+                    optional_failures.append("hourly simulation")
+
+                # Required costs and carbon calculation.
+                costs_response = await client.post(
+                    f"{FASTAPI_URL}/simulation/costs",
+                    json=simulation_payload,
+                )
+                costs_response.raise_for_status()
+                costs_payload = costs_response.json()
+                self.costs_data = costs_payload
+                self.total_consumption_kwh = to_float(
+                    costs_payload.get("total_consumption_kwh")
+                )
+                self.total_cost_pounds = to_float(
+                    costs_payload.get("total_cost_pounds")
+                )
+
+                carbon_impact = costs_payload.get("carbon_impact") or {}
+                if isinstance(carbon_impact, dict):
+                    self.carbon_kg = to_float(
+                        carbon_impact.get("carbon_kg")
+                    )
+
+                # Optional load-shifting recommendations.
+                try:
+                    recommendations_response = await client.post(
+                        f"{FASTAPI_URL}/recommendations/load-shift",
+                        json=simulation_payload,
+                    )
+                    recommendations_response.raise_for_status()
+                    recommendations_payload = (
+                        recommendations_response.json()
+                    )
+                    self.recommendations_data = recommendations_payload
+                    self.total_savings_pounds = to_float(
+                        recommendations_payload.get("total_savings_pounds")
+                    )
+                    recommendations = extract_list(
+                        recommendations_payload,
+                        ("recommendations", "data", "items"),
+                    )
+
+                    self.recommendation_cards = [
+                        {
+                            "icon": str(item.get("icon", "⚡")),
+                            "device": translate_device(
+                                item.get("device", "Appliance")
+                            ).title(),
+                            "time_shift": (
+                                f"{item.get('current_hour', '—')} → "
+                                f"{item.get('recommended_hour', '—')}"
+                            ),
+                            "saving": (
+                                "£"
+                                f"{to_float(item.get('estimated_savings_pounds')):.2f}"
+                            ),
+                            "carbon": (
+                                f"{to_float(item.get('carbon_reduction_kg')):.2f} "
+                                "kg CO₂"
+                            ),
+                        }
+                        for item in recommendations
+                    ]
+
+                    if recommendations:
+                        top_recommendation = max(
+                            recommendations,
+                            key=lambda item: to_float(
+                                item.get("estimated_savings_pounds")
+                            ),
+                        )
+                        device = translate_device(
+                            top_recommendation.get("device")
+                        )
+                        current_hour = top_recommendation.get(
+                            "current_hour", "the current time"
+                        )
+                        recommended_hour = top_recommendation.get(
+                            "recommended_hour", "a cheaper period"
+                        )
+                        saving = to_float(
+                            top_recommendation.get(
+                                "estimated_savings_pounds"
+                            )
+                        )
+
+                        self.best_action_title = (
+                            f"Run your {device} at {recommended_hour}"
+                        )
+                        self.best_action_message = (
+                            f"Move it from {current_hour} to "
+                            f"{recommended_hour} to save approximately "
+                            f"£{saving:.2f}."
+                        )
+                    else:
+                        self.best_action_title = (
+                            "No load-shifting savings found"
+                        )
+                        self.best_action_message = (
+                            "The selected period does not contain a useful "
+                            "lower-cost appliance shift."
+                        )
+                except (httpx.HTTPError, TypeError, ValueError):
+                    self.best_action_title = "Recommendations unavailable"
+                    self.best_action_message = (
+                        "Consumption and cost data loaded, but the "
+                        "recommendation service could not be reached."
+                    )
+                    optional_failures.append("recommendations")
+
+                # Optional anomaly detection.
+                try:
+                    anomaly_response = await client.post(
+                        f"{FASTAPI_URL}/alerts/anomaly",
+                        json=simulation_payload,
+                    )
+                    anomaly_response.raise_for_status()
+                    anomaly_payload = anomaly_response.json()
+                    self.anomaly_data = anomaly_payload
+                    self.anomaly_detected = bool(
+                        anomaly_payload.get("anomaly_detected", False)
+                    )
+                    self.anomaly_summary = (
+                        "We detected unusual energy use. A device may "
+                        "have been left running."
+                        if self.anomaly_detected
+                        else "No unusual energy use was detected."
+                    )
+
+                    anomalies = extract_list(
+                        anomaly_payload,
+                        ("anomalies", "data", "items"),
+                    )
+                    self.total_anomaly_count = len(anomalies)
+                    self.anomaly_cards = [
+                        {
+                            "timestamp": str(
+                                item.get("timestamp", "Unknown time")
+                            ),
+                            "usage": (
+                                "Expected "
+                                f"{to_float(item.get('expected_kwh')):.2f} kWh "
+                                "· Actual "
+                                f"{to_float(item.get('actual_kwh')):.2f} kWh"
+                            ),
+                            "deviation": (
+                                f"{to_float(item.get('deviation_percent')):.1f}% "
+                                "above expected"
+                            ),
+                        }
+                        for item in anomalies[:20]
+                    ]
+                except (httpx.HTTPError, TypeError, ValueError):
+                    self.anomaly_summary = (
+                        "Anomaly detection is currently unavailable."
+                    )
+                    optional_failures.append("anomaly detection")
+
+                # Optional backend grounding context for the Volti Coach.
+                try:
+                    coach_response = await client.get(
+                        f"{FASTAPI_URL}/coach/context",
+                        params={"household_id": household_id},
+                    )
+                    coach_response.raise_for_status()
+                    coach_payload = coach_response.json()
+                    self.coach_context_data = coach_payload
+                    self.coach_prompt_context = str(
+                        coach_payload.get("prompt_context") or ""
+                    )
+                    self.coach_context_available = bool(
+                        self.coach_prompt_context
+                        or coach_payload.get("weekly_summary")
+                    )
+                    self.coach_message = create_coach_message(
+                        coach_payload,
+                        selected_consumption_kwh=(
+                            self.total_consumption_kwh
+                        ),
+                        selected_cost_pounds=self.total_cost_pounds,
+                        fallback_recommendation=(
+                            self.best_action_message
+                        ),
+                        anomaly_detected=self.anomaly_detected,
+                    )
+                except (httpx.HTTPError, TypeError, ValueError):
+                    self.coach_context_available = False
+                    self.coach_message = create_coach_message(
+                        {},
+                        selected_consumption_kwh=(
+                            self.total_consumption_kwh
+                        ),
+                        selected_cost_pounds=self.total_cost_pounds,
+                        fallback_recommendation=(
+                            self.best_action_message
+                        ),
+                        anomaly_detected=self.anomaly_detected,
+                    )
+                    optional_failures.append("coach context")
+
+                self.dashboard_loaded = True
+                self.backend_online = True
+                self.backend_status = "Services online"
+
+                if optional_failures:
+                    self.partial_data_message = (
+                        "Dashboard loaded with fallback data for: "
+                        + ", ".join(optional_failures)
+                        + "."
+                    )
+
+        except httpx.HTTPStatusError as exc:
+            self.error_message = (
+                "Backend returned error "
+                f"{exc.response.status_code}: "
+                f"{exc.response.text[:200]}"
+            )
+        except httpx.RequestError:
+            self.backend_online = False
+            self.backend_status = "Backend unavailable"
+            self.error_message = (
+                "Could not connect to the FastAPI backend on port 8000."
+            )
+        except (TypeError, ValueError, KeyError) as exc:
+            self.error_message = (
+                f"The backend response could not be processed: {exc}"
+            )
+        finally:
+            self.is_loading = False
