@@ -1,0 +1,93 @@
+:root {
+    --volti-bg: #f5f7fa;
+    --volti-surface: #ffffff;
+    --volti-primary: #12304a;
+    --volti-accent: #18a999;
+    --volti-action: #246bfd;
+
+    --volti-success: #1f9d65;
+    --volti-warning: #e5a11a;
+    --volti-danger: #d94b4b;
+
+    --volti-text: #17202a;
+    --volti-muted: #667085;
+    --volti-border: #e4e7ec;
+
+    --volti-radius: 16px;
+    --volti-shadow: 0 6px 24px rgba(16, 24, 40, 0.07);
+}
+
+.stApp {
+    background: var(--volti-bg);
+    color: var(--volti-text);
+}
+
+.block-container {
+    max-width: 1280px;
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+h1, h2, h3 {
+    color: var(--volti-primary);
+    letter-spacing: -0.02em;
+}
+
+[data-testid="stSidebar"] {
+    background: var(--volti-surface);
+    border-right: 1px solid var(--volti-border);
+}
+
+[data-testid="stMetric"] {
+    background: var(--volti-surface);
+    border: 1px solid var(--volti-border);
+    border-radius: var(--volti-radius);
+    padding: 18px;
+    box-shadow: var(--volti-shadow);
+}
+
+.stButton > button {
+    width: 100%;
+    min-height: 46px;
+    border: none;
+    border-radius: 12px;
+    background: var(--volti-action);
+    color: white;
+    font-weight: 600;
+}
+
+.stButton > button:hover {
+    background: #1858d8;
+    color: white;
+}
+
+.volti-card {
+    background: var(--volti-surface);
+    border: 1px solid var(--volti-border);
+    border-radius: var(--volti-radius);
+    padding: 20px;
+    box-shadow: var(--volti-shadow);
+}
+
+.volti-action-card {
+    background: linear-gradient(135deg, #eafaf6, #f7fffc);
+    border: 1px solid #b9e8dc;
+    border-radius: var(--volti-radius);
+    padding: 22px;
+}
+
+.volti-muted {
+    color: var(--volti-muted);
+}
+
+.volti-success {
+    color: var(--volti-success);
+}
+
+.volti-warning {
+    color: var(--volti-warning);
+}
+
+.volti-danger {
+    color: var(--volti-danger);
+}

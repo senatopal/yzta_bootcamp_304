@@ -2,6 +2,7 @@ from typing import Any
 
 import streamlit as st
 
+# dictionary to assign the device names in English.
 device_names = {
     "Çamaşır Makinesi": "Washing Machine",
     "Bulaşık Makinesi": "Dishwasher",
@@ -36,7 +37,7 @@ def render_recommendations(
         f"Estimated total saving potential: £{total_savings:.2f}"
     )
 
-    # Display a maximum of three cards per row.
+    # Display a maximum of three cards (can be arranged) per row.
     for start_index in range(0, len(recommendations), 3):
         row_items = recommendations[
             start_index:start_index + 3
