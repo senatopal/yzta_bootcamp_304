@@ -1,4 +1,5 @@
 import streamlit as st
+from datetime import date, datetime, time
 
 from dashboard.api.client import APIClientError
 from dashboard.services.dashboard_service import dashboard_service
@@ -25,11 +26,21 @@ st.caption("Discover saving opportunities using your smart meter data.")
 def load_dashboard_data(
     household_id: str,
     forecast_days: int,
+    start_date: date,
+    end_date: date,
 ):
     return dashboard_service.get_dashboard_data(
         household_id=household_id,
         period="half-hourly",
         forecast_days=forecast_days,
+        start_date=datetime.combine(
+            start_date,
+            time.min,
+        ).isoformat(),
+        end_date=datetime.combine(
+            end_date,
+            time.max,
+        ).isoformat(),
     )
 
 
@@ -50,9 +61,24 @@ load_button = st.sidebar.button(
     type="primary",
 )
 
+start_date = st.sidebar.date_input(
+    "Start date",
+    value=date(2013, 11, 1),
+)
+
+end_date = st.sidebar.date_input(
+    "End date",
+    value=date(2013, 11, 7),
+)
+
+
 if load_button:
     if not household_id.strip():
         st.warning("Please enter a household ID.")
+        st.stop()
+
+    if start_date > end_date:
+        st.warning("Start date cannot be later than end date.")
         st.stop()
 
     try:
@@ -60,6 +86,8 @@ if load_button:
             st.session_state["dashboard_data"] = load_dashboard_data(
                 household_id.strip(),
                 forecast_days,
+                start_date,
+                end_date,
             )
 
     except APIClientError as exc:

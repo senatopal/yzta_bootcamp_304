@@ -7,7 +7,7 @@ def render_summary(
     costs: dict[str, Any],
     recommendations: dict[str, Any],
 ) -> None:
-    st.markdown("### Daily Overview")
+    st.markdown("### Selected Period Overview")
 
     total_consumption = costs.get("total_consumption_kwh", 0.0)
     total_cost = costs.get("total_cost_pounds", 0.0)
