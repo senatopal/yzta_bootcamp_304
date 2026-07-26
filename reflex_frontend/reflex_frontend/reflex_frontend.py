@@ -4,7 +4,7 @@ from .pages.about import about
 from .pages.dashboard import dashboard
 from .pages.home import home
 from .pages.how_it_works import how_it_works
-
+from .state import DashboardState
 
 app = rx.App()
 
@@ -18,6 +18,7 @@ app.add_page(
     dashboard,
     route="/dashboard",
     title="Dashboard | Volti",
+    on_load=DashboardState.initialize_page,
 )
 
 app.add_page(
