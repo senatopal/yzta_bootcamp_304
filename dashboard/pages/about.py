@@ -1,7 +1,7 @@
 import streamlit as st
 
 
-st.markdown(
+st.html(
     """
     <section class="page-hero">
         <div>
@@ -14,12 +14,10 @@ st.markdown(
             </p>
         </div>
     </section>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
-st.markdown(
+st.html(
     """
     <section class="about-grid">
 
@@ -45,12 +43,11 @@ st.markdown(
         </article>
 
     </section>
-    """,
-    unsafe_allow_html=True,
+    """
 )
 
 
-st.markdown(
+st.html(
     """
     <section class="volti-section">
         <div class="volti-section-heading">
@@ -89,12 +86,10 @@ st.markdown(
 
         </div>
     </section>
-    """,
-    unsafe_allow_html=True,
-)
+    """)
 
 
-st.markdown(
+st.html(
     """
     <section class="about-cta">
         <span class="volti-eyebrow">START EXPLORING</span>
@@ -107,6 +102,4 @@ st.markdown(
             Open dashboard
         </a>
     </section>
-    """,
-    unsafe_allow_html=True,
-)
+    """)

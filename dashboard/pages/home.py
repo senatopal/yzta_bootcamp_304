@@ -1,7 +1,7 @@
 import streamlit as st
 
 
-st.markdown(
+st.html(
     """
     <section class="volti-hero">
         <div class="volti-hero-content">
@@ -9,9 +9,7 @@ st.markdown(
                 SMART ENERGY, MADE SIMPLE
             </span>
 
-            <h1>
-                Use energy when it costs less.
-            </h1>
+            <h1>Use energy when it costs less.</h1>
 
             <p>
                 Volti turns your smart meter data into clear,
@@ -38,17 +36,18 @@ st.markdown(
             </div>
         </div>
     </section>
-    """,
-    unsafe_allow_html=True,
+    """
 )
 
 
-st.markdown(
+st.html(
     """
     <section class="volti-section">
         <div class="volti-section-heading">
             <span class="volti-eyebrow">WHY VOLTI?</span>
+
             <h2>Energy insights you can actually use</h2>
+
             <p>
                 No complicated charts. No extra hardware.
                 Just clear recommendations based on your usage.
@@ -58,7 +57,9 @@ st.markdown(
         <div class="volti-feature-grid">
             <article class="volti-feature-card">
                 <div class="volti-feature-icon">£</div>
+
                 <h3>Save money</h3>
+
                 <p>
                     Find cheaper times to run flexible appliances.
                 </p>
@@ -66,7 +67,9 @@ st.markdown(
 
             <article class="volti-feature-card">
                 <div class="volti-feature-icon">⚡</div>
+
                 <h3>Take one clear action</h3>
+
                 <p>
                     See what to change, when to change it,
                     and how much you could save.
@@ -75,7 +78,9 @@ st.markdown(
 
             <article class="volti-feature-card">
                 <div class="volti-feature-icon">CO₂</div>
+
                 <h3>Use greener energy</h3>
+
                 <p>
                     Shift consumption towards cleaner,
                     lower-demand periods.
@@ -83,16 +88,16 @@ st.markdown(
             </article>
         </div>
     </section>
-    """,
-    unsafe_allow_html=True,
+    """
 )
 
 
-st.markdown(
+st.html(
     """
     <section class="volti-trust-section">
         <div>
             <span class="volti-eyebrow">BUILT AROUND YOU</span>
+
             <h2>Your energy data, without the complexity</h2>
         </div>
 
@@ -102,6 +107,5 @@ st.markdown(
             <p>✓ Designed with privacy and transparency in mind</p>
         </div>
     </section>
-    """,
-    unsafe_allow_html=True,
+    """
 )

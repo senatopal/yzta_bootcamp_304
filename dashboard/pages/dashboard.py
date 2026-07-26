@@ -34,18 +34,21 @@ def load_dashboard_data(
     )
 
 
-st.markdown(
+st.html(
     """
     <div class="page-header">
-        <span class="volti-eyebrow">PERSONALISED ENERGY INSIGHTS</span>
+        <span class="volti-eyebrow">
+            PERSONALISED ENERGY INSIGHTS
+        </span>
+
         <h1>Your energy dashboard</h1>
+
         <p>
             Understand your consumption and discover practical
             opportunities to reduce your bill.
         </p>
     </div>
-    """,
-    unsafe_allow_html=True,
+    """
 )
 
 
@@ -110,18 +113,19 @@ if load_button:
 dashboard_data = st.session_state.get("dashboard_data")
 
 if dashboard_data is None:
-    st.markdown(
+    st.html(
         """
         <section class="dashboard-empty-state">
             <div class="empty-state-icon">⚡</div>
+
             <h2>See where your energy can work smarter</h2>
+
             <p>
                 Choose a household and date range from the sidebar,
                 then load the dashboard to view personalised insights.
             </p>
         </section>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
     st.stop()
