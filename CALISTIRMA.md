@@ -1,15 +1,16 @@
 # Volti Projesi — Çalıştırma Kılavuzu
 
-Bu kılavuz, backend (FastAPI), veritabanı (PostgreSQL) ve arayüz (Streamlit) bileşenlerinin yerel ortamda nasıl kurulacağını ve çalıştırılacağını adım adım açıklamaktadır.
+Bu kılavuz; backend (FastAPI), veritabanı (PostgreSQL) ve arayüz (Reflex) bileşenlerinin yerel ortamda nasıl kurulacağını ve
+çalıştırılacağını adım adım açıklamaktadır.
 
 ---
 
 ## 📋 Gereksinimler
 
-- Python 3.9 veya daha yeni bir sürüm
-- Çalışan bir PostgreSQL sunucusu (yerel veya uzak)
-- `pip` (Python paket yöneticisi)
-
+- Python 3.10 veya daha yeni bir sürüm
+- Çalışan bir PostgreSQL sunucusu
+- `pip`
+- Reflex
 ---
 
 ## 1. Kurulum ve Bağımlılıklar
@@ -18,6 +19,7 @@ Projenin bağımlılıklarını yüklemek için terminalde proje ana dizinindeyk
 
 ```bash
 pip install -r backend/requirements.txt
+pip install -r frontend/requirements.txt
 ```
 
 *Not: PostgreSQL bağlantısı için `psycopg2-binary` kütüphanesi gereklidir. Bu kütüphane otomatik olarak yüklenecektir.*
@@ -115,12 +117,26 @@ Test araçları, geçici SQLite test veritabanları oluşturarak tüm uçları i
 
 ---
 
-## 5. Arayüzü Çalıştırma (Streamlit)
+## 5. Arayüzü Çalıştırma — Reflex
 
-Geliştirilen dashboard arayüzünü çalıştırmak için:
+Backend çalışmaya devam ederken ikinci bir terminal açın.
+
+Proje kök dizininden:
 
 ```bash
-streamlit run dashboard/lib/app.py
-```
+cd frontend
+reflex run
 
-Tarayıcınız otomatik olarak `http://localhost:8501` adresinde arayüzü açacaktır.
+## Önerilen hızlı çalıştırma özeti
+```markdown
+## Hızlı Başlangıç
+
+### Terminal 1 — Backend
+
+```bash
+cd backend
+python -m uvicorn main:app --reload --port 8000
+
+### Terminal 1 — Backend
+cd frontend
+reflex run
