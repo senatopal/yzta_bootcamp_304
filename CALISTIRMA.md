@@ -140,3 +140,5 @@ python -m uvicorn main:app --reload --port 8000
 ### Terminal 1 — Backend
 cd frontend
 reflex run
+
+URL: http://localhost:3000/

@@ -13,56 +13,265 @@ from reflex_frontend.styles import (
 )
 
 
-def process_card(
-    number: str,
-    icon: str,
+def process_step(
+    step_number: str,
+    eyebrow: str,
     title: str,
     description: str,
+    image_src: str,
+    details: list[str],
+    image_left: bool = True,
 ) -> rx.Component:
-    return rx.box(
-        rx.vstack(
-            rx.hstack(
-                rx.center(
-                    rx.text(
-                        icon,
-                        font_size="1.35rem",
-                    ),
-                    width="52px",
-                    height="52px",
-                    background=SOFT_GREEN,
-                    border_radius="15px",
-                ),
-                rx.text(
-                    number,
-                    color=ACCENT,
-                    font_size="0.8rem",
-                    font_weight="700",
-                    letter_spacing="0.1em",
-                ),
-                justify="between",
-                width="100%",
-                align="center",
-            ),
-            rx.heading(
-                title,
-                size="6",
-                color=PRIMARY,
-                line_height="1.25",
-            ),
-            rx.text(
-                description,
-                color=MUTED,
-                line_height="1.75",
-            ),
-            align="start",
-            spacing="5",
+    """Render a wide alternating process section."""
+
+    image_panel = rx.center(
+        rx.image(
+            src=image_src,
+            width="86%",
+            max_width="430px",
+            height="auto",
+            object_fit="contain",
         ),
-        flex="1 1 280px",
+        flex="1 1 430px",
+        min_height="410px",
         padding="2rem",
+        background=(
+            "linear-gradient(145deg, "
+            "rgba(233,247,243,0.96), "
+            "rgba(255,255,255,0.96))"
+        ),
+        border=f"1px solid {BORDER}",
+        border_radius="28px",
+    )
+
+    text_panel = rx.vstack(
+        rx.box(
+            rx.text(
+                step_number,
+                color="white",
+                font_size="0.76rem",
+                font_weight="800",
+                letter_spacing="0.12em",
+            ),
+            padding="0.5rem 0.85rem",
+            background=ACCENT,
+            border_radius="999px",
+        ),
+        rx.text(
+            eyebrow,
+            color=ACCENT,
+            font_size="0.78rem",
+            font_weight="800",
+            letter_spacing="0.14em",
+        ),
+        rx.heading(
+            title,
+            size="8",
+            color=PRIMARY,
+            letter_spacing="-0.035em",
+            line_height="1.12",
+        ),
+        rx.text(
+            description,
+            color=MUTED,
+            font_size="1.05rem",
+            line_height="1.8",
+            max_width="580px",
+        ),
+        rx.vstack(
+            *[
+                rx.hstack(
+                    rx.box(
+                        width="9px",
+                        height="9px",
+                        border_radius="50%",
+                        background=ACCENT,
+                        flex_shrink="0",
+                        margin_top="0.5rem",
+                    ),
+                    rx.text(
+                        detail,
+                        color=PRIMARY,
+                        font_size="0.96rem",
+                        line_height="1.65",
+                    ),
+                    width="100%",
+                    align="start",
+                    spacing="3",
+                )
+                for detail in details
+            ],
+            width="100%",
+            align="start",
+            spacing="3",
+            margin_top="0.5rem",
+        ),
+        flex="1 1 430px",
+        align="start",
+        justify="center",
+        spacing="4",
+        padding="2rem",
+    )
+
+    children = (
+        [image_panel, text_panel]
+        if image_left
+        else [text_panel, image_panel]
+    )
+
+    return rx.box(
+        rx.flex(
+            *children,
+            width="100%",
+            align="stretch",
+            gap="3rem",
+            flex_wrap="wrap",
+        ),
+        width="100%",
+        padding="1.5rem",
         background=SURFACE,
         border=f"1px solid {BORDER}",
-        border_radius="20px",
-        box_shadow="0 12px 30px rgba(22, 53, 76, 0.06)",
+        border_radius="32px",
+        box_shadow="0 18px 46px rgba(22, 53, 76, 0.07)",
+    )
+
+
+def action_result_section() -> rx.Component:
+    """Render the final recommendation stage without a third illustration."""
+
+    return rx.box(
+        rx.flex(
+            rx.vstack(
+                rx.box(
+                    rx.text(
+                        "STEP 03",
+                        color="white",
+                        font_size="0.76rem",
+                        font_weight="800",
+                        letter_spacing="0.12em",
+                    ),
+                    padding="0.5rem 0.85rem",
+                    background=ACCENT,
+                    border_radius="999px",
+                ),
+                rx.text(
+                    "ACT",
+                    color=ACCENT,
+                    font_size="0.78rem",
+                    font_weight="800",
+                    letter_spacing="0.14em",
+                ),
+                rx.heading(
+                    "Receive one clear action",
+                    size="8",
+                    color=PRIMARY,
+                    letter_spacing="-0.035em",
+                    line_height="1.12",
+                ),
+                rx.text(
+                    (
+                        "Volti converts complex energy analysis into one "
+                        "practical recommendation that explains what to "
+                        "change, when to change it and why it matters."
+                    ),
+                    color=MUTED,
+                    font_size="1.05rem",
+                    line_height="1.8",
+                    max_width="590px",
+                ),
+                rx.vstack(
+                    rx.hstack(
+                        rx.box(
+                            width="9px",
+                            height="9px",
+                            border_radius="50%",
+                            background=ACCENT,
+                            flex_shrink="0",
+                            margin_top="0.5rem",
+                        ),
+                        rx.text(
+                            "See the best time to run a flexible appliance.",
+                            color=PRIMARY,
+                            line_height="1.65",
+                        ),
+                        align="start",
+                        spacing="3",
+                    ),
+                    rx.hstack(
+                        rx.box(
+                            width="9px",
+                            height="9px",
+                            border_radius="50%",
+                            background=ACCENT,
+                            flex_shrink="0",
+                            margin_top="0.5rem",
+                        ),
+                        rx.text(
+                            "Understand the estimated cost and carbon benefit.",
+                            color=PRIMARY,
+                            line_height="1.65",
+                        ),
+                        align="start",
+                        spacing="3",
+                    ),
+                    align="start",
+                    spacing="3",
+                ),
+                align="start",
+                spacing="4",
+                flex="1 1 460px",
+            ),
+
+            rx.box(
+                rx.vstack(
+                    rx.text(
+                        "BEST ACTION TODAY",
+                        color=ACCENT,
+                        font_size="0.76rem",
+                        font_weight="800",
+                        letter_spacing="0.12em",
+                    ),
+                    rx.heading(
+                        "Run your dishwasher after 22:30",
+                        size="6",
+                        color=PRIMARY,
+                        line_height="1.25",
+                    ),
+                    rx.text(
+                        "Estimated saving",
+                        color=MUTED,
+                    ),
+                    rx.heading(
+                        "£1.20",
+                        size="8",
+                        color=ACCENT,
+                    ),
+                    rx.text(
+                        "Lower cost · Lower carbon",
+                        color=MUTED,
+                    ),
+                    align="start",
+                    spacing="3",
+                ),
+                flex="0 1 400px",
+                padding="2rem",
+                background="rgba(255,255,255,0.9)",
+                border=f"1px solid {BORDER}",
+                border_radius="24px",
+                box_shadow="0 16px 36px rgba(22,53,76,0.10)",
+            ),
+
+            width="100%",
+            align="center",
+            justify="between",
+            gap="3rem",
+            flex_wrap="wrap",
+        ),
+        width="100%",
+        padding="3rem",
+        background=SOFT_GREEN,
+        border=f"1px solid {BORDER}",
+        border_radius="32px",
     )
 
 
@@ -70,6 +279,7 @@ def how_it_works() -> rx.Component:
     return rx.box(
         navbar(),
 
+        # Hero
         rx.box(
             rx.vstack(
                 rx.text(
@@ -107,49 +317,55 @@ def how_it_works() -> rx.Component:
             background=BACKGROUND,
         ),
 
+        # Process
         rx.box(
             rx.vstack(
-                rx.flex(
-                    process_card(
-                        "STEP 01",
-                        "📊",
-                        "Connect your energy data",
-                        (
-                            "Volti uses half-hourly smart meter data to "
-                            "understand when and how much electricity "
-                            "your home consumes."
-                        ),
+                process_step(
+                    step_number="STEP 01",
+                    eyebrow="CONNECT",
+                    title="Connect your energy data",
+                    description=(
+                        "Volti uses half-hourly smart meter data to "
+                        "understand when and how much electricity "
+                        "your home consumes."
                     ),
-                    process_card(
-                        "STEP 02",
-                        "⚙️",
-                        "Analyse usage and prices",
-                        (
-                            "Consumption, tariff and forecast information "
-                            "are compared to identify expensive periods "
-                            "and unusual activity."
-                        ),
-                    ),
-                    process_card(
-                        "STEP 03",
-                        "⚡",
-                        "Receive one clear action",
-                        (
-                            "Volti explains what to change, when to change "
-                            "it and how much money and carbon you could save."
-                        ),
-                    ),
-                    width="100%",
-                    gap="1.5rem",
-                    flex_wrap="wrap",
+                    image_src="/illustrations/step-connect-data.svg",
+                    details=[
+                        "Reads household consumption at half-hour intervals.",
+                        "Connects usage with tariff and pricing information.",
+                        "Keeps the original energy data structured and traceable.",
+                    ],
+                    image_left=True,
                 ),
-                spacing="8",
+
+                process_step(
+                    step_number="STEP 02",
+                    eyebrow="ANALYSE",
+                    title="Analyse usage, prices and patterns",
+                    description=(
+                        "Consumption, tariff and forecast information are "
+                        "compared to identify costly periods, unusual "
+                        "activity and flexible loads."
+                    ),
+                    image_src="/illustrations/step-analyse.svg",
+                    details=[
+                        "Compares consumption with changing electricity prices.",
+                        "Forecasts expected demand for the next 24 hours.",
+                        "Detects unusual usage and potential energy waste.",
+                    ],
+                    image_left=False,
+                ),
+
+                action_result_section(),
+
+                spacing="7",
                 **PAGE_CONTAINER,
             ),
-            padding="5rem 0",
+            padding="5rem 0 6rem",
             background=SURFACE,
         ),
 
+        # No extra hardware
         rx.box(
             rx.flex(
                 rx.vstack(
@@ -180,6 +396,7 @@ def how_it_works() -> rx.Component:
                     spacing="4",
                     flex="1 1 420px",
                 ),
+
                 rx.vstack(
                     rx.text("✓ Personalised consumption overview"),
                     rx.text("✓ Peak and lower-cost period identification"),
@@ -196,6 +413,7 @@ def how_it_works() -> rx.Component:
                     border=f"1px solid {BORDER}",
                     border_radius="20px",
                 ),
+
                 gap="3rem",
                 align="center",
                 flex_wrap="wrap",

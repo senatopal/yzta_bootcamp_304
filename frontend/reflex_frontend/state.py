@@ -21,13 +21,23 @@ DEVICE_NAMES = {
 }
 
 
+DEVICE_ICON_PATHS = {
+    "washing machine": "/icons/washing-machine.svg",
+    "dishwasher": "/icons/dishwasher.svg",
+    "tumble dryer": "/icons/tumble-dryer.svg",
+    "electric vehicle charger": "/icons/ev-charger.svg",
+}
+
+DEFAULT_DEVICE_ICON_PATH = "/icons/devices/default-energy.svg"
+
+
 class ChartPoint(TypedDict):
     timestamp: str
     value: float
 
 
 class RecommendationCard(TypedDict):
-    icon: str
+    icon_path: str
     device: str
     time_shift: str
     saving: str
@@ -160,6 +170,35 @@ def translate_device(device: Any) -> str:
     return DEVICE_NAMES.get(raw_device, raw_device)
 
 
+def get_device_icon_path(device: Any) -> str:
+    """Return the matching branded SVG path for a backend device name."""
+    translated_device = translate_device(device).strip().casefold()
+    return DEVICE_ICON_PATHS.get(
+        translated_device,
+        DEFAULT_DEVICE_ICON_PATH,
+    )
+
+
+def summarise_forecast(
+    points: list[ChartPoint],
+) -> tuple[str, float, str, float, float]:
+    """Return peak, lowest and average forecast values for the UI."""
+    if not points:
+        return "—", 0.0, "—", 0.0, 0.0
+
+    peak = max(points, key=lambda item: item["value"])
+    lowest = min(points, key=lambda item: item["value"])
+    average = sum(item["value"] for item in points) / len(points)
+
+    return (
+        peak["timestamp"],
+        peak["value"],
+        lowest["timestamp"],
+        lowest["value"],
+        average,
+    )
+
+
 def create_coach_message(
     coach_payload: dict[str, Any],
     *,
@@ -265,6 +304,11 @@ class DashboardState(rx.State):
     # Charts and cards
     history_chart_data: list[ChartPoint] = []
     forecast_chart_data: list[ChartPoint] = []
+    forecast_peak_time: str = "—"
+    forecast_peak_kwh: float = 0.0
+    forecast_low_time: str = "—"
+    forecast_low_kwh: float = 0.0
+    forecast_average_kwh: float = 0.0
     hourly_chart_data: list[HourlyPoint] = []
     recommendation_cards: list[RecommendationCard] = []
     anomaly_cards: list[AnomalyCard] = []
@@ -272,6 +316,7 @@ class DashboardState(rx.State):
     # Recommendation summary
     best_action_title: str = ""
     best_action_message: str = ""
+    best_action_icon_path: str = DEFAULT_DEVICE_ICON_PATH
 
     # Anomaly summary
     anomaly_detected: bool = False
@@ -306,12 +351,18 @@ class DashboardState(rx.State):
 
         self.history_chart_data = []
         self.forecast_chart_data = []
+        self.forecast_peak_time = "—"
+        self.forecast_peak_kwh = 0.0
+        self.forecast_low_time = "—"
+        self.forecast_low_kwh = 0.0
+        self.forecast_average_kwh = 0.0
         self.hourly_chart_data = []
         self.recommendation_cards = []
         self.anomaly_cards = []
 
         self.best_action_title = ""
         self.best_action_message = ""
+        self.best_action_icon_path = DEFAULT_DEVICE_ICON_PATH
 
         self.anomaly_detected = False
         self.anomaly_summary = ""
@@ -320,6 +371,7 @@ class DashboardState(rx.State):
         self.coach_message = ""
         self.coach_prompt_context = ""
         self.coach_context_available = False
+        self.coach_open = False
 
     @rx.event
     def update_household_id(self, value: str) -> None:
@@ -351,6 +403,24 @@ class DashboardState(rx.State):
     @rx.var
     def carbon_text(self) -> str:
         return f"{self.carbon_kg:.2f} kg"
+
+    @rx.var
+    def forecast_peak_value_text(self) -> str:
+        if not self.forecast_chart_data:
+            return "—"
+        return f"{self.forecast_peak_kwh:.2f} kWh"
+
+    @rx.var
+    def forecast_low_value_text(self) -> str:
+        if not self.forecast_chart_data:
+            return "—"
+        return f"{self.forecast_low_kwh:.2f} kWh"
+
+    @rx.var
+    def forecast_average_value_text(self) -> str:
+        if not self.forecast_chart_data:
+            return "—"
+        return f"{self.forecast_average_kwh:.2f} kWh"
 
     @rx.var
     def recommendation_count_text(self) -> str:
@@ -539,8 +609,22 @@ class DashboardState(rx.State):
                         }
                         for item in forecast_rows
                     ]
+                    (
+                        self.forecast_peak_time,
+                        self.forecast_peak_kwh,
+                        self.forecast_low_time,
+                        self.forecast_low_kwh,
+                        self.forecast_average_kwh,
+                    ) = summarise_forecast(self.forecast_chart_data)
                 except (httpx.HTTPError, TypeError, ValueError):
                     self.forecast_chart_data = []
+                    (
+                        self.forecast_peak_time,
+                        self.forecast_peak_kwh,
+                        self.forecast_low_time,
+                        self.forecast_low_kwh,
+                        self.forecast_average_kwh,
+                    ) = summarise_forecast(self.forecast_chart_data)
                     optional_failures.append("forecast")
 
                 simulation_rows = [
@@ -624,7 +708,9 @@ class DashboardState(rx.State):
 
                     self.recommendation_cards = [
                         {
-                            "icon": str(item.get("icon", "⚡")),
+                            "icon_path": get_device_icon_path(
+                                item.get("device", "Appliance")
+                            ),
                             "device": translate_device(
                                 item.get("device", "Appliance")
                             ).title(),
@@ -652,6 +738,9 @@ class DashboardState(rx.State):
                             ),
                         )
                         device = translate_device(
+                            top_recommendation.get("device")
+                        )
+                        self.best_action_icon_path = get_device_icon_path(
                             top_recommendation.get("device")
                         )
                         current_hour = top_recommendation.get(
