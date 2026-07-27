@@ -46,3 +46,5 @@ dataset/combined_data.parquetdashboard/lib/
 
 #images
 assets
+# Local secrets
+backend/.env

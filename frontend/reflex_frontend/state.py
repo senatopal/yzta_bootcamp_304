@@ -21,23 +21,13 @@ DEVICE_NAMES = {
 }
 
 
-DEVICE_ICON_PATHS = {
-    "washing machine": "/icons/washing-machine.svg",
-    "dishwasher": "/icons/dishwasher.svg",
-    "tumble dryer": "/icons/tumble-dryer.svg",
-    "electric vehicle charger": "/icons/ev-charger.svg",
-}
-
-DEFAULT_DEVICE_ICON_PATH = "/icons/devices/default-energy.svg"
-
-
 class ChartPoint(TypedDict):
     timestamp: str
     value: float
 
 
 class RecommendationCard(TypedDict):
-    icon_path: str
+    icon: str
     device: str
     time_shift: str
     saving: str
@@ -56,8 +46,12 @@ class HourlyPoint(TypedDict):
     cost: float
 
 
+class CoachChatMessage(TypedDict):
+    role: str
+    content: str
+
+
 def to_float(value: Any, default: float = 0.0) -> float:
-    """Convert API values to float without crashing on null/invalid data."""
     try:
         return float(value if value is not None else default)
     except (TypeError, ValueError):
@@ -90,7 +84,6 @@ def extract_consumption_rows(payload: Any) -> list[dict[str, Any]]:
 def create_hourly_fallback(
     records: list[dict[str, Any]],
 ) -> list[HourlyPoint]:
-    """Create an hourly chart locally when /simulation/hours is unavailable."""
     totals: dict[str, dict[str, float]] = defaultdict(
         lambda: {"consumption": 0.0, "cost": 0.0}
     )
@@ -123,7 +116,6 @@ def parse_hour_rows(payload: Any) -> list[HourlyPoint]:
         payload,
         ("data", "hours", "hourly_data", "hourly_breakdown"),
     )
-
     parsed: list[HourlyPoint] = []
 
     for item in rows:
@@ -170,35 +162,6 @@ def translate_device(device: Any) -> str:
     return DEVICE_NAMES.get(raw_device, raw_device)
 
 
-def get_device_icon_path(device: Any) -> str:
-    """Return the matching branded SVG path for a backend device name."""
-    translated_device = translate_device(device).strip().casefold()
-    return DEVICE_ICON_PATHS.get(
-        translated_device,
-        DEFAULT_DEVICE_ICON_PATH,
-    )
-
-
-def summarise_forecast(
-    points: list[ChartPoint],
-) -> tuple[str, float, str, float, float]:
-    """Return peak, lowest and average forecast values for the UI."""
-    if not points:
-        return "—", 0.0, "—", 0.0, 0.0
-
-    peak = max(points, key=lambda item: item["value"])
-    lowest = min(points, key=lambda item: item["value"])
-    average = sum(item["value"] for item in points) / len(points)
-
-    return (
-        peak["timestamp"],
-        peak["value"],
-        lowest["timestamp"],
-        lowest["value"],
-        average,
-    )
-
-
 def create_coach_message(
     coach_payload: dict[str, Any],
     *,
@@ -207,7 +170,6 @@ def create_coach_message(
     fallback_recommendation: str,
     anomaly_detected: bool,
 ) -> str:
-    """Build a deterministic English coach summary from backend context."""
     parts: list[str] = []
 
     weekly_summary = coach_payload.get("weekly_summary")
@@ -218,15 +180,16 @@ def create_coach_message(
         weekly_cost = to_float(weekly_summary.get("total_cost_pounds"))
 
         parts.append(
-            "During the latest available week, your home used "
+            "I have loaded the latest available household data. "
+            f"During the latest week, your home used "
             f"{weekly_consumption:.2f} kWh and cost approximately "
             f"£{weekly_cost:.2f}."
         )
     else:
         parts.append(
-            "For the selected period, your home used "
-            f"{selected_consumption_kwh:.2f} kWh and cost approximately "
-            f"£{selected_cost_pounds:.2f}."
+            "I have loaded the selected household data. "
+            f"The selected period used {selected_consumption_kwh:.2f} kWh "
+            f"and cost approximately £{selected_cost_pounds:.2f}."
         )
 
     recommendations = coach_payload.get("recommendations")
@@ -241,8 +204,9 @@ def create_coach_message(
                 recommendation.get("estimated_savings_pounds")
             )
             parts.append(
-                f"Run your {device} at {recommended_hour} to save "
-                f"approximately £{saving:.2f}."
+                f"One useful option is to run your {device} at "
+                f"{recommended_hour}, with an estimated saving of "
+                f"£{saving:.2f}."
             )
     elif fallback_recommendation:
         parts.append(fallback_recommendation)
@@ -254,40 +218,36 @@ def create_coach_message(
 
     if has_coach_anomaly or anomaly_detected:
         parts.append(
-            "Unusual consumption was detected, so check whether an "
-            "appliance was left running."
+            "Unusual consumption was detected, so it may be worth checking "
+            "whether an appliance was left running."
         )
     else:
         parts.append("No unusual consumption was detected.")
 
+    parts.append("Ask me a question about this household's energy use.")
     return " ".join(parts)
 
 
 class DashboardState(rx.State):
-    # Filters
     household_id: str = "MAC001074"
     start_date: str = "2012-11-01"
     end_date: str = "2012-11-07"
     forecast_days: int = 1
 
-    # Page state
     is_loading: bool = False
     error_message: str = ""
     partial_data_message: str = ""
     dashboard_loaded: bool = False
 
-    # Backend status
     backend_online: bool = False
     backend_status: str = "Checking services..."
     households_loaded: bool = False
 
-    # Household information
     household_ids: list[str] = []
     available_household_count: int = 0
     household_tariff: str = ""
     household_group: str = ""
 
-    # Raw API responses
     consumption_data: dict[str, Any] = {}
     costs_data: dict[str, Any] = {}
     recommendations_data: dict[str, Any] = {}
@@ -295,39 +255,33 @@ class DashboardState(rx.State):
     hours_data: dict[str, Any] = {}
     coach_context_data: dict[str, Any] = {}
 
-    # Dashboard metrics
     total_consumption_kwh: float = 0.0
     total_cost_pounds: float = 0.0
     total_savings_pounds: float = 0.0
     carbon_kg: float = 0.0
 
-    # Charts and cards
     history_chart_data: list[ChartPoint] = []
     forecast_chart_data: list[ChartPoint] = []
-    forecast_peak_time: str = "—"
-    forecast_peak_kwh: float = 0.0
-    forecast_low_time: str = "—"
-    forecast_low_kwh: float = 0.0
-    forecast_average_kwh: float = 0.0
     hourly_chart_data: list[HourlyPoint] = []
     recommendation_cards: list[RecommendationCard] = []
     anomaly_cards: list[AnomalyCard] = []
 
-    # Recommendation summary
     best_action_title: str = ""
     best_action_message: str = ""
-    best_action_icon_path: str = DEFAULT_DEVICE_ICON_PATH
 
-    # Anomaly summary
     anomaly_detected: bool = False
     anomaly_summary: str = ""
     total_anomaly_count: int = 0
 
-    # Coach context
     coach_message: str = ""
     coach_prompt_context: str = ""
     coach_context_available: bool = False
     coach_open: bool = False
+    coach_input: str = ""
+    coach_messages: list[CoachChatMessage] = []
+    coach_is_sending: bool = False
+    coach_error: str = ""
+    coach_model: str = ""
 
     def reset_dashboard_result(self) -> None:
         self.dashboard_loaded = False
@@ -351,18 +305,12 @@ class DashboardState(rx.State):
 
         self.history_chart_data = []
         self.forecast_chart_data = []
-        self.forecast_peak_time = "—"
-        self.forecast_peak_kwh = 0.0
-        self.forecast_low_time = "—"
-        self.forecast_low_kwh = 0.0
-        self.forecast_average_kwh = 0.0
         self.hourly_chart_data = []
         self.recommendation_cards = []
         self.anomaly_cards = []
 
         self.best_action_title = ""
         self.best_action_message = ""
-        self.best_action_icon_path = DEFAULT_DEVICE_ICON_PATH
 
         self.anomaly_detected = False
         self.anomaly_summary = ""
@@ -371,7 +319,11 @@ class DashboardState(rx.State):
         self.coach_message = ""
         self.coach_prompt_context = ""
         self.coach_context_available = False
-        self.coach_open = False
+        self.coach_input = ""
+        self.coach_messages = []
+        self.coach_is_sending = False
+        self.coach_error = ""
+        self.coach_model = ""
 
     @rx.event
     def update_household_id(self, value: str) -> None:
@@ -388,6 +340,31 @@ class DashboardState(rx.State):
         self.end_date = value
         self.reset_dashboard_result()
 
+    @rx.event
+    def update_coach_input(self, value: str) -> None:
+        self.coach_input = value
+
+    @rx.event
+    def toggle_coach(self) -> None:
+        self.coach_open = not self.coach_open
+        self.coach_error = ""
+
+    @rx.event
+    def clear_coach_chat(self) -> None:
+        self.coach_error = ""
+        self.coach_input = ""
+        self.coach_model = ""
+
+        if self.coach_message:
+            self.coach_messages = [
+                {
+                    "role": "assistant",
+                    "content": self.coach_message,
+                }
+            ]
+        else:
+            self.coach_messages = []
+
     @rx.var
     def total_consumption_text(self) -> str:
         return f"{self.total_consumption_kwh:.2f} kWh"
@@ -403,24 +380,6 @@ class DashboardState(rx.State):
     @rx.var
     def carbon_text(self) -> str:
         return f"{self.carbon_kg:.2f} kg"
-
-    @rx.var
-    def forecast_peak_value_text(self) -> str:
-        if not self.forecast_chart_data:
-            return "—"
-        return f"{self.forecast_peak_kwh:.2f} kWh"
-
-    @rx.var
-    def forecast_low_value_text(self) -> str:
-        if not self.forecast_chart_data:
-            return "—"
-        return f"{self.forecast_low_kwh:.2f} kWh"
-
-    @rx.var
-    def forecast_average_value_text(self) -> str:
-        if not self.forecast_chart_data:
-            return "—"
-        return f"{self.forecast_average_kwh:.2f} kWh"
 
     @rx.var
     def recommendation_count_text(self) -> str:
@@ -449,7 +408,6 @@ class DashboardState(rx.State):
 
     @rx.event
     async def initialize_page(self):
-        """Check backend health and load valid household identifiers."""
         self.backend_status = "Checking services..."
         self.households_loaded = False
 
@@ -496,8 +454,104 @@ class DashboardState(rx.State):
                 self.households_loaded = False
 
     @rx.event
-    def toggle_coach(self) -> None:
-        self.coach_open = not self.coach_open
+    async def send_coach_message(self):
+        message = self.coach_input.strip()
+
+        if not message or self.coach_is_sending:
+            return
+
+        household_id = self.household_id.strip().upper()
+
+        if not re.fullmatch(r"MAC\d{6}", household_id):
+            self.coach_error = (
+                "Load a valid household before asking the energy coach."
+            )
+            return
+
+        if not self.dashboard_loaded:
+            self.coach_error = (
+                "Load the dashboard before asking a household-specific question."
+            )
+            return
+
+        history = [
+            {
+                "role": item["role"],
+                "content": item["content"],
+            }
+            for item in self.coach_messages[-10:]
+            if item["role"] in {"user", "assistant"}
+            and item["content"].strip()
+        ]
+
+        self.coach_messages = [
+            *self.coach_messages,
+            {"role": "user", "content": message},
+        ]
+        self.coach_input = ""
+        self.coach_error = ""
+        self.coach_is_sending = True
+        yield
+
+        try:
+            async with httpx.AsyncClient(timeout=75.0) as client:
+                response = await client.post(
+                    f"{FASTAPI_URL}/coach/chat",
+                    json={
+                        "household_id": household_id,
+                        "message": message,
+                        "history": history,
+                    },
+                )
+                response.raise_for_status()
+                payload = response.json()
+
+            answer = str(payload.get("answer") or "").strip()
+            if not answer:
+                raise ValueError("The coach returned an empty answer.")
+
+            self.coach_messages = [
+                *self.coach_messages,
+                {"role": "assistant", "content": answer},
+            ]
+            self.coach_model = str(payload.get("model") or "Gemini")
+            self.coach_context_available = bool(
+                payload.get("grounded", True)
+            )
+
+        except httpx.HTTPStatusError as exc:
+            try:
+                detail = str(exc.response.json().get("detail") or "")
+            except (ValueError, AttributeError):
+                detail = ""
+
+            if exc.response.status_code == 429:
+                self.coach_error = (
+                    "The AI coach is receiving too many requests. "
+                    "Please try again shortly."
+                )
+            elif exc.response.status_code in {502, 503}:
+                self.coach_error = (
+                    detail
+                    or "The Gemini coach is temporarily unavailable."
+                )
+            else:
+                self.coach_error = (
+                    detail
+                    or f"Coach request failed with status "
+                    f"{exc.response.status_code}."
+                )
+
+        except httpx.RequestError:
+            self.coach_error = (
+                "Could not connect to the Coach API on port 8000."
+            )
+        except (TypeError, ValueError, KeyError) as exc:
+            self.coach_error = (
+                f"The coach response could not be processed: {exc}"
+            )
+        finally:
+            self.coach_is_sending = False
 
     @rx.event
     async def load_dashboard(self):
@@ -531,7 +585,6 @@ class DashboardState(rx.State):
 
         try:
             async with httpx.AsyncClient(timeout=45.0) as client:
-                # Optional household profile.
                 try:
                     profile_response = await client.get(
                         f"{FASTAPI_URL}/households/{household_id}"
@@ -549,7 +602,6 @@ class DashboardState(rx.State):
                     self.household_group = "Unknown"
                     optional_failures.append("household profile")
 
-                # Required consumption history.
                 history_response = await client.get(
                     f"{FASTAPI_URL}/consumption/history",
                     params={
@@ -582,7 +634,6 @@ class DashboardState(rx.State):
                     for item in records
                 ]
 
-                # Optional forecast.
                 try:
                     forecast_response = await client.get(
                         f"{FASTAPI_URL}/consumption/forecast",
@@ -609,22 +660,8 @@ class DashboardState(rx.State):
                         }
                         for item in forecast_rows
                     ]
-                    (
-                        self.forecast_peak_time,
-                        self.forecast_peak_kwh,
-                        self.forecast_low_time,
-                        self.forecast_low_kwh,
-                        self.forecast_average_kwh,
-                    ) = summarise_forecast(self.forecast_chart_data)
                 except (httpx.HTTPError, TypeError, ValueError):
                     self.forecast_chart_data = []
-                    (
-                        self.forecast_peak_time,
-                        self.forecast_peak_kwh,
-                        self.forecast_low_time,
-                        self.forecast_low_kwh,
-                        self.forecast_average_kwh,
-                    ) = summarise_forecast(self.forecast_chart_data)
                     optional_failures.append("forecast")
 
                 simulation_rows = [
@@ -648,7 +685,6 @@ class DashboardState(rx.State):
                     "devices": {},
                 }
 
-                # Hourly view always has a local fallback.
                 self.hourly_chart_data = create_hourly_fallback(records)
                 try:
                     hours_response = await client.post(
@@ -663,10 +699,8 @@ class DashboardState(rx.State):
                         self.hours_data = hours_payload
                         self.hourly_chart_data = parsed_hours
                 except (httpx.HTTPError, TypeError, ValueError):
-                    # This endpoint is optional; local aggregation remains visible.
                     optional_failures.append("hourly simulation")
 
-                # Required costs and carbon calculation.
                 costs_response = await client.post(
                     f"{FASTAPI_URL}/simulation/costs",
                     json=simulation_payload,
@@ -687,7 +721,6 @@ class DashboardState(rx.State):
                         carbon_impact.get("carbon_kg")
                     )
 
-                # Optional load-shifting recommendations.
                 try:
                     recommendations_response = await client.post(
                         f"{FASTAPI_URL}/recommendations/load-shift",
@@ -708,9 +741,7 @@ class DashboardState(rx.State):
 
                     self.recommendation_cards = [
                         {
-                            "icon_path": get_device_icon_path(
-                                item.get("device", "Appliance")
-                            ),
+                            "icon": str(item.get("icon", "⚡")),
                             "device": translate_device(
                                 item.get("device", "Appliance")
                             ).title(),
@@ -738,9 +769,6 @@ class DashboardState(rx.State):
                             ),
                         )
                         device = translate_device(
-                            top_recommendation.get("device")
-                        )
-                        self.best_action_icon_path = get_device_icon_path(
                             top_recommendation.get("device")
                         )
                         current_hour = top_recommendation.get(
@@ -779,7 +807,6 @@ class DashboardState(rx.State):
                     )
                     optional_failures.append("recommendations")
 
-                # Optional anomaly detection.
                 try:
                     anomaly_response = await client.post(
                         f"{FASTAPI_URL}/alerts/anomaly",
@@ -827,7 +854,6 @@ class DashboardState(rx.State):
                     )
                     optional_failures.append("anomaly detection")
 
-                # Optional backend grounding context for the Volti Coach.
                 try:
                     coach_response = await client.get(
                         f"{FASTAPI_URL}/coach/context",
@@ -868,6 +894,13 @@ class DashboardState(rx.State):
                         anomaly_detected=self.anomaly_detected,
                     )
                     optional_failures.append("coach context")
+
+                self.coach_messages = [
+                    {
+                        "role": "assistant",
+                        "content": self.coach_message,
+                    }
+                ]
 
                 self.dashboard_loaded = True
                 self.backend_online = True

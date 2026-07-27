@@ -14,9 +14,6 @@ from ..styles import (
 )
 
 
-# Device illustrations are served from frontend/assets/icons/devices/.
-
-
 def metric_card(
     label: str,
     value,
@@ -24,16 +21,8 @@ def metric_card(
 ) -> rx.Component:
     return rx.box(
         rx.vstack(
-            rx.text(
-                label,
-                color=MUTED,
-                font_size="0.9rem",
-            ),
-            rx.heading(
-                value,
-                size="7",
-                color=PRIMARY,
-            ),
+            rx.text(label, color=MUTED, font_size="0.9rem"),
+            rx.heading(value, size="7", color=PRIMARY),
             rx.text(
                 detail,
                 color=ACCENT,
@@ -60,15 +49,8 @@ def energy_chart(
 ) -> rx.Component:
     return rx.box(
         rx.vstack(
-            rx.heading(
-                title,
-                size="6",
-                color=PRIMARY,
-            ),
-            rx.text(
-                subtitle,
-                color=MUTED,
-            ),
+            rx.heading(title, size="6", color=PRIMARY),
+            rx.text(subtitle, color=MUTED),
             rx.recharts.line_chart(
                 rx.recharts.cartesian_grid(
                     stroke_dasharray="4 4",
@@ -176,119 +158,30 @@ def hourly_chart(data) -> rx.Component:
     )
 
 
-def device_illustration(
-    icon_path,
-    *,
-    compact: bool = False,
-) -> rx.Component:
-    """Render a consistent Volti device illustration tile."""
-    tile_size = "96px" if compact else "100%"
-    image_size = "76px" if compact else "126px"
-    min_height = "96px" if compact else "154px"
-    radius = "22px" if compact else "18px"
-
-    return rx.center(
-        rx.image(
-            src=icon_path,
-            width=image_size,
-            height=image_size,
-            object_fit="contain",
-        ),
-        width=tile_size,
-        height=tile_size if compact else "auto",
-        min_height=min_height,
-        padding="0.7rem" if compact else "1rem",
-        background="#EEF8F5",
-        border=f"1px solid {BORDER}",
-        border_radius=radius,
-        flex_shrink="0",
-        overflow="hidden",
-    )
-
-
 def recommendation_card(item) -> rx.Component:
     return rx.box(
         rx.vstack(
-            device_illustration(item["icon_path"]),
-            rx.vstack(
-                rx.heading(
-                    item["device"],
-                    size="5",
-                    color=PRIMARY,
-                    line_height="1.25",
-                ),
-                rx.hstack(
-                    rx.text(
-                        "Recommended shift",
-                        color=MUTED,
-                        font_size="0.78rem",
-                        font_weight="600",
-                    ),
-                    rx.badge(
-                        item["time_shift"],
-                        color_scheme="teal",
-                        variant="soft",
-                    ),
-                    width="100%",
-                    justify="between",
-                    align="center",
-                    spacing="2",
-                ),
-                rx.divider(),
-                rx.hstack(
-                    rx.vstack(
-                        rx.text(
-                            "Estimated saving",
-                            color=MUTED,
-                            font_size="0.76rem",
-                        ),
-                        rx.heading(
-                            item["saving"],
-                            size="6",
-                            color=ACCENT,
-                        ),
-                        align="start",
-                        spacing="1",
-                    ),
-                    rx.vstack(
-                        rx.text(
-                            "Carbon reduction",
-                            color=MUTED,
-                            font_size="0.76rem",
-                        ),
-                        rx.text(
-                            item["carbon"],
-                            color=PRIMARY,
-                            font_size="0.92rem",
-                            font_weight="700",
-                        ),
-                        align="end",
-                        spacing="1",
-                    ),
-                    width="100%",
-                    justify="between",
-                    align="end",
-                ),
-                width="100%",
-                align="start",
-                spacing="3",
+            rx.text(item["icon"], font_size="1.8rem"),
+            rx.heading(item["device"], size="5", color=PRIMARY),
+            rx.text(
+                item["time_shift"],
+                color=MUTED,
+                font_weight="600",
             ),
-            width="100%",
+            rx.heading(item["saving"], size="6", color=ACCENT),
+            rx.text(
+                item["carbon"],
+                color=MUTED,
+                font_size="0.9rem",
+            ),
             align="start",
-            spacing="4",
+            spacing="3",
         ),
-        flex="1 1 250px",
-        min_width="230px",
-        padding="1rem",
+        flex="1 1 220px",
+        padding="1.5rem",
         background=SURFACE,
         border=f"1px solid {BORDER}",
-        border_radius="22px",
-        box_shadow="0 10px 28px rgba(22, 53, 76, 0.05)",
-        transition="transform 0.2s ease, box-shadow 0.2s ease",
-        _hover={
-            "transform": "translateY(-3px)",
-            "box_shadow": "0 16px 34px rgba(22, 53, 76, 0.10)",
-        },
+        border_radius="18px",
     )
 
 
@@ -300,10 +193,7 @@ def anomaly_card(item) -> rx.Component:
                 color=PRIMARY,
                 font_weight="700",
             ),
-            rx.text(
-                item["usage"],
-                color=MUTED,
-            ),
+            rx.text(item["usage"], color=MUTED),
             rx.text(
                 item["deviation"],
                 color="#C2413B",
@@ -320,359 +210,282 @@ def anomaly_card(item) -> rx.Component:
     )
 
 
-def forecast_info_card(
-    label: str,
-    value,
-    detail,
-) -> rx.Component:
-    return rx.box(
-        rx.vstack(
+def coach_message_bubble(item) -> rx.Component:
+    is_user = item["role"] == "user"
+
+    return rx.hstack(
+        rx.box(
             rx.text(
-                label,
-                color=MUTED,
-                font_size="0.78rem",
-                font_weight="700",
-                text_transform="uppercase",
-                letter_spacing="0.06em",
+                item["content"],
+                color=rx.cond(is_user, "white", PRIMARY),
+                font_size="0.92rem",
+                line_height="1.65",
+                white_space="pre-wrap",
             ),
-            rx.heading(
-                value,
-                size="5",
-                color=PRIMARY,
+            max_width="88%",
+            padding="0.8rem 1rem",
+            background=rx.cond(is_user, ACCENT, "#F2F7F5"),
+            border=rx.cond(
+                is_user,
+                f"1px solid {ACCENT}",
+                f"1px solid {BORDER}",
             ),
-            rx.text(
-                detail,
-                color=ACCENT,
-                font_size="0.82rem",
-                font_weight="600",
+            border_radius=rx.cond(
+                is_user,
+                "18px 18px 4px 18px",
+                "18px 18px 18px 4px",
             ),
-            align="start",
-            spacing="1",
         ),
-        flex="1 1 180px",
-        min_width="0",
-        padding="1rem 1.1rem",
-        background="#F8FBFA",
-        border=f"1px solid {BORDER}",
-        border_radius="16px",
+        width="100%",
+        justify=rx.cond(is_user, "end", "start"),
     )
 
 
-def forecast_card() -> rx.Component:
-    forecast_color = "#E39A08"
-
+def coach_popup() -> rx.Component:
     return rx.box(
         rx.vstack(
-            rx.flex(
-                rx.vstack(
-                    rx.heading(
-                        "Next 24-hour forecast",
-                        size="6",
-                        color=PRIMARY,
-                    ),
-                    rx.text(
-                        (
-                            "Expected household electricity use for each "
-                            "half-hour in the next 24 hours."
-                        ),
-                        color=MUTED,
-                    ),
-                    align="start",
-                    spacing="1",
-                    flex="1",
-                ),
+            rx.hstack(
                 rx.hstack(
-                    rx.box(
-                        width="12px",
-                        height="12px",
-                        border_radius="50%",
-                        background=forecast_color,
+                    rx.center(
+                        rx.image(
+                            src="/volti_koc_akilli_onerme.png",
+                            width="76px",
+                            height="76px",
+                            object_fit="contain",
+                        ),
+                        width="66px",
+                        height="66px",
+                        overflow="visible",
                         flex_shrink="0",
                     ),
-                    rx.text(
-                        "Forecasted consumption (kWh)",
-                        color=MUTED,
-                        font_size="0.88rem",
-                        font_weight="600",
+                    rx.vstack(
+                        rx.heading(
+                            "Volti Energy Coach",
+                            size="5",
+                            color=PRIMARY,
+                        ),
+                        rx.hstack(
+                            rx.box(
+                                width="8px",
+                                height="8px",
+                                border_radius="999px",
+                                background="#2FA36B",
+                            ),
+                            rx.text(
+                                "Grounded by household data",
+                                color=MUTED,
+                                font_size="0.78rem",
+                            ),
+                            spacing="2",
+                            align="center",
+                        ),
+                        align="start",
+                        spacing="1",
                     ),
+                    spacing="3",
                     align="center",
-                    spacing="2",
+                ),
+                rx.button(
+                    "×",
+                    on_click=DashboardState.toggle_coach,
+                    background="transparent",
+                    color=MUTED,
+                    font_size="1.45rem",
+                    padding="0.25rem 0.5rem",
+                    min_width="auto",
+                    cursor="pointer",
+                    _hover={"color": PRIMARY},
                 ),
                 width="100%",
                 justify="between",
-                align="start",
-                gap="1rem",
-                flex_wrap="wrap",
-            ),
-
-            rx.flex(
-                forecast_info_card(
-                    "Peak forecast",
-                    DashboardState.forecast_peak_value_text,
-                    DashboardState.forecast_peak_time,
-                ),
-                forecast_info_card(
-                    "Lowest forecast",
-                    DashboardState.forecast_low_value_text,
-                    DashboardState.forecast_low_time,
-                ),
-                forecast_info_card(
-                    "Average forecast",
-                    DashboardState.forecast_average_value_text,
-                    "Across the next 24 hours",
-                ),
-                width="100%",
-                gap="0.9rem",
-                flex_wrap="wrap",
-            ),
-
-            rx.cond(
-                DashboardState.forecast_chart_data.length() > 0,
-                rx.recharts.line_chart(
-                    rx.recharts.cartesian_grid(
-                        stroke_dasharray="4 4",
-                        stroke="#DDE7E4",
-                    ),
-                    rx.recharts.x_axis(
-                        data_key="timestamp",
-                        min_tick_gap=35,
-                    ),
-                    rx.recharts.y_axis(),
-                    rx.recharts.graphing_tooltip(),
-                    rx.recharts.line(
-                        data_key="value",
-                        name="Forecast consumption (kWh)",
-                        stroke=forecast_color,
-                        stroke_width=4,
-                        dot=False,
-                        type_="monotone",
-                    ),
-                    data=DashboardState.forecast_chart_data,
-                    width="100%",
-                    height=320,
-                    margin={
-                        "top": 10,
-                        "right": 20,
-                        "left": 0,
-                        "bottom": 10,
-                    },
-                ),
-                rx.callout(
-                    "Forecast data is currently unavailable.",
-                    color_scheme="amber",
-                    width="100%",
-                ),
+                align="center",
             ),
 
             rx.box(
                 rx.vstack(
-                    rx.text(
-                        "How to read this chart",
-                        color=PRIMARY,
-                        font_weight="700",
-                        font_size="0.92rem",
+                    rx.foreach(
+                        DashboardState.coach_messages,
+                        coach_message_bubble,
                     ),
-                    rx.text(
-                        (
-                            "The orange line represents predicted electricity "
-                            "consumption. Higher sections indicate times when "
-                            "your household is expected to use more energy."
+                    rx.cond(
+                        DashboardState.coach_is_sending,
+                        rx.hstack(
+                            rx.spinner(size="2"),
+                            rx.text(
+                                "Volti is analysing your household data…",
+                                color=MUTED,
+                                font_size="0.85rem",
+                            ),
+                            spacing="3",
+                            align="center",
+                            width="100%",
                         ),
-                        color=MUTED,
-                        font_size="0.9rem",
-                        line_height="1.65",
+                        rx.fragment(),
                     ),
-                    rx.text(
-                        (
-                            "Use the peak and lowest periods together with the "
-                            "recommendations below when scheduling flexible "
-                            "appliances."
-                        ),
-                        color=MUTED,
-                        font_size="0.9rem",
-                        line_height="1.65",
-                    ),
-                    align="start",
-                    spacing="2",
+                    width="100%",
+                    align="stretch",
+                    spacing="3",
                 ),
                 width="100%",
-                padding="1rem 1.1rem",
-                background="#F8FBFA",
-                border=f"1px solid {BORDER}",
-                border_radius="16px",
+                height="330px",
+                overflow_y="auto",
+                padding="0.25rem 0.25rem 0.5rem",
             ),
 
-            align="start",
-            spacing="5",
+            rx.cond(
+                DashboardState.coach_error != "",
+                rx.callout(
+                    DashboardState.coach_error,
+                    color_scheme="red",
+                    size="1",
+                    width="100%",
+                ),
+                rx.fragment(),
+            ),
+
+            rx.vstack(
+                rx.input(
+                    value=DashboardState.coach_input,
+                    on_change=DashboardState.update_coach_input,
+                    placeholder="Ask about usage, costs or savings…",
+                    width="100%",
+                    height="44px",
+                    disabled=DashboardState.coach_is_sending,
+                ),
+                rx.hstack(
+                    rx.button(
+                        "Clear chat",
+                        on_click=DashboardState.clear_coach_chat,
+                        background="transparent",
+                        color=MUTED,
+                        border=f"1px solid {BORDER}",
+                        border_radius="10px",
+                        cursor="pointer",
+                    ),
+                    rx.button(
+                        "Send",
+                        on_click=DashboardState.send_coach_message,
+                        loading=DashboardState.coach_is_sending,
+                        disabled=DashboardState.coach_is_sending,
+                        background=ACCENT,
+                        color="white",
+                        border_radius="10px",
+                        padding="0 1.3rem",
+                        cursor="pointer",
+                        _hover={"opacity": "0.92"},
+                    ),
+                    width="100%",
+                    justify="between",
+                    align="center",
+                ),
+                width="100%",
+                spacing="3",
+            ),
+
+            rx.cond(
+                DashboardState.coach_model != "",
+                rx.text(
+                    "Powered by " + DashboardState.coach_model,
+                    color=MUTED,
+                    font_size="0.72rem",
+                    text_align="center",
+                    width="100%",
+                ),
+                rx.text(
+                    "AI responses are estimates based on available data.",
+                    color=MUTED,
+                    font_size="0.72rem",
+                    text_align="center",
+                    width="100%",
+                ),
+            ),
+
+            width="100%",
+            align="stretch",
+            spacing="4",
         ),
-        width="100%",
-        padding="2rem",
-        background=SURFACE,
+        position="fixed",
+        right="28px",
+        bottom="128px",
+        width="400px",
+        max_width="calc(100vw - 32px)",
+        padding="1.25rem",
+        background="rgba(255,255,255,0.98)",
+        backdrop_filter="blur(16px)",
         border=f"1px solid {BORDER}",
-        border_radius="20px",
+        border_radius="24px",
+        box_shadow="0 24px 70px rgba(22,53,76,0.20)",
+        z_index="1100",
+    )
+
+
+def coach_launcher() -> rx.Component:
+    return rx.box(
+        rx.box(
+            rx.image(
+                src="/volti_koc.png",
+                width="108px",
+                height="108px",
+                object_fit="contain",
+                position="absolute",
+                bottom="-8px",
+                left="50%",
+                transform="translateX(-50%)",
+                z_index="2",
+                pointer_events="none",
+            ),
+            rx.box(
+                "AI",
+                position="absolute",
+                top="5px",
+                right="4px",
+                color="white",
+                background=ACCENT,
+                border="3px solid white",
+                border_radius="999px",
+                padding="0.22rem 0.4rem",
+                font_size="0.62rem",
+                font_weight="800",
+                z_index="3",
+            ),
+            width="88px",
+            height="88px",
+            border_radius="999px",
+            background="#EAF5F2",
+            border="6px solid white",
+            box_shadow="0 14px 36px rgba(0,0,0,0.14)",
+            position="relative",
+            overflow="visible",
+        ),
+        on_click=DashboardState.toggle_coach,
+        cursor="pointer",
+        position="fixed",
+        bottom="28px",
+        right="28px",
+        z_index="1200",
+        aria_label="Open Volti Energy Coach",
     )
 
 
 def floating_coach() -> rx.Component:
     return rx.cond(
         DashboardState.dashboard_loaded,
-        rx.box(
+        rx.fragment(
             rx.cond(
                 DashboardState.coach_open,
-                rx.box(
-                    rx.vstack(
-                        rx.hstack(
-                            rx.box(
-                                rx.image(
-                                    src="/volti_koc_akilli_onerme.png",
-                                    width="155px",
-                                    height="155px",
-                                    object_fit="contain",
-                                    position="absolute",
-                                    left="50%",
-                                    bottom="-22px",
-                                    transform=(
-                                        "translateX(-50%) scale(1.12)"
-                                    ),
-                                    transform_origin="center bottom",
-                                    pointer_events="none",
-                                ),
-                                width="122px",
-                                height="122px",
-                                position="relative",
-                                overflow="visible",
-                                flex_shrink="0",
-                            ),
-                            rx.vstack(
-                                rx.text(
-                                    "VOLTI ENERGY COACH",
-                                    color=ACCENT,
-                                    font_size="0.75rem",
-                                    font_weight="700",
-                                    letter_spacing="0.1em",
-                                ),
-                                rx.heading(
-                                    "Your energy assistant",
-                                    size="6",
-                                    color=PRIMARY,
-                                ),
-                                align="start",
-                                justify="center",
-                                spacing="1",
-                                min_height="122px",
-                                flex="1",
-                            ),
-                            rx.button(
-                                "×",
-                                on_click=DashboardState.toggle_coach,
-                                background="transparent",
-                                color=MUTED,
-                                font_size="1.8rem",
-                                line_height="1",
-                                padding="0",
-                                min_width="auto",
-                                height="auto",
-                                align_self="start",
-                                cursor="pointer",
-                                aria_label="Close Volti Energy Coach",
-                            ),
-                            width="100%",
-                            justify="between",
-                            align="center",
-                            spacing="3",
-                        ),
-                        rx.divider(),
-                        rx.text(
-                            DashboardState.coach_message,
-                            color=MUTED,
-                            line_height="1.7",
-                            font_size="0.97rem",
-                        ),
-                        rx.cond(
-                            DashboardState.coach_context_available,
-                            rx.badge(
-                                "Personalised insight",
-                                color_scheme="green",
-                                variant="soft",
-                            ),
-                            rx.badge(
-                                "Dashboard insight",
-                                color_scheme="gray",
-                                variant="soft",
-                            ),
-                        ),
-                        align="start",
-                        spacing="4",
-                    ),
-                    width="min(520px, calc(100vw - 32px))",
-                    max_height="min(640px, calc(100vh - 150px))",
-                    overflow_y="auto",
-                    padding="1.45rem",
-                    margin_bottom="1rem",
-                    background=SURFACE,
-                    border=f"1px solid {BORDER}",
-                    border_radius="24px",
-                    box_shadow="0 20px 56px rgba(22, 53, 76, 0.22)",
-                ),
+                coach_popup(),
                 rx.fragment(),
             ),
-
-            rx.button(
-                rx.box(
-                    rx.image(
-                        src="/volti_koc.png",
-                        width="138px",
-                        height="138px",
-                        object_fit="contain",
-                        position="absolute",
-                        left="50%",
-                        bottom="-19px",
-                        transform="translateX(-50%) scale(1.16)",
-                        transform_origin="center bottom",
-                        pointer_events="none",
-                    ),
-                    width="100%",
-                    height="100%",
-                    position="relative",
-                    overflow="visible",
-                ),
-                on_click=DashboardState.toggle_coach,
-                width="98px",
-                height="98px",
-                padding="0",
-                background=SOFT_GREEN,
-                border=f"4px solid {SURFACE}",
-                border_radius="50%",
-                box_shadow="0 16px 40px rgba(22, 53, 76, 0.24)",
-                cursor="pointer",
-                overflow="visible",
-                aria_label="Open Volti Energy Coach",
-                _hover={
-                    "transform": "translateY(-4px)",
-                    "box_shadow": (
-                        "0 20px 48px rgba(22, 53, 76, 0.30)"
-                    ),
-                },
-                transition="all 0.2s ease",
-            ),
-
-            position="fixed",
-            right="24px",
-            bottom="24px",
-            z_index="1000",
-            display="flex",
-            flex_direction="column",
-            align_items="flex-end",
-            overflow="visible",
+            coach_launcher(),
         ),
         rx.fragment(),
     )
+
 
 def dashboard() -> rx.Component:
     return rx.box(
         navbar(),
 
-        # Page heading
         rx.box(
             rx.vstack(
                 rx.text(
@@ -719,7 +532,6 @@ def dashboard() -> rx.Component:
             background=BACKGROUND,
         ),
 
-        # Dashboard filters and data sections
         rx.box(
             rx.vstack(
                 rx.text(
@@ -730,12 +542,8 @@ def dashboard() -> rx.Component:
                 ),
 
                 rx.flex(
-                    # Household ID
                     rx.vstack(
-                        rx.text(
-                            "Household ID",
-                            color=PRIMARY,
-                        ),
+                        rx.text("Household ID", color=PRIMARY),
                         rx.input(
                             value=DashboardState.household_id,
                             on_change=DashboardState.update_household_id,
@@ -753,13 +561,8 @@ def dashboard() -> rx.Component:
                         spacing="2",
                         flex="1 1 220px",
                     ),
-
-                    # Start date
                     rx.vstack(
-                        rx.text(
-                            "Start date",
-                            color=PRIMARY,
-                        ),
+                        rx.text("Start date", color=PRIMARY),
                         rx.input(
                             type="date",
                             value=DashboardState.start_date,
@@ -779,13 +582,8 @@ def dashboard() -> rx.Component:
                         spacing="2",
                         flex="1 1 200px",
                     ),
-
-                    # End date
                     rx.vstack(
-                        rx.text(
-                            "End date",
-                            color=PRIMARY,
-                        ),
+                        rx.text("End date", color=PRIMARY),
                         rx.input(
                             type="date",
                             value=DashboardState.end_date,
@@ -805,13 +603,8 @@ def dashboard() -> rx.Component:
                         spacing="2",
                         flex="1 1 200px",
                     ),
-
-                    # Load button
                     rx.vstack(
-                        rx.text(
-                            "Action",
-                            visibility="hidden",
-                        ),
+                        rx.text("Action", visibility="hidden"),
                         rx.button(
                             "Load dashboard",
                             on_click=DashboardState.load_dashboard,
@@ -835,12 +628,12 @@ def dashboard() -> rx.Component:
                         spacing="2",
                         flex_shrink="0",
                     ),
-
                     width="100%",
                     gap="1rem",
                     align="start",
                     flex_wrap="wrap",
                 ),
+
                 rx.cond(
                     DashboardState.error_message != "",
                     rx.callout(
@@ -852,41 +645,20 @@ def dashboard() -> rx.Component:
                 ),
 
                 rx.cond(
+                    DashboardState.partial_data_message != "",
+                    rx.callout(
+                        DashboardState.partial_data_message,
+                        color_scheme="orange",
+                        width="100%",
+                    ),
+                    rx.fragment(),
+                ),
+
+                rx.cond(
                     DashboardState.dashboard_loaded,
                     rx.callout(
                         "Energy data loaded successfully.",
                         color_scheme="green",
-                        width="100%",
-                    ),
-                    rx.fragment(),
-                ),
-
-                rx.cond(
-                    DashboardState.dashboard_loaded,
-                    rx.hstack(
-                        rx.badge(
-                            DashboardState.household_id,
-                            color_scheme="blue",
-                            variant="soft",
-                        ),
-                        rx.text(
-                            DashboardState.household_profile_text,
-                            color=MUTED,
-                            font_size="0.88rem",
-                        ),
-                        width="100%",
-                        align="center",
-                        spacing="3",
-                        flex_wrap="wrap",
-                    ),
-                    rx.fragment(),
-                ),
-
-                rx.cond(
-                    DashboardState.partial_data_message != "",
-                    rx.callout(
-                        DashboardState.partial_data_message,
-                        color_scheme="amber",
                         width="100%",
                     ),
                     rx.fragment(),
@@ -905,12 +677,17 @@ def dashboard() -> rx.Component:
                             "Consumption (kWh)",
                             ACCENT,
                         ),
-
-                        forecast_card(),
-
-                        hourly_chart(
-                            DashboardState.hourly_chart_data,
+                        energy_chart(
+                            "Next 24-hour forecast",
+                            (
+                                "Predicted consumption generated "
+                                "by the forecast service."
+                            ),
+                            DashboardState.forecast_chart_data,
+                            "Forecast (kWh)",
+                            "#E5A11A",
                         ),
+                        hourly_chart(DashboardState.hourly_chart_data),
 
                         rx.box(
                             rx.vstack(
@@ -974,10 +751,7 @@ def dashboard() -> rx.Component:
                                                     DashboardState.total_anomaly_count
                                                     > 20,
                                                     rx.text(
-                                                        (
-                                                            "Showing the first "
-                                                            "20 anomalies."
-                                                        ),
+                                                        "Showing the first 20 anomalies.",
                                                         color=MUTED,
                                                         font_size="0.85rem",
                                                     ),
@@ -1072,86 +846,55 @@ def dashboard() -> rx.Component:
             border_y=f"1px solid {BORDER}",
         ),
 
-        # Dashboard summary
         rx.box(
             rx.vstack(
                 rx.box(
-                    rx.flex(
+                    rx.vstack(
+                        rx.text(
+                            "BEST ACTION TODAY",
+                            color=ACCENT,
+                            font_size="0.8rem",
+                            font_weight="700",
+                            letter_spacing="0.1em",
+                        ),
                         rx.cond(
                             DashboardState.dashboard_loaded,
-                            device_illustration(
-                                DashboardState.best_action_icon_path,
-                                compact=True,
+                            rx.heading(
+                                DashboardState.best_action_title,
+                                size="6",
+                                color=PRIMARY,
                             ),
-                            rx.center(
-                                rx.text(
-                                    "VOLTI",
-                                    color=ACCENT,
-                                    font_weight="800",
-                                    font_size="0.8rem",
-                                    letter_spacing="0.08em",
+                            rx.heading(
+                                (
+                                    "Load a household to receive "
+                                    "personalised advice"
                                 ),
-                                width="96px",
-                                height="96px",
-                                background="#EEF8F5",
-                                border=f"1px solid {BORDER}",
-                                border_radius="22px",
-                                flex_shrink="0",
+                                size="6",
+                                color=PRIMARY,
                             ),
                         ),
-                        rx.vstack(
+                        rx.cond(
+                            DashboardState.dashboard_loaded,
                             rx.text(
-                                "BEST ACTION TODAY",
-                                color=ACCENT,
-                                font_size="0.8rem",
-                                font_weight="700",
-                                letter_spacing="0.1em",
+                                DashboardState.best_action_message,
+                                color=MUTED,
                             ),
-                            rx.cond(
-                                DashboardState.dashboard_loaded,
-                                rx.heading(
-                                    DashboardState.best_action_title,
-                                    size="6",
-                                    color=PRIMARY,
+                            rx.text(
+                                (
+                                    "Volti will identify your clearest saving "
+                                    "opportunity and display it here."
                                 ),
-                                rx.heading(
-                                    (
-                                        "Load a household to receive "
-                                        "personalised advice"
-                                    ),
-                                    size="6",
-                                    color=PRIMARY,
-                                ),
+                                color=MUTED,
                             ),
-                            rx.cond(
-                                DashboardState.dashboard_loaded,
-                                rx.text(
-                                    DashboardState.best_action_message,
-                                    color=MUTED,
-                                    line_height="1.65",
-                                ),
-                                rx.text(
-                                    (
-                                        "Volti will identify your clearest saving "
-                                        "opportunity and display it here."
-                                    ),
-                                    color=MUTED,
-                                ),
-                            ),
-                            align="start",
-                            spacing="3",
-                            flex="1",
                         ),
-                        width="100%",
-                        align="center",
-                        gap="1.4rem",
-                        flex_wrap="wrap",
+                        align="start",
+                        spacing="4",
                     ),
                     width="100%",
-                    padding="1.7rem",
+                    padding="2rem",
                     background=SOFT_GREEN,
                     border=f"1px solid {BORDER}",
-                    border_radius="22px",
+                    border_radius="20px",
                 ),
 
                 rx.flex(
