@@ -8,15 +8,11 @@ from ..styles import (
     MUTED,
     PAGE_CONTAINER,
     PRIMARY,
-    SOFT_GREEN,
     SURFACE,
     TEXT,
 )
 
 HERO_BACKGROUND = "/backgrounds/hero-bg-mesh-blobs.svg"
-
-# Alternative:
-# HERO_BACKGROUND = "/backgrounds/hero-bg-timeofuse-wave.svg"
 
 
 def feature_card(
@@ -27,7 +23,6 @@ def feature_card(
 ) -> rx.Component:
     return rx.box(
         rx.vstack(
-            # Illustration area
             rx.center(
                 rx.image(
                     src=image_src,
@@ -42,12 +37,10 @@ def feature_card(
                 background=(
                     "linear-gradient(145deg, "
                     "rgba(233,247,243,0.96), "
-                    "rgba(255,255,255,0.94))"
+                    "rgba(252,253,251,0.94))"
                 ),
                 border_bottom=f"1px solid {BORDER}",
             ),
-
-            # Text content
             rx.vstack(
                 rx.text(
                     eyebrow,
@@ -71,14 +64,8 @@ def feature_card(
                 ),
                 rx.link(
                     rx.hstack(
-                        rx.text(
-                            "See how it works",
-                            font_weight="700",
-                        ),
-                        rx.text(
-                            "→",
-                            font_size="1.1rem",
-                        ),
+                        rx.text("See how it works", font_weight="700"),
+                        rx.text("→", font_size="1.1rem"),
                         spacing="2",
                         align="center",
                     ),
@@ -86,9 +73,7 @@ def feature_card(
                     color=ACCENT,
                     text_decoration="none",
                     margin_top="auto",
-                    _hover={
-                        "color": PRIMARY,
-                    },
+                    _hover={"color": PRIMARY},
                 ),
                 width="100%",
                 height="100%",
@@ -97,7 +82,6 @@ def feature_card(
                 spacing="4",
                 padding="1.75rem",
             ),
-
             width="100%",
             height="100%",
             align="stretch",
@@ -119,13 +103,63 @@ def feature_card(
     )
 
 
+def welcome_hero_visual() -> rx.Component:
+    return rx.box(
+        # ── speech bubble (top-right, next to mascot head) ──
+        rx.box(
+            rx.vstack(
+                rx.text(
+                    "Hi, I'm Volti!",
+                    color=PRIMARY,
+                    font_size="1.15rem",
+                    font_weight="800",
+                ),
+                rx.text(
+                    "Let's find your clearest energy-saving action.",
+                    color=MUTED,
+                    font_size="0.92rem",
+                    line_height="1.5",
+                ),
+                align="start",
+                spacing="1",
+            ),
+            position="absolute",
+            top="195px",
+            left="350px",
+            z_index="4",
+            width="260px",
+            padding="1.1rem 1.3rem",
+            background="rgba(252,253,251,0.96)",
+            border=f"1px solid {BORDER}",
+            border_radius="20px",
+            box_shadow="0 14px 32px rgba(22,53,76,0.10)",
+        ),
+
+        # ── mascot (left-center, in front) ──
+        rx.image(
+            src="/mascots/greeting.png",
+            width="480px",
+            height="auto",
+            object_fit="contain",
+            position="absolute",
+            left="0px",
+            bottom="0px",
+            z_index="3",
+            pointer_events="none",
+            filter="drop-shadow(0 22px 34px rgba(22,53,76,0.18))",
+        ),
+
+        flex="0 0 620px",
+        width="620px",
+        min_height="580px",
+        position="relative",
+        overflow="visible",
+    )
+
 def home() -> rx.Component:
     return rx.box(
         navbar(),
-
-        # Hero
         rx.box(
-            # Background layer
             rx.box(
                 position="absolute",
                 inset="0",
@@ -136,10 +170,7 @@ def home() -> rx.Component:
                 opacity="0.92",
                 z_index="0",
             ),
-
-            # Hero content
             rx.flex(
-                # Left side
                 rx.vstack(
                     rx.text(
                         "SMART ENERGY, MADE SIMPLE",
@@ -176,14 +207,12 @@ def home() -> rx.Component:
                             border_radius="12px",
                             padding="1.3rem 1.7rem",
                             cursor="pointer",
-                            _hover={
-                                "opacity": "0.92",
-                            },
+                            _hover={"opacity": "0.92"},
                         ),
                         rx.button(
                             "See how it works",
                             on_click=rx.redirect("/how-it-works"),
-                            background="rgba(255,255,255,0.68)",
+                            background="rgba(252,253,251,0.68)",
                             color=PRIMARY,
                             border=f"1px solid {ACCENT}",
                             border_radius="12px",
@@ -196,58 +225,18 @@ def home() -> rx.Component:
                     ),
                     align="start",
                     spacing="5",
-                    flex="1 1 560px",
+                    flex="1 1 0",
+                    min_width="0",
                 ),
-
-                # Right action card
-                rx.box(
-                    rx.vstack(
-                        rx.text(
-                            "BEST ACTION TODAY",
-                            color=ACCENT,
-                            font_size="0.8rem",
-                            font_weight="700",
-                            letter_spacing="0.12em",
-                        ),
-                        rx.heading(
-                            "Run the dishwasher after 22:30",
-                            size="7",
-                            color=PRIMARY,
-                        ),
-                        rx.text(
-                            "Estimated saving",
-                            color=MUTED,
-                        ),
-                        rx.heading(
-                            "£1.20",
-                            size="8",
-                            color=ACCENT,
-                        ),
-                        rx.text(
-                            "Lower cost · Lower carbon",
-                            color=MUTED,
-                        ),
-                        align="start",
-                        spacing="4",
-                    ),
-                    flex="0 1 430px",
-                    padding="2.5rem",
-                    background="rgba(255,255,255,0.82)",
-                    backdrop_filter="blur(12px)",
-                    border=f"1px solid {BORDER}",
-                    border_radius="26px",
-                    box_shadow="0 20px 50px rgba(22,53,76,0.12)",
-                ),
-
+                welcome_hero_visual(),
                 align="center",
                 justify="between",
-                gap="4rem",
-                flex_wrap="wrap",
+                gap="2.5rem",
+                flex_wrap="nowrap",
                 position="relative",
                 z_index="1",
                 **PAGE_CONTAINER,
             ),
-
             position="relative",
             overflow="hidden",
             padding="5.5rem 0",
@@ -255,11 +244,8 @@ def home() -> rx.Component:
             display="flex",
             align_items="center",
         ),
-
-        # Why Volti?
         rx.box(
             rx.vstack(
-                # Section heading
                 rx.vstack(
                     rx.box(
                         rx.text(
@@ -271,8 +257,8 @@ def home() -> rx.Component:
                             text_align="center",
                         ),
                         padding="0.5rem 1rem",
-                        background="rgba(22, 135, 126, 0.08)",
-                        border="1px solid rgba(22, 135, 126, 0.18)",
+                        background="rgba(22,135,126,0.08)",
+                        border="1px solid rgba(22,135,126,0.18)",
                         border_radius="999px",
                     ),
                     rx.heading(
@@ -300,8 +286,6 @@ def home() -> rx.Component:
                     justify="center",
                     spacing="5",
                 ),
-
-                # Professional illustration cards
                 rx.flex(
                     feature_card(
                         "/illustrations/why-save-money.svg",
@@ -335,14 +319,12 @@ def home() -> rx.Component:
                     align="stretch",
                     flex_wrap="wrap",
                 ),
-
                 spacing="8",
                 **PAGE_CONTAINER,
             ),
             padding="6rem 0",
-            background="#FFFFFF",
+            background=BACKGROUND,
         ),
-
         width="100%",
         background=BACKGROUND,
         color=TEXT,

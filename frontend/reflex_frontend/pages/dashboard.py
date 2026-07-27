@@ -482,54 +482,113 @@ def floating_coach() -> rx.Component:
     )
 
 
+
+def dashboard_hero_mascot() -> rx.Component:
+    """Small branded illustration for the dashboard introduction."""
+    return rx.center(
+        rx.box(
+            # Soft halo behind the transparent PNG.
+            rx.box(
+                position="absolute",
+                inset="20px 10px 8px",
+                background=(
+                    "radial-gradient(circle at 50% 45%, "
+                    "rgba(255,255,255,0.96) 0%, "
+                    "rgba(228,243,238,0.82) 58%, "
+                    "rgba(228,243,238,0.18) 100%)"
+                ),
+                border="1px solid rgba(22,135,126,0.10)",
+                border_radius="42% 58% 46% 54% / 56% 44% 56% 44%",
+                box_shadow="0 18px 42px rgba(22,53,76,0.07)",
+                z_index="0",
+            ),
+            rx.image(
+                src="/mascots/analysing.png",
+                width="235px",
+                height="235px",
+                object_fit="contain",
+                position="relative",
+                z_index="2",
+                transform="scale(1.08) translateY(4px)",
+                transform_origin="center",
+                filter="drop-shadow(0 16px 18px rgba(22,53,76,0.12))",
+                pointer_events="none",
+            ),
+            width="260px",
+            height="245px",
+            position="relative",
+            display="flex",
+            align_items="center",
+            justify_content="center",
+            overflow="visible",
+        ),
+        flex="0 0 280px",
+        min_width="230px",
+    )
+
 def dashboard() -> rx.Component:
     return rx.box(
         navbar(),
 
         rx.box(
-            rx.vstack(
-                rx.text(
-                    "PERSONALISED ENERGY INSIGHTS",
-                    color=ACCENT,
-                    font_size="0.8rem",
-                    font_weight="700",
-                    letter_spacing="0.12em",
-                ),
-                rx.heading(
-                    "Your energy dashboard",
-                    size="9",
-                    color=PRIMARY,
-                    letter_spacing="-0.04em",
-                ),
-                rx.text(
-                    (
-                        "Explore your consumption and discover practical "
-                        "opportunities to reduce your bill."
+            rx.flex(
+                rx.vstack(
+                    rx.text(
+                        "PERSONALISED ENERGY INSIGHTS",
+                        color=ACCENT,
+                        font_size="0.8rem",
+                        font_weight="700",
+                        letter_spacing="0.12em",
                     ),
-                    color=MUTED,
-                    font_size="1.1rem",
-                ),
-                rx.cond(
-                    DashboardState.backend_online,
-                    rx.badge(
-                        DashboardState.backend_status,
-                        color_scheme="green",
-                        variant="soft",
-                        size="2",
+                    rx.heading(
+                        "Your energy dashboard",
+                        size="9",
+                        color=PRIMARY,
+                        letter_spacing="-0.04em",
+                        line_height="1.05",
                     ),
-                    rx.badge(
-                        DashboardState.backend_status,
-                        color_scheme="red",
-                        variant="soft",
-                        size="2",
+                    rx.text(
+                        (
+                            "Explore your consumption and discover practical "
+                            "opportunities to reduce your bill."
+                        ),
+                        color=MUTED,
+                        font_size="1.1rem",
+                        line_height="1.75",
+                        max_width="760px",
                     ),
+                    rx.cond(
+                        DashboardState.backend_online,
+                        rx.badge(
+                            DashboardState.backend_status,
+                            color_scheme="green",
+                            variant="soft",
+                            size="2",
+                        ),
+                        rx.badge(
+                            DashboardState.backend_status,
+                            color_scheme="red",
+                            variant="soft",
+                            size="2",
+                        ),
+                    ),
+                    align="start",
+                    spacing="4",
+                    flex="1 1 620px",
+                    min_width="0",
                 ),
-                align="start",
-                spacing="4",
+
+                dashboard_hero_mascot(),
+
+                align="center",
+                justify="between",
+                gap="2.5rem",
+                flex_wrap="wrap",
                 **PAGE_CONTAINER,
             ),
-            padding="4.5rem 0 3rem",
+            padding="3.8rem 0 2.8rem",
             background=BACKGROUND,
+            overflow="hidden",
         ),
 
         rx.box(
