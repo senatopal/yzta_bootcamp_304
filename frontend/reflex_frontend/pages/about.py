@@ -34,7 +34,7 @@ TEAM_MEMBERS = [
         "name": "Yasemin Koçbıyık",
         "role": "Machine Learning / Model Developer",
         "initials": "03",
-        "image_src": "",
+        "image_src": "/team/yasemin.jpg",
         "linkedin_url": "https://www.linkedin.com/in/yasemin-kocbiyik/",
     },
     {
@@ -50,7 +50,8 @@ TEAM_MEMBERS = [
         "initials": "05",
         "image_src": "/team/betul-irem.jpeg",
         "linkedin_url": "https://www.linkedin.com/in/betül-irem-yardımcı-aa17a2217/",
-        "image_position": "center center",
+        "image_position": "center 20%",
+        "image_scale": "1.18",
     },
 ]
 
@@ -115,6 +116,7 @@ def team_member_card(
     image_src: str,
     linkedin_url: str,
     image_position: str = "center center",
+    image_scale: str = "1",
 ) -> rx.Component:
     avatar = (
         rx.image(
@@ -123,6 +125,7 @@ def team_member_card(
             height="132px",
             object_fit="cover",
             object_position=image_position,
+            transform=f"scale({image_scale})",
             border_radius="50%",
             border="5px solid rgba(255,255,255,0.92)",
             box_shadow="0 12px 30px rgba(22,53,76,0.13)",
