@@ -137,141 +137,153 @@ def process_step(
 
 
 def action_result_section() -> rx.Component:
-    """Render the final recommendation stage without a third illustration."""
+    """Render Step 03 with the recommendation mascot illustration."""
+
+    text_panel = rx.vstack(
+        rx.box(
+            rx.text(
+                "STEP 03",
+                color="white",
+                font_size="0.76rem",
+                font_weight="800",
+                letter_spacing="0.12em",
+            ),
+            padding="0.5rem 0.85rem",
+            background=ACCENT,
+            border_radius="999px",
+        ),
+        rx.text(
+            "ACT",
+            color=ACCENT,
+            font_size="0.78rem",
+            font_weight="800",
+            letter_spacing="0.14em",
+        ),
+        rx.heading(
+            "Receive one clear action",
+            size="8",
+            color=PRIMARY,
+            letter_spacing="-0.035em",
+            line_height="1.12",
+        ),
+        rx.text(
+            (
+                "Volti converts complex energy analysis into one "
+                "practical recommendation that explains what to "
+                "change, when to change it and why it matters."
+            ),
+            color=MUTED,
+            font_size="1.05rem",
+            line_height="1.8",
+            max_width="590px",
+        ),
+        rx.vstack(
+            rx.hstack(
+                rx.box(
+                    width="9px",
+                    height="9px",
+                    border_radius="50%",
+                    background=ACCENT,
+                    flex_shrink="0",
+                    margin_top="0.5rem",
+                ),
+                rx.text(
+                    "See the best time to run a flexible appliance.",
+                    color=PRIMARY,
+                    line_height="1.65",
+                ),
+                align="start",
+                spacing="3",
+            ),
+            rx.hstack(
+                rx.box(
+                    width="9px",
+                    height="9px",
+                    border_radius="50%",
+                    background=ACCENT,
+                    flex_shrink="0",
+                    margin_top="0.5rem",
+                ),
+                rx.text(
+                    "Understand the estimated cost and carbon benefit.",
+                    color=PRIMARY,
+                    line_height="1.65",
+                ),
+                align="start",
+                spacing="3",
+            ),
+            align="start",
+            spacing="3",
+        ),
+        flex="1 1 430px",
+        align="start",
+        justify="center",
+        spacing="4",
+        padding="2rem",
+    )
+
+    illustration_panel = rx.center(
+        rx.box(
+            rx.box(
+                position="absolute",
+                inset="9% 7% 7%",
+                background=(
+                    "radial-gradient(circle at 50% 42%, "
+                    "rgba(255,255,255,0.98) 0%, "
+                    "rgba(236,247,243,0.88) 58%, "
+                    "rgba(236,247,243,0.30) 100%)"
+                ),
+                border="1px solid rgba(22,135,126,0.10)",
+                border_radius="34px",
+                z_index="0",
+            ),
+            rx.image(
+                src="/illustrations/step3-mascot.png",
+                width="100%",
+                max_width="470px",
+                height="auto",
+                object_fit="contain",
+                position="relative",
+                z_index="2",
+                filter="drop-shadow(0 20px 28px rgba(22,53,76,0.14))",
+                pointer_events="none",
+            ),
+            width="100%",
+            min_height="430px",
+            position="relative",
+            display="flex",
+            align_items="center",
+            justify_content="center",
+            overflow="visible",
+        ),
+        flex="1 1 440px",
+        min_height="430px",
+        padding="1.5rem",
+        background=(
+            "linear-gradient(145deg, "
+            "rgba(255,255,255,0.72), "
+            "rgba(233,247,243,0.72))"
+        ),
+        border="1px solid rgba(22,135,126,0.12)",
+        border_radius="28px",
+        overflow="hidden",
+    )
 
     return rx.box(
         rx.flex(
-            rx.vstack(
-                rx.box(
-                    rx.text(
-                        "STEP 03",
-                        color="white",
-                        font_size="0.76rem",
-                        font_weight="800",
-                        letter_spacing="0.12em",
-                    ),
-                    padding="0.5rem 0.85rem",
-                    background=ACCENT,
-                    border_radius="999px",
-                ),
-                rx.text(
-                    "ACT",
-                    color=ACCENT,
-                    font_size="0.78rem",
-                    font_weight="800",
-                    letter_spacing="0.14em",
-                ),
-                rx.heading(
-                    "Receive one clear action",
-                    size="8",
-                    color=PRIMARY,
-                    letter_spacing="-0.035em",
-                    line_height="1.12",
-                ),
-                rx.text(
-                    (
-                        "Volti converts complex energy analysis into one "
-                        "practical recommendation that explains what to "
-                        "change, when to change it and why it matters."
-                    ),
-                    color=MUTED,
-                    font_size="1.05rem",
-                    line_height="1.8",
-                    max_width="590px",
-                ),
-                rx.vstack(
-                    rx.hstack(
-                        rx.box(
-                            width="9px",
-                            height="9px",
-                            border_radius="50%",
-                            background=ACCENT,
-                            flex_shrink="0",
-                            margin_top="0.5rem",
-                        ),
-                        rx.text(
-                            "See the best time to run a flexible appliance.",
-                            color=PRIMARY,
-                            line_height="1.65",
-                        ),
-                        align="start",
-                        spacing="3",
-                    ),
-                    rx.hstack(
-                        rx.box(
-                            width="9px",
-                            height="9px",
-                            border_radius="50%",
-                            background=ACCENT,
-                            flex_shrink="0",
-                            margin_top="0.5rem",
-                        ),
-                        rx.text(
-                            "Understand the estimated cost and carbon benefit.",
-                            color=PRIMARY,
-                            line_height="1.65",
-                        ),
-                        align="start",
-                        spacing="3",
-                    ),
-                    align="start",
-                    spacing="3",
-                ),
-                align="start",
-                spacing="4",
-                flex="1 1 460px",
-            ),
-
-            rx.box(
-                rx.vstack(
-                    rx.text(
-                        "BEST ACTION TODAY",
-                        color=ACCENT,
-                        font_size="0.76rem",
-                        font_weight="800",
-                        letter_spacing="0.12em",
-                    ),
-                    rx.heading(
-                        "Run your dishwasher after 22:30",
-                        size="6",
-                        color=PRIMARY,
-                        line_height="1.25",
-                    ),
-                    rx.text(
-                        "Estimated saving",
-                        color=MUTED,
-                    ),
-                    rx.heading(
-                        "£1.20",
-                        size="8",
-                        color=ACCENT,
-                    ),
-                    rx.text(
-                        "Lower cost · Lower carbon",
-                        color=MUTED,
-                    ),
-                    align="start",
-                    spacing="3",
-                ),
-                flex="0 1 400px",
-                padding="2rem",
-                background="rgba(255,255,255,0.9)",
-                border=f"1px solid {BORDER}",
-                border_radius="24px",
-                box_shadow="0 16px 36px rgba(22,53,76,0.10)",
-            ),
-
+            text_panel,
+            illustration_panel,
             width="100%",
-            align="center",
-            justify="between",
+            align="stretch",
             gap="3rem",
             flex_wrap="wrap",
         ),
         width="100%",
-        padding="3rem",
+        padding="1.5rem",
         background=SOFT_GREEN,
         border=f"1px solid {BORDER}",
         border_radius="32px",
+        box_shadow="0 18px 46px rgba(22,53,76,0.07)",
     )
 
 

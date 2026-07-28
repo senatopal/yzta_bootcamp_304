@@ -31,11 +31,12 @@ def navbar() -> rx.Component:
         rx.hstack(
             rx.link(
                 rx.hstack(
-                    rx.box(
-                        width="12px",
-                        height="12px",
-                        border_radius="50%",
-                        background=ACCENT,
+                    rx.image(
+                        src="/logo/volti-logo.png",
+                        width="46px",
+                        height="46px",
+                        object_fit="contain",
+                        alt="Volti logo",
                     ),
                     rx.heading(
                         "Volti",
@@ -62,7 +63,7 @@ def navbar() -> rx.Component:
             width="100%",
             max_width=PAGE_WIDTH,
             margin="0 auto",
-            padding="1rem 2rem",
+            padding="0.7rem 2rem",
         ),
         position="sticky",
         top="0",

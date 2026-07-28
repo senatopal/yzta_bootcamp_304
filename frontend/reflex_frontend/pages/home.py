@@ -109,7 +109,7 @@ def welcome_hero_visual() -> rx.Component:
         rx.box(
             rx.vstack(
                 rx.text(
-                    "Hi, I'm Volti!",
+                    "Hi, I'm Volti Coach!",
                     color=PRIMARY,
                     font_size="1.15rem",
                     font_weight="800",
@@ -123,6 +123,7 @@ def welcome_hero_visual() -> rx.Component:
                 align="start",
                 spacing="1",
             ),
+            class_name="volti-greeting-bubble",
             position="absolute",
             top="195px",
             left="350px",
@@ -138,11 +139,12 @@ def welcome_hero_visual() -> rx.Component:
         # ── mascot (left-center, in front) ──
         rx.image(
             src="/mascots/greeting.png",
-            width="480px",
+            class_name="volti-greeting-mascot",
+            width="450px",
             height="auto",
             object_fit="contain",
             position="absolute",
-            left="0px",
+            left="30px",
             bottom="0px",
             z_index="3",
             pointer_events="none",

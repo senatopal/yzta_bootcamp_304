@@ -158,32 +158,131 @@ def hourly_chart(data) -> rx.Component:
     )
 
 
+def device_icon_path(device):
+    """Return the matching SVG asset for a recommendation device."""
+    return rx.match(
+        device,
+        ("Washing Machine", "/icons/washing-machine.svg"),
+        ("Dishwasher", "/icons/dishwasher.svg"),
+        ("Tumble Dryer", "/icons/tumble-dryer.svg"),
+        (
+            "Electric Vehicle Charger",
+            "/icons/ev-charger.svg",
+        ),
+        "/icons/washing-machine.svg",
+    )
+
+
+def device_illustration(icon_path) -> rx.Component:
+    """Render a consistent branded illustration tile."""
+    return rx.center(
+        rx.image(
+            src=icon_path,
+            width="108px",
+            height="108px",
+            object_fit="contain",
+        ),
+        width="100%",
+        min_height="142px",
+        padding="0.9rem",
+        background=(
+            "linear-gradient(145deg, "
+            "rgba(233,247,243,0.96), "
+            "rgba(252,253,251,0.94))"
+        ),
+        border=f"1px solid {BORDER}",
+        border_radius="16px",
+        overflow="hidden",
+    )
+
+
 def recommendation_card(item) -> rx.Component:
     return rx.box(
         rx.vstack(
-            rx.text(item["icon"], font_size="1.8rem"),
-            rx.heading(item["device"], size="5", color=PRIMARY),
-            rx.text(
-                item["time_shift"],
-                color=MUTED,
-                font_weight="600",
+            device_illustration(
+                device_icon_path(item["device"])
             ),
-            rx.heading(item["saving"], size="6", color=ACCENT),
-            rx.text(
-                item["carbon"],
-                color=MUTED,
-                font_size="0.9rem",
+            rx.vstack(
+                rx.heading(
+                    item["device"],
+                    size="5",
+                    color=PRIMARY,
+                    line_height="1.25",
+                ),
+                rx.hstack(
+                    rx.text(
+                        "Recommended time",
+                        color=MUTED,
+                        font_size="0.78rem",
+                    ),
+                    rx.text(
+                        item["time_shift"],
+                        color=PRIMARY,
+                        font_weight="700",
+                        font_size="0.9rem",
+                    ),
+                    width="100%",
+                    justify="between",
+                    align="center",
+                    gap="0.75rem",
+                ),
+                rx.hstack(
+                    rx.vstack(
+                        rx.text(
+                            "Estimated saving",
+                            color=MUTED,
+                            font_size="0.75rem",
+                        ),
+                        rx.heading(
+                            item["saving"],
+                            size="6",
+                            color=ACCENT,
+                        ),
+                        align="start",
+                        spacing="1",
+                    ),
+                    rx.vstack(
+                        rx.text(
+                            "Carbon reduction",
+                            color=MUTED,
+                            font_size="0.75rem",
+                        ),
+                        rx.text(
+                            item["carbon"],
+                            color=PRIMARY,
+                            font_weight="700",
+                            font_size="0.9rem",
+                        ),
+                        align="end",
+                        spacing="1",
+                    ),
+                    width="100%",
+                    justify="between",
+                    align="end",
+                ),
+                width="100%",
+                align="start",
+                spacing="4",
+                padding="0.25rem 0.15rem 0.1rem",
             ),
-            align="start",
-            spacing="3",
+            width="100%",
+            height="100%",
+            align="stretch",
+            spacing="4",
         ),
-        flex="1 1 220px",
-        padding="1.5rem",
+        flex="1 1 245px",
+        min_width="0",
+        padding="1rem",
         background=SURFACE,
         border=f"1px solid {BORDER}",
-        border_radius="18px",
+        border_radius="20px",
+        box_shadow="0 12px 30px rgba(22,53,76,0.06)",
+        transition="transform 0.2s ease, box-shadow 0.2s ease",
+        _hover={
+            "transform": "translateY(-4px)",
+            "box_shadow": "0 18px 40px rgba(22,53,76,0.10)",
+        },
     )
-
 
 def anomaly_card(item) -> rx.Component:
     return rx.box(

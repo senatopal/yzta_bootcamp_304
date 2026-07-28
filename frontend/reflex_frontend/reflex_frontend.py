@@ -6,7 +6,11 @@ from .pages.home import home
 from .pages.how_it_works import how_it_works
 from .state import DashboardState
 
-app = rx.App()
+app = rx.App(
+    stylesheets=[
+        "/animations.css",
+    ],
+)
 
 app.add_page(
     home,
