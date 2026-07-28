@@ -44,9 +44,6 @@ inspect_notebook.py
 # Ignore That Large Parquet file
 dataset/combined_data.parquetdashboard/lib/
 
-#images
-assets/team/
-
 # Local secrets
 backend/.env
 .env
