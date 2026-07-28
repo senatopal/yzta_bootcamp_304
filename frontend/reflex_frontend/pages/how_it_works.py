@@ -240,7 +240,7 @@ def action_result_section() -> rx.Component:
             rx.image(
                 src="/illustrations/step3-mascot.png",
                 width="100%",
-                max_width="470px",
+                max_width="340px",
                 height="auto",
                 object_fit="contain",
                 position="relative",
@@ -249,16 +249,16 @@ def action_result_section() -> rx.Component:
                 pointer_events="none",
             ),
             width="100%",
-            min_height="430px",
+            min_height="360px",
             position="relative",
             display="flex",
             align_items="center",
             justify_content="center",
             overflow="visible",
         ),
-        flex="1 1 440px",
-        min_height="430px",
-        padding="1.5rem",
+        flex="1 1 380px",
+        min_height="360px",
+        padding="1.2rem",
         background=(
             "linear-gradient(145deg, "
             "rgba(255,255,255,0.72), "
@@ -275,7 +275,7 @@ def action_result_section() -> rx.Component:
             illustration_panel,
             width="100%",
             align="stretch",
-            gap="3rem",
+            gap="2.25rem",
             flex_wrap="wrap",
         ),
         width="100%",

@@ -234,6 +234,10 @@ class DashboardState(rx.State):
     end_date: str = "2012-11-07"
     forecast_days: int = 1
 
+    best_action_title: str = ""
+    best_action_message: str = ""
+    best_action_device: str = ""
+
     is_loading: bool = False
     error_message: str = ""
     partial_data_message: str = ""
@@ -309,6 +313,8 @@ class DashboardState(rx.State):
         self.recommendation_cards = []
         self.anomaly_cards = []
 
+        self.recommendation_cards = []
+        self.best_action_device = ""
         self.best_action_title = ""
         self.best_action_message = ""
 
@@ -771,6 +777,8 @@ class DashboardState(rx.State):
                         device = translate_device(
                             top_recommendation.get("device")
                         )
+                        self.best_action_device = device.strip().title()
+
                         current_hour = top_recommendation.get(
                             "current_hour", "the current time"
                         )
@@ -792,6 +800,7 @@ class DashboardState(rx.State):
                             f"£{saving:.2f}."
                         )
                     else:
+                        self.best_action_device = ""
                         self.best_action_title = (
                             "No load-shifting savings found"
                         )
@@ -800,6 +809,7 @@ class DashboardState(rx.State):
                             "lower-cost appliance shift."
                         )
                 except (httpx.HTTPError, TypeError, ValueError):
+                    self.best_action_device = ""
                     self.best_action_title = "Recommendations unavailable"
                     self.best_action_message = (
                         "Consumption and cost data loaded, but the "

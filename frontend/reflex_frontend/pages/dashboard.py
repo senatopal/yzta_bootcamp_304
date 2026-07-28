@@ -162,16 +162,28 @@ def device_icon_path(device):
     """Return the matching SVG asset for a recommendation device."""
     return rx.match(
         device,
-        ("Washing Machine", "/icons/washing-machine.svg"),
-        ("Dishwasher", "/icons/dishwasher.svg"),
-        ("Tumble Dryer", "/icons/tumble-dryer.svg"),
-        (
-            "Electric Vehicle Charger",
-            "/icons/ev-charger.svg",
-        ),
-        "/icons/washing-machine.svg",
-    )
 
+        ("Washing Machine", "/icons/washing-machine.svg"),
+        ("washing machine", "/icons/washing-machine.svg"),
+        ("washing_machine", "/icons/washing-machine.svg"),
+
+        ("Dishwasher", "/icons/dishwasher.svg"),
+        ("dishwasher", "/icons/dishwasher.svg"),
+
+        ("Tumble Dryer", "/icons/tumble-dryer.svg"),
+        ("tumble dryer", "/icons/tumble-dryer.svg"),
+        ("tumble_dryer", "/icons/tumble-dryer.svg"),
+
+        ("Electric Vehicle Charger", "/icons/ev-charger.svg"),
+        ("Electric vehicle charger", "/icons/ev-charger.svg"),
+        ("electric vehicle charger", "/icons/ev-charger.svg"),
+        ("electric_vehicle_charger", "/icons/ev-charger.svg"),
+        ("EV Charger", "/icons/ev-charger.svg"),
+        ("EV charger", "/icons/ev-charger.svg"),
+        ("ev_charger", "/icons/ev-charger.svg"),
+
+        "/icons/default-energy.svg",
+    )
 
 def device_illustration(icon_path) -> rx.Component:
     """Render a consistent branded illustration tile."""
@@ -1006,47 +1018,90 @@ def dashboard() -> rx.Component:
 
         rx.box(
             rx.vstack(
+                # Best action card
                 rx.box(
-                    rx.vstack(
-                        rx.text(
-                            "BEST ACTION TODAY",
-                            color=ACCENT,
-                            font_size="0.8rem",
-                            font_weight="700",
-                            letter_spacing="0.1em",
+                    rx.flex(
+                        # Text section
+                        rx.vstack(
+                            rx.text(
+                                "BEST ACTION TODAY",
+                                color=ACCENT,
+                                font_size="0.8rem",
+                                font_weight="700",
+                                letter_spacing="0.1em",
+                            ),
+
+                            rx.cond(
+                                DashboardState.dashboard_loaded,
+                                rx.heading(
+                                    DashboardState.best_action_title,
+                                    size="6",
+                                    color=PRIMARY,
+                                    line_height="1.25",
+                                ),
+                                rx.heading(
+                                    (
+                                        "Load a household to receive "
+                                        "personalised advice"
+                                    ),
+                                    size="6",
+                                    color=PRIMARY,
+                                    line_height="1.25",
+                                ),
+                            ),
+
+                            rx.cond(
+                                DashboardState.dashboard_loaded,
+                                rx.text(
+                                    DashboardState.best_action_message,
+                                    color=MUTED,
+                                    font_size="1rem",
+                                    line_height="1.7",
+                                ),
+                                rx.text(
+                                    (
+                                        "Volti will identify your clearest saving "
+                                        "opportunity and display it here."
+                                    ),
+                                    color=MUTED,
+                                    font_size="1rem",
+                                    line_height="1.7",
+                                ),
+                            ),
+
+                            align="start",
+                            spacing="4",
+                            flex="1",
                         ),
+
+                        # Device illustration
                         rx.cond(
                             DashboardState.dashboard_loaded,
-                            rx.heading(
-                                DashboardState.best_action_title,
-                                size="6",
-                                color=PRIMARY,
-                            ),
-                            rx.heading(
-                                (
-                                    "Load a household to receive "
-                                    "personalised advice"
+                            rx.center(
+                                rx.image(
+                                    src=device_icon_path(
+                                        DashboardState.best_action_device
+                                    ),
+                                    width="112px",
+                                    height="112px",
+                                    object_fit="contain",
+                                    alt="Recommended device",
                                 ),
-                                size="6",
-                                color=PRIMARY,
+                                width="150px",
+                                height="150px",
+                                min_width="150px",
+                                background="rgba(255, 255, 255, 0.58)",
+                                border=f"1px solid {BORDER}",
+                                border_radius="20px",
                             ),
+                            rx.fragment(),
                         ),
-                        rx.cond(
-                            DashboardState.dashboard_loaded,
-                            rx.text(
-                                DashboardState.best_action_message,
-                                color=MUTED,
-                            ),
-                            rx.text(
-                                (
-                                    "Volti will identify your clearest saving "
-                                    "opportunity and display it here."
-                                ),
-                                color=MUTED,
-                            ),
-                        ),
-                        align="start",
-                        spacing="4",
+
+                        width="100%",
+                        align="center",
+                        justify="between",
+                        gap="2rem",
+                        flex_wrap="wrap",
                     ),
                     width="100%",
                     padding="2rem",
@@ -1055,6 +1110,7 @@ def dashboard() -> rx.Component:
                     border_radius="20px",
                 ),
 
+                # Metric cards
                 rx.flex(
                     metric_card(
                         "Consumption",

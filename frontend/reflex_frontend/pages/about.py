@@ -26,8 +26,9 @@ TEAM_MEMBERS = [
         "name": "Senanur Topal",
         "role": "Scrum Master / Contributed to Backend Development",
         "initials": "02",
-        "image_src": "",
-        "linkedin_url": "",
+        "image_src": "/team/sena.jpg",
+        "linkedin_url": "https://www.linkedin.com/in/senanur-topal-77ab7b254/",
+        "image_position": "center 27%",
     },
     {
         "name": "Yasemin Koçbıyık",
