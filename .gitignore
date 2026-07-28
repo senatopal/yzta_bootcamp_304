@@ -45,7 +45,8 @@ inspect_notebook.py
 dataset/combined_data.parquetdashboard/lib/
 
 #images
-assets
+assets/team/
+
 # Local secrets
 backend/.env
 .env

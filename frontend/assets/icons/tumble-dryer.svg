@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" fill="none">
+  <defs>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" in="SourceAlpha"/>
+      <feOffset dx="6" dy="10"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.22"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="tinyShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" in="SourceAlpha"/>
+      <feOffset dx="0" dy="4"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.25"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <radialGradient id="drumGrad" cx="0.4" cy="0.35" r="0.75">
+      <stop offset="0" stop-color="#1F4B68"/>
+      <stop offset="0.6" stop-color="#16354C"/>
+      <stop offset="1" stop-color="#0E2438"/>
+    </radialGradient>
+    <linearGradient id="tealSide" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1AA294"/>
+      <stop offset="1" stop-color="#16877E"/>
+    </linearGradient>
+    <linearGradient id="topGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#DDECE7"/>
+    </linearGradient>
+    <radialGradient id="warmGlow" cx="0.5" cy="0.65" r="0.5">
+      <stop offset="0" stop-color="#E5A11A" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#E5A11A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Ground shadow -->
+  <ellipse cx="440" cy="735" rx="290" ry="14" fill="#16354C" opacity="0.14"/>
+
+  <!-- ============ DRYER BODY (three-quarter view) ============ -->
+  <g filter="url(#softShadow)">
+
+    <!-- Right side (teal) -->
+    <path d="M 605 200
+             L 690 165
+             L 690 685
+             L 605 720 Z"
+          fill="url(#tealSide)"/>
+
+    <!-- Top face (perspective) -->
+    <path d="M 195 200
+             L 280 165
+             L 690 165
+             L 605 200 Z"
+          fill="url(#topGrad)"/>
+    <!-- Top edge highlight -->
+    <path d="M 282 168 L 686 168" stroke="#FFFFFF" stroke-width="2" opacity="0.9"/>
+
+    <!-- Front face (white) -->
+    <rect x="195" y="200" width="410" height="520" fill="#FFFFFF"/>
+
+    <!-- Subtle front left edge shading -->
+    <rect x="195" y="200" width="12" height="520" fill="#EEF3F1" opacity="0.7"/>
+
+    <!-- Front-right seam shadow -->
+    <rect x="595" y="200" width="10" height="520" fill="#D9E4DF" opacity="0.7"/>
+
+    <!-- Bottom recessed panel -->
+    <path d="M 195 700 L 605 700 L 605 720 L 195 720 Z" fill="#F2F5F3"/>
+
+  </g>
+
+  <!-- ============ CONTROL PANEL (top strip, navy) ============ -->
+  <g>
+    <rect x="205" y="215" width="390" height="70" rx="8" fill="#16354C"/>
+    <!-- panel top highlight -->
+    <rect x="205" y="215" width="390" height="6" rx="3" fill="#1F4B68"/>
+
+    <!-- LED indicators (left) -->
+    <rect x="230" y="243" width="26" height="10" rx="3" fill="#16877E"/>
+    <rect x="266" y="243" width="26" height="10" rx="3" fill="#16877E"/>
+
+    <!-- Small teal LED (right group) -->
+    <rect x="430" y="238" width="22" height="8" rx="3" fill="#16877E"/>
+
+    <!-- Yellow indicator dots flanking the dial -->
+    <circle cx="475" cy="252" r="5" fill="#E5A11A"/>
+    <circle cx="580" cy="252" r="5" fill="#E5A11A"/>
+
+    <!-- Program dial -->
+    <g filter="url(#tinyShadow)">
+      <circle cx="527" cy="252" r="26" fill="#FFFFFF"/>
+      <circle cx="527" cy="252" r="26" fill="none" stroke="#D9E4DF" stroke-width="1.5"/>
+      <circle cx="527" cy="252" r="20" fill="#16354C"/>
+      <!-- pointer -->
+      <path d="M 527 236 L 531 252 L 523 252 Z" fill="#E9F7F3"/>
+      <circle cx="527" cy="252" r="4" fill="#1F4B68"/>
+    </g>
+  </g>
+
+  <!-- ============ DRUM DOOR ============ -->
+  <!-- Outer bezel ring -->
+  <circle cx="400" cy="470" r="150" fill="#F2F5F3"/>
+  <circle cx="400" cy="470" r="150" fill="none" stroke="#D9E4DF" stroke-width="2"/>
+
+  <!-- Tick marks around bezel -->
+  <g stroke="#C9D6D1" stroke-width="4" stroke-linecap="round">
+    <line x1="400" y1="330" x2="400" y2="342"/>
+    <line x1="470" y1="349" x2="464" y2="360"/>
+    <line x1="522" y1="400" x2="510" y2="406"/>
+    <line x1="540" y1="470" x2="528" y2="470"/>
+    <line x1="522" y1="540" x2="510" y2="534"/>
+    <line x1="330" y1="349" x2="336" y2="360"/>
+    <line x1="278" y1="400" x2="290" y2="406"/>
+    <line x1="260" y1="470" x2="272" y2="470"/>
+    <line x1="278" y1="540" x2="290" y2="534"/>
+  </g>
+
+  <!-- Door outer navy ring -->
+  <circle cx="400" cy="470" r="128" fill="#16354C"/>
+  <circle cx="400" cy="470" r="128" fill="none" stroke="#0E2438" stroke-width="2"/>
+
+  <!-- Door glass (drum interior) -->
+  <circle cx="400" cy="470" r="108" fill="url(#drumGrad)"/>
+
+  <!-- Warm glow inside drum -->
+  <circle cx="400" cy="490" r="90" fill="url(#warmGlow)"/>
+
+  <!-- Warm-air swirl (yellow) -->
+  <g fill="#E5A11A">
+    <path d="M 330 490
+             Q 360 460 400 470
+             Q 440 480 465 470
+             Q 445 495 410 490
+             Q 375 484 345 500
+             Q 335 496 330 490 Z"/>
+    <path d="M 340 512
+             Q 380 495 420 508
+             Q 455 520 475 512
+             Q 455 535 415 528
+             Q 380 522 355 532
+             Q 345 525 340 512 Z" opacity="0.9"/>
+    <path d="M 355 462
+             Q 385 448 415 458
+             Q 440 468 458 460
+             Q 445 478 418 474
+             Q 390 470 370 478
+             Q 360 472 355 462 Z" opacity="0.75"/>
+  </g>
+
+  <!-- Glass reflections / highlights -->
+  <path d="M 335 405
+           Q 355 385 385 388
+           Q 360 402 348 425 Z"
+        fill="#FFFFFF" opacity="0.35"/>
+  <path d="M 448 400
+           Q 460 410 462 425
+           Q 452 415 442 412 Z"
+        fill="#FFFFFF" opacity="0.25"/>
+
+  <!-- Door frame subtle inner ring highlight -->
+  <circle cx="400" cy="470" r="108" fill="none" stroke="#1F4B68" stroke-width="3"/>
+  <circle cx="400" cy="470" r="128" fill="none" stroke="#1F4B68" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- ============ BOTTOM FILTER/VENT ============ -->
+  <g stroke="#C9D6D1" stroke-width="3.5" stroke-linecap="round">
+    <line x1="245" y1="655" x2="330" y2="655"/>
+    <line x1="245" y1="668" x2="330" y2="668"/>
+    <line x1="245" y1="681" x2="310" y2="681"/>
+  </g>
+
+  <!-- ============ FEET ============ -->
+  <rect x="205" y="720" width="30" height="18" rx="4" fill="#16354C"/>
+  <rect x="565" y="720" width="30" height="18" rx="4" fill="#16354C"/>
+  <!-- Right side foot (teal side panel) -->
+  <path d="M 640 720 L 685 700 L 685 718 L 640 738 Z" fill="#16354C"/>
+
+</svg>

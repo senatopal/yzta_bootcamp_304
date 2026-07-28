@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" fill="none">
+  <defs>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="7" in="SourceAlpha"/>
+      <feOffset dx="4" dy="8"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.20"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="tinyShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" in="SourceAlpha"/>
+      <feOffset dx="0" dy="4"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.22"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <linearGradient id="towerGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#F5F8F6"/>
+      <stop offset="0.5" stop-color="#E9F2EE"/>
+      <stop offset="1" stop-color="#C6D6D0"/>
+    </linearGradient>
+    <linearGradient id="bladeGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F5F8F6"/>
+      <stop offset="1" stop-color="#C6D6D0"/>
+    </linearGradient>
+    <linearGradient id="panelGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1F4B68"/>
+      <stop offset="1" stop-color="#16354C"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#E5A11A" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#E5A11A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#B7D9D2"/>
+      <stop offset="1" stop-color="#E9F7F3"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ============ SUN + GLOW (upper right) ============ -->
+  <circle cx="480" cy="140" r="140" fill="url(#sunGlow)"/>
+  <circle cx="480" cy="140" r="42" fill="#E5A11A"/>
+  <circle cx="480" cy="140" r="42" fill="none" stroke="#F5C868" stroke-width="3" opacity="0.7"/>
+  <g stroke="#E5A11A" stroke-width="4" stroke-linecap="round" opacity="0.85">
+    <line x1="480" y1="70" x2="480" y2="82"/>
+    <line x1="550" y1="140" x2="538" y2="140"/>
+    <line x1="530" y1="90" x2="522" y2="98"/>
+    <line x1="430" y1="90" x2="438" y2="98"/>
+    <line x1="530" y1="190" x2="522" y2="182"/>
+  </g>
+
+  <!-- ============ GROUND / HILL ============ -->
+  <path d="M 0 460
+           Q 150 430 300 445
+           Q 450 460 600 435
+           L 600 600 L 0 600 Z"
+        fill="url(#ground)"/>
+  <!-- Ground contour line -->
+  <path d="M 0 460 Q 150 430 300 445 Q 450 460 600 435"
+        stroke="#16877E" stroke-width="1.5" fill="none" opacity="0.3"/>
+
+  <!-- Little grass tufts -->
+  <g stroke="#16877E" stroke-width="2.5" stroke-linecap="round" opacity="0.55">
+    <path d="M 60 470 L 60 460"/>
+    <path d="M 66 470 L 68 461"/>
+    <path d="M 54 470 L 52 461"/>
+
+    <path d="M 220 458 L 220 448"/>
+    <path d="M 226 458 L 228 449"/>
+    <path d="M 214 458 L 212 449"/>
+
+    <path d="M 380 452 L 380 442"/>
+    <path d="M 386 452 L 388 443"/>
+    <path d="M 374 452 L 372 443"/>
+  </g>
+
+  <!-- ============ WIND TURBINE (back-left) ============ -->
+  <g filter="url(#softShadow)">
+    <!-- Tower (tapered) -->
+    <path d="M 155 460
+             L 145 460
+             L 158 130
+             L 172 130 Z"
+          fill="url(#towerGrad)"/>
+    <!-- Tower shadow side -->
+    <path d="M 165 130 L 172 130 L 155 460 L 148 460 Z"
+          fill="#C6D6D0" opacity="0.6"/>
+
+    <!-- Nacelle (hub housing) -->
+    <ellipse cx="165" cy="130" rx="26" ry="16" fill="#F5F8F6"/>
+    <ellipse cx="165" cy="130" rx="26" ry="16" fill="none" stroke="#C6D6D0" stroke-width="1.5"/>
+
+    <!-- Hub -->
+    <circle cx="145" cy="130" r="12" fill="#16354C"/>
+    <circle cx="145" cy="130" r="6" fill="#1F4B68"/>
+
+    <!-- Three blades (each a long tapered shape) -->
+    <!-- Blade 1: straight up -->
+    <path d="M 143 122
+             L 130 40
+             Q 128 25 145 25
+             Q 158 25 156 42
+             L 148 122 Z"
+          fill="url(#bladeGrad)" transform="rotate(-10 145 130)"/>
+    <!-- Blade 2: lower right -->
+    <path d="M 148 135
+             L 240 165
+             Q 254 172 246 186
+             Q 240 196 226 190
+             L 146 145 Z"
+          fill="url(#bladeGrad)"/>
+    <!-- Blade 3: lower left -->
+    <path d="M 142 135
+             L 60 200
+             Q 48 210 58 222
+             Q 68 232 82 222
+             L 145 148 Z"
+          fill="url(#bladeGrad)"/>
+  </g>
+
+  <!-- ============ SOLAR PANEL ARRAY (front-right, tilted) ============ -->
+  <g filter="url(#softShadow)">
+    <!-- Panel back support -->
+    <path d="M 400 440
+             L 400 490
+             L 410 490
+             L 410 442 Z"
+          fill="#16354C"/>
+    <path d="M 340 440
+             L 340 490
+             L 350 490
+             L 350 442 Z"
+          fill="#16354C"/>
+
+    <!-- Panel face (parallelogram, tilted) -->
+    <path d="M 300 380
+             L 540 340
+             L 555 415
+             L 315 455 Z"
+          fill="url(#panelGrad)"/>
+
+    <!-- Panel top edge highlight -->
+    <path d="M 300 380 L 540 340" stroke="#3E6A8A" stroke-width="2.5" opacity="0.85"/>
+
+    <!-- Frame border -->
+    <path d="M 300 380 L 540 340 L 555 415 L 315 455 Z"
+          stroke="#0E2438" stroke-width="3" fill="none"/>
+
+    <!-- Cell grid (perspective lines) -->
+    <g stroke="#16877E" stroke-width="1.5" opacity="0.55">
+      <!-- Horizontal dividers -->
+      <line x1="304" y1="400" x2="546" y2="360"/>
+      <line x1="308" y1="420" x2="551" y2="380"/>
+      <line x1="311" y1="437" x2="553" y2="397"/>
+      <!-- Vertical dividers -->
+      <line x1="360" y1="371" x2="374" y2="447"/>
+      <line x1="420" y1="361" x2="435" y2="437"/>
+      <line x1="480" y1="351" x2="495" y2="427"/>
+    </g>
+
+    <!-- Sun reflection sheen on panel -->
+    <path d="M 320 388
+             L 380 378
+             L 388 400
+             L 328 410 Z"
+          fill="#FFFFFF" opacity="0.15"/>
+  </g>
+
+  <!-- ============ SMALL LEAF ACCENT (foreground) ============ -->
+  <g filter="url(#tinyShadow)">
+    <path d="M 70 520
+             Q 90 480 130 490
+             Q 140 510 125 530
+             Q 100 545 75 535
+             Q 65 528 70 520 Z"
+          fill="#16877E"/>
+    <path d="M 78 525
+             Q 100 505 125 505"
+          stroke="#0E6A62" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+  </g>
+
+  <!-- Small teal energy dots between turbine and panel (subtle "flow") -->
+  <g fill="#16877E" opacity="0.55">
+    <circle cx="230" cy="380" r="3"/>
+    <circle cx="260" cy="395" r="2.5"/>
+    <circle cx="290" cy="405" r="2"/>
+  </g>
+
+</svg>

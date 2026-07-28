@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" fill="none">
+  <defs>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="7" in="SourceAlpha"/>
+      <feOffset dx="4" dy="10"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.22"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" in="SourceAlpha"/>
+      <feOffset dx="0" dy="8"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.20"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="tinyShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" in="SourceAlpha"/>
+      <feOffset dx="0" dy="4"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.25"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <linearGradient id="coinTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F5C868"/>
+      <stop offset="1" stop-color="#E5A11A"/>
+    </linearGradient>
+    <linearGradient id="coinEdge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C88815"/>
+      <stop offset="1" stop-color="#8B5A0A"/>
+    </linearGradient>
+    <linearGradient id="cardBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F5F8F6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ground shadow -->
+  <ellipse cx="300" cy="530" rx="200" ry="14" fill="#16354C" opacity="0.16"/>
+
+  <!-- ============ SAVINGS CARD (floating behind, upper-left) ============ -->
+  <g filter="url(#cardShadow)" transform="rotate(-6 190 220)">
+    <rect x="70" y="130" width="240" height="180" rx="18" fill="url(#cardBg)"/>
+
+    <!-- Card header label -->
+    <rect x="90" y="152" width="80" height="7" rx="3" fill="#16877E"/>
+
+    <!-- Big £ amount -->
+    <text x="90" y="205" font-family="Arial Black, sans-serif" font-size="34" font-weight="900" fill="#16354C">£1.20</text>
+
+    <!-- Downward-trend mini chart -->
+    <g>
+      <!-- Bars descending -->
+      <rect x="94" y="240" width="16" height="46" rx="2" fill="#16877E" opacity="0.85"/>
+      <rect x="116" y="252" width="16" height="34" rx="2" fill="#16877E" opacity="0.85"/>
+      <rect x="138" y="260" width="16" height="26" rx="2" fill="#16877E" opacity="0.85"/>
+      <rect x="160" y="270" width="16" height="16" rx="2" fill="#16877E" opacity="0.85"/>
+      <rect x="182" y="264" width="16" height="22" rx="2" fill="#16877E" opacity="0.85"/>
+      <rect x="204" y="252" width="16" height="34" rx="2" fill="#16877E" opacity="0.45"/>
+      <rect x="226" y="240" width="16" height="46" rx="2" fill="#16877E" opacity="0.45"/>
+
+      <!-- Downward arrow indicator -->
+      <g transform="translate(260 240)">
+        <circle cx="16" cy="16" r="20" fill="#16877E"/>
+        <path d="M 16 6 L 16 24 M 8 18 L 16 26 L 24 18"
+              stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- ============ FLOATING COIN (dropping in) ============ -->
+  <g filter="url(#tinyShadow)" transform="rotate(-15 400 170)">
+    <ellipse cx="400" cy="170" rx="42" ry="42" fill="url(#coinTop)"/>
+    <circle cx="400" cy="170" r="42" fill="none" stroke="#B8770C" stroke-width="2.5"/>
+    <circle cx="400" cy="170" r="35" fill="none" stroke="#B8770C" stroke-width="1.5" opacity="0.5"/>
+    <text x="400" y="184" font-family="Georgia, serif" font-size="42" font-weight="bold" fill="#8B5A0A" text-anchor="middle">£</text>
+    <!-- coin highlight arc -->
+    <path d="M 372 148 Q 388 138 415 143"
+          stroke="#FFE9B0" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.9"/>
+  </g>
+
+  <!-- Sparkle accents around floating coin -->
+  <g fill="#E5A11A">
+    <path d="M 350 130 L 354 122 L 358 130 L 366 134 L 358 138 L 354 146 L 350 138 L 342 134 Z" opacity="0.85"/>
+    <circle cx="465" cy="215" r="4" opacity="0.75"/>
+    <circle cx="345" cy="205" r="3" opacity="0.7"/>
+  </g>
+
+  <!-- ============ COIN STACK (main, centered-front) ============ -->
+  <g filter="url(#softShadow)">
+
+    <!-- Coin 1 (bottom) -->
+    <ellipse cx="310" cy="480" rx="120" ry="26" fill="url(#coinEdge)"/>
+    <path d="M 190 480 L 190 460 Q 190 434 310 434 Q 430 434 430 460 L 430 480 Z" fill="url(#coinEdge)"/>
+    <ellipse cx="310" cy="460" rx="120" ry="26" fill="url(#coinTop)"/>
+    <!-- Rim inner circle -->
+    <ellipse cx="310" cy="460" rx="106" ry="20" fill="none" stroke="#B8770C" stroke-width="1.5" opacity="0.55"/>
+    <!-- £ symbol -->
+    <text x="310" y="472" font-family="Georgia, serif" font-size="36" font-weight="bold" fill="#8B5A0A" text-anchor="middle">£</text>
+
+    <!-- Coin 2 -->
+    <ellipse cx="315" cy="420" rx="120" ry="26" fill="url(#coinEdge)"/>
+    <path d="M 195 420 L 195 400 Q 195 374 315 374 Q 435 374 435 400 L 435 420 Z" fill="url(#coinEdge)"/>
+    <ellipse cx="315" cy="400" rx="120" ry="26" fill="url(#coinTop)"/>
+    <ellipse cx="315" cy="400" rx="106" ry="20" fill="none" stroke="#B8770C" stroke-width="1.5" opacity="0.55"/>
+    <text x="315" y="412" font-family="Georgia, serif" font-size="36" font-weight="bold" fill="#8B5A0A" text-anchor="middle">£</text>
+
+    <!-- Coin 3 -->
+    <ellipse cx="305" cy="360" rx="120" ry="26" fill="url(#coinEdge)"/>
+    <path d="M 185 360 L 185 340 Q 185 314 305 314 Q 425 314 425 340 L 425 360 Z" fill="url(#coinEdge)"/>
+    <ellipse cx="305" cy="340" rx="120" ry="26" fill="url(#coinTop)"/>
+    <ellipse cx="305" cy="340" rx="106" ry="20" fill="none" stroke="#B8770C" stroke-width="1.5" opacity="0.55"/>
+    <text x="305" y="352" font-family="Georgia, serif" font-size="36" font-weight="bold" fill="#8B5A0A" text-anchor="middle">£</text>
+
+    <!-- Top highlight sheen -->
+    <path d="M 220 330 Q 280 316 380 322"
+          stroke="#FFE9B0" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.75"/>
+  </g>
+
+  <!-- ============ LIGHTNING BOLT ACCENT (top-right, connecting energy → savings) ============ -->
+  <g filter="url(#tinyShadow)">
+    <path d="M 500 90
+             L 470 148
+             L 490 148
+             L 480 190
+             L 520 128
+             L 500 128
+             L 510 90 Z"
+          fill="#E5A11A"/>
+    <path d="M 500 90 L 510 90 L 500 128 L 495 128 Z" fill="#F5C868" opacity="0.85"/>
+  </g>
+
+</svg>

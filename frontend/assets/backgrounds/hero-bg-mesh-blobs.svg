@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" preserveAspectRatio="xMidYMid slice" fill="none">
+  <defs>
+    <linearGradient id="bgBase2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F5F8F6"/>
+      <stop offset="1" stop-color="#EEF4F1"/>
+    </linearGradient>
+    <radialGradient id="blob1" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#16877E" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#16877E" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="blob2" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#B7D9D2" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#B7D9D2" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="blob3" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#16354C" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#16354C" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="blob4" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#E5A11A" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#E5A11A" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="softBlur">
+      <feGaussianBlur stdDeviation="40"/>
+    </filter>
+  </defs>
+
+  <!-- Base -->
+  <rect width="1600" height="800" fill="url(#bgBase2)"/>
+
+  <!-- Blurred blobs -->
+  <g filter="url(#softBlur)">
+    <ellipse cx="200" cy="200" rx="380" ry="300" fill="url(#blob2)"/>
+    <ellipse cx="1350" cy="150" rx="450" ry="320" fill="url(#blob1)"/>
+    <ellipse cx="900" cy="700" rx="500" ry="280" fill="url(#blob3)"/>
+    <ellipse cx="1450" cy="600" rx="280" ry="220" fill="url(#blob4)"/>
+    <ellipse cx="600" cy="450" rx="320" ry="240" fill="url(#blob2)"/>
+  </g>
+
+  <!-- Very subtle grain / dot texture overlay -->
+  <g fill="#16354C" opacity="0.04">
+    <circle cx="120" cy="100" r="1.5"/><circle cx="280" cy="180" r="1.5"/><circle cx="440" cy="90" r="1.5"/><circle cx="620" cy="220" r="1.5"/><circle cx="780" cy="140" r="1.5"/><circle cx="960" cy="260" r="1.5"/><circle cx="1140" cy="110" r="1.5"/><circle cx="1320" cy="230" r="1.5"/><circle cx="1500" cy="150" r="1.5"/>
+    <circle cx="180" cy="400" r="1.5"/><circle cx="360" cy="480" r="1.5"/><circle cx="540" cy="380" r="1.5"/><circle cx="720" cy="500" r="1.5"/><circle cx="900" cy="420" r="1.5"/><circle cx="1080" cy="540" r="1.5"/><circle cx="1260" cy="440" r="1.5"/><circle cx="1440" cy="520" r="1.5"/>
+    <circle cx="100" cy="660" r="1.5"/><circle cx="280" cy="720" r="1.5"/><circle cx="460" cy="640" r="1.5"/><circle cx="640" cy="700" r="1.5"/><circle cx="820" cy="620" r="1.5"/><circle cx="1000" cy="740" r="1.5"/><circle cx="1180" cy="660" r="1.5"/><circle cx="1360" cy="720" r="1.5"/>
+  </g>
+
+</svg>

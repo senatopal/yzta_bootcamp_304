@@ -1,0 +1,280 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" fill="none">
+  <defs>
+    <filter id="carShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feGaussianBlur stdDeviation="8" in="SourceAlpha"/>
+      <feOffset dx="0" dy="10"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.22"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5" in="SourceAlpha"/>
+      <feOffset dx="0" dy="6"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.22"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="tinyShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.5" in="SourceAlpha"/>
+      <feOffset dx="0" dy="3"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.28"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#254E6E"/>
+      <stop offset="0.55" stop-color="#1B3F5A"/>
+      <stop offset="1" stop-color="#16354C"/>
+    </linearGradient>
+    <linearGradient id="glassGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0E2A3E"/>
+      <stop offset="1" stop-color="#16354C"/>
+    </linearGradient>
+    <linearGradient id="rimGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E9F7F3"/>
+      <stop offset="1" stop-color="#B7D9D2"/>
+    </linearGradient>
+    <radialGradient id="tireGrad" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0.7" stop-color="#16354C"/>
+      <stop offset="1" stop-color="#0E2438"/>
+    </radialGradient>
+    <linearGradient id="headlightGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#E9F7F3"/>
+      <stop offset="1" stop-color="#E5A11A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ============ GROUND SHADOW ============ -->
+  <ellipse cx="435" cy="705" rx="365" ry="18" fill="#16354C" opacity="0.16"/>
+
+  <!-- ============ WALL CHARGER (small, upper-left, in background) ============ -->
+  <!-- Wall plate -->
+  <circle cx="130" cy="215" r="88" fill="#E9F7F3"/>
+  <circle cx="130" cy="215" r="88" fill="none" stroke="#16877E" stroke-width="1.5" opacity="0.25"/>
+
+  <g filter="url(#softShadow)">
+    <!-- Charger body -->
+    <rect x="90" y="140" width="90" height="170" rx="18" fill="#16354C"/>
+    <!-- Depth side -->
+    <path d="M 90 158 Q 90 140 108 140 L 108 310 Q 96 310 96 296 L 96 160 Z"
+          fill="#0E2438" opacity="0.55"/>
+    <!-- Top bezel -->
+    <rect x="100" y="150" width="70" height="6" rx="3" fill="#1F4B68"/>
+  </g>
+
+  <!-- Screen -->
+  <rect x="102" y="166" width="66" height="70" rx="10" fill="#E9F7F3"/>
+  <rect x="106" y="170" width="58" height="62" rx="7" fill="#FFFFFF"/>
+
+  <!-- Lightning bolt -->
+  <path d="M 143 178 L 122 208 L 134 208 L 128 224 L 149 200 L 137 200 L 143 178 Z"
+        fill="#E5A11A"/>
+
+  <!-- LEDs -->
+  <circle cx="115" cy="250" r="4" fill="#16877E"/>
+  <circle cx="115" cy="250" r="1.5" fill="#E9F7F3"/>
+  <circle cx="130" cy="250" r="4" fill="#FFFFFF" opacity="0.4"/>
+  <circle cx="145" cy="250" r="4" fill="#FFFFFF" opacity="0.4"/>
+
+  <!-- Port panel -->
+  <rect x="102" y="262" width="66" height="42" rx="10" fill="#16877E"/>
+  <rect x="102" y="262" width="66" height="8" rx="8" fill="#1AA294" opacity="0.55"/>
+  <circle cx="135" cy="284" r="12" fill="#0E2438"/>
+  <circle cx="135" cy="284" r="8" fill="#16354C"/>
+
+  <!-- ============ CABLE from charger to car's rear port ============ -->
+  <path d="M 135 296
+           Q 138 340 158 370
+           Q 178 400 175 445
+           Q 172 495 195 545"
+        fill="none" stroke="#16877E" stroke-width="11" stroke-linecap="round"/>
+  <path d="M 137 300 Q 142 335 158 365"
+        fill="none" stroke="#1AA294" stroke-width="3.5" stroke-linecap="round" opacity="0.65"/>
+
+  <!-- ============ CAR (large, realistic modern crossover EV, three-quarter view) ============ -->
+  <g filter="url(#carShadow)">
+
+    <!-- Main body silhouette -->
+    <path d="M 88 660
+             L 88 578
+             Q 88 552 112 543
+             L 158 528
+             Q 180 518 200 500
+             L 260 458
+             Q 285 442 320 438
+             L 490 420
+             Q 520 419 542 436
+             L 610 505
+             Q 622 515 642 518
+             L 738 528
+             Q 762 530 776 546
+             Q 788 560 788 585
+             L 788 660 Z"
+          fill="url(#bodyGrad)"/>
+
+    <!-- Lower body deep-shadow (undercarriage) -->
+    <path d="M 96 660 L 96 620 Q 96 610 108 610 L 770 618 Q 782 619 782 630 L 782 660 Z"
+          fill="#0E2438" opacity="0.7"/>
+
+    <!-- Rocker/skirt teal accent strip -->
+    <path d="M 118 618 L 762 622 Q 772 622 772 612 L 772 604 Q 435 610 116 604 L 116 612 Q 116 618 118 618 Z"
+          fill="#16877E" opacity="0.75"/>
+
+  </g>
+
+  <!-- Body character line (subtle crease along the side) -->
+  <path d="M 100 578 Q 435 565 780 585"
+        stroke="#0E2438" stroke-width="2" opacity="0.4" fill="none" stroke-linecap="round"/>
+
+  <!-- Top-of-body highlight -->
+  <path d="M 200 508 Q 250 490 320 478 L 490 458 Q 530 456 555 470"
+        stroke="#3E6A8A" stroke-width="2.5" opacity="0.55" fill="none" stroke-linecap="round"/>
+
+  <!-- ============ GREENHOUSE (glass area) ============ -->
+  <path d="M 200 500
+           L 260 458
+           Q 285 442 320 438
+           L 490 420
+           Q 520 419 542 436
+           L 606 502
+           L 200 500 Z"
+        fill="url(#glassGrad)"/>
+
+  <!-- Glass inner tint (mint reflection) -->
+  <path d="M 218 493
+           L 268 458
+           Q 290 446 322 442
+           L 490 425
+           Q 517 424 537 440
+           L 590 494
+           L 218 493 Z"
+        fill="#16877E" opacity="0.22"/>
+
+  <!-- Roof highlight along the top -->
+  <path d="M 285 447 Q 400 435 522 434"
+        stroke="#E9F7F3" stroke-width="3" opacity="0.6" fill="none" stroke-linecap="round"/>
+
+  <!-- A-pillar (right, at windshield) -->
+  <path d="M 542 436 L 606 502 L 594 502 L 532 442 Z" fill="#0E2438"/>
+
+  <!-- B-pillar (center) -->
+  <path d="M 398 434 L 398 500 L 388 500 L 388 435 Z" fill="#0E2438"/>
+
+  <!-- C-pillar (rear) -->
+  <path d="M 258 460 L 200 500 L 214 500 L 268 464 Z" fill="#0E2438"/>
+
+  <!-- Rear window separation line -->
+  <path d="M 200 500 L 158 528" stroke="#0E2438" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Side mirror on A-pillar/front door -->
+  <g filter="url(#tinyShadow)">
+    <path d="M 548 500
+             Q 554 484 572 488
+             Q 586 494 582 508
+             L 560 512
+             Q 550 512 548 500 Z"
+          fill="#16354C"/>
+    <path d="M 556 496 Q 566 492 576 498 Q 578 504 570 506 L 559 506 Z"
+          fill="#16877E" opacity="0.7"/>
+  </g>
+
+  <!-- Door lines -->
+  <path d="M 400 502 L 400 615" stroke="#0E2438" stroke-width="2.3" opacity="0.75" stroke-linecap="round"/>
+  <path d="M 200 502 L 195 615" stroke="#0E2438" stroke-width="2.3" opacity="0.55" stroke-linecap="round"/>
+  <path d="M 555 512 L 570 615" stroke="#0E2438" stroke-width="2" opacity="0.5" stroke-linecap="round"/>
+
+  <!-- Door handles -->
+  <rect x="420" y="545" width="34" height="6" rx="3" fill="#0E2438" opacity="0.85"/>
+  <rect x="245" y="548" width="34" height="6" rx="3" fill="#0E2438" opacity="0.85"/>
+
+  <!-- Charging port door on rear quarter panel -->
+  <g filter="url(#tinyShadow)">
+    <rect x="168" y="540" width="42" height="38" rx="6" fill="#0E2438"/>
+    <rect x="174" y="546" width="30" height="26" rx="4" fill="#16877E"/>
+    <!-- port pins -->
+    <circle cx="183" cy="556" r="2.3" fill="#E9F7F3"/>
+    <circle cx="195" cy="556" r="2.3" fill="#E9F7F3"/>
+    <circle cx="183" cy="566" r="2.3" fill="#E9F7F3"/>
+    <circle cx="195" cy="566" r="2.3" fill="#E9F7F3"/>
+    <!-- yellow charge indicator -->
+    <circle cx="189" cy="536" r="3" fill="#E5A11A"/>
+  </g>
+
+  <!-- Plug connected to charging port -->
+  <g filter="url(#tinyShadow)">
+    <rect x="176" y="538" width="26" height="18" rx="4" fill="#16354C"/>
+    <rect x="176" y="538" width="26" height="5" rx="2.5" fill="#1F4B68"/>
+  </g>
+
+  <!-- ============ HEADLIGHTS & GRILLE (front) ============ -->
+  <path d="M 720 540
+           L 780 546
+           Q 786 546 786 552
+           L 786 570
+           Q 786 576 780 576
+           L 715 572 Z"
+        fill="url(#headlightGrad)"/>
+  <path d="M 725 552 L 780 556 Q 782 556 782 560 L 782 568 Q 782 570 780 570 L 723 566 Z"
+        fill="#FFFFFF" opacity="0.55"/>
+  <!-- Bright LED dot -->
+  <circle cx="770" cy="562" r="4" fill="#FFFFFF"/>
+
+  <!-- Slim daytime running light along top edge -->
+  <path d="M 640 525 L 730 530" stroke="#E5A11A" stroke-width="2.5" opacity="0.85" stroke-linecap="round"/>
+
+  <!-- EV closed grille -->
+  <path d="M 700 592 L 776 596 Q 784 596 784 604 L 784 612 L 700 610 Z"
+        fill="#0E2438"/>
+  <path d="M 705 601 L 780 604" stroke="#16877E" stroke-width="1.5" opacity="0.65"/>
+
+  <!-- ============ TAILLIGHT (rear) ============ -->
+  <path d="M 96 555 L 148 560 Q 154 560 154 566 L 154 582 Q 154 588 148 587 L 96 583 Z"
+        fill="#0E2438"/>
+  <path d="M 100 566 L 148 570 L 148 578 L 100 575 Z"
+        fill="#E5A11A" opacity="0.85"/>
+
+  <!-- ============ WHEEL ARCHES ============ -->
+  <path d="M 155 630 Q 155 555 230 555 Q 305 555 305 630 Z" fill="#0E2438"/>
+  <path d="M 570 632 Q 570 557 645 557 Q 720 557 720 632 Z" fill="#0E2438"/>
+
+  <!-- Wheel arch teal trim highlight -->
+  <path d="M 160 628 Q 165 562 230 562 Q 295 562 300 628"
+        stroke="#16877E" stroke-width="2.5" fill="none" opacity="0.5"/>
+  <path d="M 575 630 Q 580 564 645 564 Q 710 564 715 630"
+        stroke="#16877E" stroke-width="2.5" fill="none" opacity="0.5"/>
+
+  <!-- ============ WHEELS ============ -->
+  <!-- Rear wheel -->
+  <g>
+    <circle cx="230" cy="632" r="60" fill="url(#tireGrad)"/>
+    <circle cx="230" cy="632" r="60" fill="none" stroke="#0E2438" stroke-width="1.5"/>
+    <circle cx="230" cy="632" r="42" fill="url(#rimGrad)"/>
+    <circle cx="230" cy="632" r="42" fill="none" stroke="#16354C" stroke-width="1.5"/>
+    <!-- Spokes (5-spoke alloy) -->
+    <g fill="#16354C">
+      <path d="M 230 594 L 236 620 L 224 620 Z"/>
+      <path d="M 266 618 L 246 632 L 244 620 Z"/>
+      <path d="M 253 668 L 236 646 L 244 642 Z"/>
+      <path d="M 207 668 L 216 642 L 224 646 Z"/>
+      <path d="M 194 618 L 214 620 L 216 632 Z"/>
+    </g>
+    <circle cx="230" cy="632" r="9" fill="#16354C"/>
+    <circle cx="230" cy="632" r="4" fill="#16877E"/>
+  </g>
+
+  <!-- Front wheel -->
+  <g>
+    <circle cx="645" cy="632" r="60" fill="url(#tireGrad)"/>
+    <circle cx="645" cy="632" r="60" fill="none" stroke="#0E2438" stroke-width="1.5"/>
+    <circle cx="645" cy="632" r="42" fill="url(#rimGrad)"/>
+    <circle cx="645" cy="632" r="42" fill="none" stroke="#16354C" stroke-width="1.5"/>
+    <g fill="#16354C">
+      <path d="M 645 594 L 651 620 L 639 620 Z"/>
+      <path d="M 681 618 L 661 632 L 659 620 Z"/>
+      <path d="M 668 668 L 651 646 L 659 642 Z"/>
+      <path d="M 622 668 L 631 642 L 639 646 Z"/>
+      <path d="M 609 618 L 629 620 L 631 632 Z"/>
+    </g>
+    <circle cx="645" cy="632" r="9" fill="#16354C"/>
+    <circle cx="645" cy="632" r="4" fill="#16877E"/>
+  </g>
+
+</svg>
