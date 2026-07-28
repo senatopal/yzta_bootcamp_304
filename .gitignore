@@ -48,3 +48,7 @@ dataset/combined_data.parquetdashboard/lib/
 assets
 # Local secrets
 backend/.env
+.env
+frontend/.env
+__pycache__/
+.web/

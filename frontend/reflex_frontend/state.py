@@ -1,16 +1,19 @@
 from __future__ import annotations
-
-import re
 from collections import defaultdict
 from typing import Any, TypedDict
 
+import re
+import os
 import httpx
 import reflex as rx
 
 
-FASTAPI_ROOT = "http://127.0.0.1:8000"
-FASTAPI_URL = f"{FASTAPI_ROOT}/api/v1"
+FASTAPI_ROOT = os.getenv(
+    "FASTAPI_ROOT",
+    "http://127.0.0.1:8000",
+).rstrip("/")
 
+FASTAPI_URL = f"{FASTAPI_ROOT}/api/v1"
 
 DEVICE_NAMES = {
     "Çamaşır Makinesi": "washing machine",
