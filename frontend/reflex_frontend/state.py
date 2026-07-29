@@ -290,6 +290,13 @@ class DashboardState(rx.State):
     coach_error: str = ""
     coach_model: str = ""
 
+    # First-use chart walkthrough.
+    tour_open: bool = False
+    tour_step: int = 0
+    tour_seen: str = rx.LocalStorage(
+        name="volti_chart_tour_seen",
+    )
+
     def reset_dashboard_result(self) -> None:
         self.dashboard_loaded = False
         self.error_message = ""
@@ -334,6 +341,9 @@ class DashboardState(rx.State):
         self.coach_error = ""
         self.coach_model = ""
 
+        self.tour_open = False
+        self.tour_step = 0
+
     @rx.event
     def update_household_id(self, value: str) -> None:
         self.household_id = value
@@ -373,6 +383,77 @@ class DashboardState(rx.State):
             ]
         else:
             self.coach_messages = []
+
+    @rx.event
+    def start_chart_tour(self) -> None:
+        if not self.dashboard_loaded:
+            return
+        self.tour_step = 0
+        self.tour_open = True
+
+    @rx.event
+    def next_chart_tour_step(self) -> None:
+        if self.tour_step < 2:
+            self.tour_step += 1
+        else:
+            self.tour_open = False
+            self.tour_seen = "true"
+
+    @rx.event
+    def previous_chart_tour_step(self) -> None:
+        if self.tour_step > 0:
+            self.tour_step -= 1
+
+    @rx.event
+    def close_chart_tour(self) -> None:
+        self.tour_open = False
+        self.tour_seen = "true"
+
+    @rx.var
+    def tour_step_label(self) -> str:
+        return f"STEP {self.tour_step + 1} OF 3"
+
+    @rx.var
+    def tour_title(self) -> str:
+        titles = (
+            "Consumption history",
+            "Next 24-hour forecast",
+            "Hourly energy breakdown",
+        )
+        return titles[min(max(self.tour_step, 0), 2)]
+
+    @rx.var
+    def tour_description(self) -> str:
+        descriptions = (
+            (
+                "The horizontal axis shows time and the vertical axis shows "
+                "electricity use in kWh. Sharp peaks mark periods when the "
+                "household used more electricity."
+            ),
+            (
+                "The orange line shows predicted electricity use for the "
+                "coming 24 hours. Higher points indicate periods when demand "
+                "is expected to increase."
+            ),
+            (
+                "Each bar groups total electricity use by hour of the day. "
+                "Taller bars reveal the hours with the highest consumption."
+            ),
+        )
+        return descriptions[min(max(self.tour_step, 0), 2)]
+
+    @rx.var
+    def tour_tip(self) -> str:
+        tips = (
+            "Look for repeated peaks to identify high-use routines.",
+            "Use the forecast to plan flexible appliances before demand rises.",
+            "Compare bar heights to find the best hours to shift usage away from.",
+        )
+        return tips[min(max(self.tour_step, 0), 2)]
+
+    @rx.var
+    def tour_next_label(self) -> str:
+        return "Finish" if self.tour_step == 2 else "Next"
 
     @rx.var
     def total_consumption_text(self) -> str:
@@ -736,9 +817,21 @@ class DashboardState(rx.State):
                         json=simulation_payload,
                     )
                     recommendations_response.raise_for_status()
-                    recommendations_payload = (
-                        recommendations_response.json()
-                    )
+                    recommendations_payload = recommendations_response.json()
+
+                    prices = [
+                        to_float(item.get("avg_price_pence"))
+                        for item in records
+                    ]
+
+                    print("\n--- RECOMMENDATION DEBUG ---")
+                    print("Household:", household_id)
+                    print("Tariff:", self.household_tariff)
+                    print("Minimum price:", min(prices) if prices else None)
+                    print("Maximum price:", max(prices) if prices else None)
+                    print("Recommendation response:", recommendations_payload)
+                    print("--------------------------------\n")
+
                     self.recommendations_data = recommendations_payload
                     self.total_savings_pounds = to_float(
                         recommendations_payload.get("total_savings_pounds")
@@ -918,6 +1011,10 @@ class DashboardState(rx.State):
                 self.dashboard_loaded = True
                 self.backend_online = True
                 self.backend_status = "Services online"
+
+                if self.tour_seen != "true":
+                    self.tour_step = 0
+                    self.tour_open = True
 
                 if optional_failures:
                     self.partial_data_message = (

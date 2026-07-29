@@ -158,6 +158,254 @@ def hourly_chart(data) -> rx.Component:
     )
 
 
+def tour_chart_wrapper(
+    content: rx.Component,
+    *,
+    chart_id: str,
+    step: int,
+) -> rx.Component:
+    """Wrap a chart so the guide can spotlight it."""
+    is_focused = (
+        DashboardState.tour_open
+        & (DashboardState.tour_step == step)
+    )
+
+    return rx.box(
+        content,
+        id=chart_id,
+        class_name="volti-tour-chart",
+        width="100%",
+        min_width="0",
+        align_self="stretch",
+        position="relative",
+        z_index=rx.cond(is_focused, "2302", "1"),
+        border_radius="22px",
+        box_shadow=rx.cond(
+            is_focused,
+            (
+                "0 0 0 6px rgba(255,255,255,0.98), "
+                "0 28px 80px rgba(0,0,0,0.38)"
+            ),
+            "none",
+        ),
+        transform=rx.cond(
+            is_focused,
+            "scale(1.008)",
+            "scale(1)",
+        ),
+        transition=(
+            "box-shadow 0.28s ease, "
+            "transform 0.28s ease"
+        ),
+        scroll_margin_top="110px",
+    )
+
+
+def chart_tour_scroll_effect() -> rx.Component:
+    """Scroll the active guide step into view."""
+    return rx.cond(
+        DashboardState.tour_step == 0,
+        rx.script(
+            """
+            setTimeout(() => {
+              document.getElementById('consumption-history-chart')
+                ?.scrollIntoView({behavior: 'smooth', block: 'center'});
+            }, 120);
+            """
+        ),
+        rx.cond(
+            DashboardState.tour_step == 1,
+            rx.script(
+                """
+                setTimeout(() => {
+                  document.getElementById('forecast-chart')
+                    ?.scrollIntoView({behavior: 'smooth', block: 'center'});
+                }, 120);
+                """
+            ),
+            rx.script(
+                """
+                setTimeout(() => {
+                  document.getElementById('hourly-breakdown-chart')
+                    ?.scrollIntoView({behavior: 'smooth', block: 'center'});
+                }, 120);
+                """
+            ),
+        ),
+    )
+
+
+def chart_tour_overlay() -> rx.Component:
+    """Render the mascot-led chart walkthrough."""
+    return rx.fragment(
+        chart_tour_scroll_effect(),
+
+        rx.box(
+            class_name="volti-tour-overlay",
+            position="fixed",
+            inset="0",
+            background="rgba(7, 20, 29, 0.74)",
+            backdrop_filter="blur(2px)",
+            z_index="2300",
+        ),
+
+        rx.box(
+            rx.flex(
+                # Left mascot
+                rx.center(
+                    rx.image(
+                        src="/mascots/thinking.png",
+                        width="105px",
+                        height="105px",
+                        object_fit="contain",
+                        filter=(
+                            "drop-shadow(0 12px 18px "
+                            "rgba(22,53,76,0.18))"
+                        ),
+                        pointer_events="none",
+                    ),
+                    width="125px",
+                    min_width="125px",
+                    background=(
+                        "linear-gradient(145deg, "
+                        "rgba(233,247,243,0.98), "
+                        "rgba(255,255,255,0.98))"
+                    ),
+                    border_radius="18px",
+                ),
+
+                # Right content
+                rx.vstack(
+                    rx.hstack(
+                        rx.text(
+                            DashboardState.tour_step_label,
+                            color=ACCENT,
+                            font_size="0.72rem",
+                            font_weight="800",
+                            letter_spacing="0.12em",
+                        ),
+                        rx.button(
+                            "×",
+                            on_click=DashboardState.close_chart_tour,
+                            background="transparent",
+                            color=MUTED,
+                            font_size="1.25rem",
+                            min_width="auto",
+                            padding="0.1rem 0.35rem",
+                            cursor="pointer",
+                            _hover={"color": PRIMARY},
+                        ),
+                        width="100%",
+                        justify="between",
+                        align="center",
+                    ),
+
+                    rx.heading(
+                        DashboardState.tour_title,
+                        size="5",
+                        color=PRIMARY,
+                        line_height="1.2",
+                    ),
+
+                    rx.text(
+                        DashboardState.tour_description,
+                        color=MUTED,
+                        font_size="0.86rem",
+                        line_height="1.5",
+                    ),
+
+                    rx.box(
+                        rx.hstack(
+                            rx.text(
+                                "TIP",
+                                color=ACCENT,
+                                font_size="0.68rem",
+                                font_weight="800",
+                                letter_spacing="0.1em",
+                            ),
+                            rx.text(
+                                DashboardState.tour_tip,
+                                color=PRIMARY,
+                                font_size="0.8rem",
+                                line_height="1.4",
+                            ),
+                            spacing="3",
+                            align="start",
+                        ),
+                        width="100%",
+                        padding="0.65rem 0.75rem",
+                        background=SOFT_GREEN,
+                        border=f"1px solid {BORDER}",
+                        border_radius="11px",
+                    ),
+
+                    rx.hstack(
+                        rx.button(
+                            "Skip tour",
+                            on_click=DashboardState.close_chart_tour,
+                            background="transparent",
+                            color=MUTED,
+                            border=f"1px solid {BORDER}",
+                            border_radius="9px",
+                            cursor="pointer",
+                        ),
+                        rx.hstack(
+                            rx.button(
+                                "Back",
+                                on_click=(
+                                    DashboardState.previous_chart_tour_step
+                                ),
+                                disabled=DashboardState.tour_step == 0,
+                                background="transparent",
+                                color=PRIMARY,
+                                border=f"1px solid {BORDER}",
+                                border_radius="9px",
+                                cursor="pointer",
+                            ),
+                            rx.button(
+                                DashboardState.tour_next_label,
+                                on_click=DashboardState.next_chart_tour_step,
+                                background=ACCENT,
+                                color="white",
+                                border_radius="9px",
+                                padding="0.55rem 1rem",
+                                cursor="pointer",
+                                _hover={"opacity": "0.92"},
+                            ),
+                            spacing="2",
+                        ),
+                        width="100%",
+                        justify="between",
+                        align="center",
+                    ),
+
+                    width="100%",
+                    flex="1",
+                    min_width="0",
+                    align="start",
+                    spacing="3",
+                ),
+
+                width="100%",
+                align="stretch",
+                gap="0.9rem",
+                flex_wrap="nowrap",
+            ),
+            class_name="volti-tour-panel",
+            position="fixed",
+            right="18px",
+            bottom="18px",
+            width="590px",
+            max_width="calc(100vw - 28px)",
+            padding="0.85rem",
+            background="rgba(255,255,255,0.98)",
+            border=f"1px solid {BORDER}",
+            border_radius="20px",
+            box_shadow="0 22px 65px rgba(0,0,0,0.26)",
+            z_index="2304",
+        ),
+    )
+
 def device_icon_path(device):
     """Return the matching SVG asset for a recommendation device."""
     return rx.match(
@@ -843,27 +1091,69 @@ def dashboard() -> rx.Component:
                 rx.cond(
                     DashboardState.dashboard_loaded,
                     rx.vstack(
-                        energy_chart(
-                            "Consumption history",
-                            (
-                                "Half-hourly electricity usage for "
-                                "the selected period."
+                        rx.hstack(
+                            rx.button(
+                                rx.hstack(
+                                    rx.text("ⓘ", font_size="1rem"),
+                                    rx.text(
+                                        "How to read these charts",
+                                        font_weight="700",
+                                    ),
+                                    spacing="2",
+                                    align="center",
+                                ),
+                                on_click=DashboardState.start_chart_tour,
+                                background=SOFT_GREEN,
+                                color=PRIMARY,
+                                border=f"1px solid {BORDER}",
+                                border_radius="11px",
+                                cursor="pointer",
+                                _hover={
+                                    "border_color": ACCENT,
+                                    "color": ACCENT,
+                                },
                             ),
-                            DashboardState.history_chart_data,
-                            "Consumption (kWh)",
-                            ACCENT,
+                            width="100%",
+                            justify="end",
                         ),
-                        energy_chart(
-                            "Next 24-hour forecast",
-                            (
-                                "Predicted consumption generated "
-                                "by the forecast service."
+
+                        tour_chart_wrapper(
+                            energy_chart(
+                                "Consumption history",
+                                (
+                                    "Half-hourly electricity usage for "
+                                    "the selected period."
+                                ),
+                                DashboardState.history_chart_data,
+                                "Consumption (kWh)",
+                                ACCENT,
                             ),
-                            DashboardState.forecast_chart_data,
-                            "Forecast (kWh)",
-                            "#E5A11A",
+                            chart_id="consumption-history-chart",
+                            step=0,
                         ),
-                        hourly_chart(DashboardState.hourly_chart_data),
+
+                        tour_chart_wrapper(
+                            energy_chart(
+                                "Next 24-hour forecast",
+                                (
+                                    "Predicted consumption generated "
+                                    "by the forecast service."
+                                ),
+                                DashboardState.forecast_chart_data,
+                                "Forecast (kWh)",
+                                "#E5A11A",
+                            ),
+                            chart_id="forecast-chart",
+                            step=1,
+                        ),
+
+                        tour_chart_wrapper(
+                            hourly_chart(
+                                DashboardState.hourly_chart_data
+                            ),
+                            chart_id="hourly-breakdown-chart",
+                            step=2,
+                        ),
 
                         rx.box(
                             rx.vstack(
@@ -1164,6 +1454,12 @@ def dashboard() -> rx.Component:
             ),
             padding="3rem 0 5rem",
             background=BACKGROUND,
+        ),
+
+        rx.cond(
+            DashboardState.tour_open,
+            chart_tour_overlay(),
+            rx.fragment(),
         ),
 
         floating_coach(),
