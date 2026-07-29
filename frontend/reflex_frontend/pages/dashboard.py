@@ -714,12 +714,18 @@ def dashboard() -> rx.Component:
                 rx.flex(
                     rx.vstack(
                         rx.text("Household ID", color=PRIMARY),
-                        rx.input(
+                        rx.select(
+                            DashboardState.household_ids,
                             value=DashboardState.household_id,
                             on_change=DashboardState.update_household_id,
-                            placeholder="Example: MAC001074",
+                            placeholder="Select a household",
+                            disabled=~DashboardState.households_loaded,
                             width="100%",
-                            height="42px",
+                            size="3",
+                            variant="surface",
+                            radius="large",
+                            color_scheme="teal",
+                            position="popper",
                         ),
                         rx.text(
                             DashboardState.household_count_text,
