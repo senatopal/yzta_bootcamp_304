@@ -871,72 +871,88 @@ def dashboard() -> rx.Component:
                                     rx.accordion.root(
                                         rx.accordion.item(
                                             value="anomaly-details",
-                                            header=rx.hstack(
-                                                rx.vstack(
-                                                    rx.text(
-                                                        DashboardState.anomaly_count_text,
-                                                        color=PRIMARY,
-                                                        font_weight="700",
-                                                    ),
-                                                    rx.text(
-                                                        (
-                                                            "Click to review unusual "
-                                                            "consumption periods."
+                                            header=rx.box(
+                                                rx.hstack(
+                                                    rx.vstack(
+                                                        rx.text(
+                                                            DashboardState.anomaly_count_text,
+                                                            color=PRIMARY,
+                                                            font_weight="700",
+                                                            font_size="1rem",
                                                         ),
-                                                        color=MUTED,
-                                                        font_size="0.9rem",
+                                                        rx.text(
+                                                            (
+                                                                "Click to review unusual "
+                                                                "consumption periods."
+                                                            ),
+                                                            color=MUTED,
+                                                            font_size="0.9rem",
+                                                        ),
+                                                        align="start",
+                                                        spacing="1",
                                                     ),
-                                                    align="start",
-                                                    spacing="1",
-                                                ),
-                                                rx.badge(
-                                                    "View details",
-                                                    color_scheme="red",
-                                                    variant="soft",
+                                                    rx.badge(
+                                                        "View details",
+                                                        color_scheme="red",
+                                                        variant="soft",
+                                                    ),
+                                                    width="100%",
+                                                    justify="between",
+                                                    align="center",
                                                 ),
                                                 width="100%",
-                                                justify="between",
-                                                align="center",
+                                                padding="1.1rem 1.25rem",
+                                                background=SURFACE,
                                             ),
-                                            content=rx.vstack(
-                                                rx.callout(
-                                                    DashboardState.anomaly_summary,
-                                                    color_scheme="red",
-                                                    width="100%",
-                                                ),
-                                                rx.box(
-                                                    rx.vstack(
-                                                        rx.foreach(
-                                                            DashboardState.anomaly_cards,
-                                                            anomaly_card,
+                                            content=rx.box(
+                                                rx.vstack(
+                                                    rx.callout(
+                                                        DashboardState.anomaly_summary,
+                                                        color_scheme="red",
+                                                        variant="soft",
+                                                        width="100%",
+                                                    ),
+                                                    rx.box(
+                                                        rx.vstack(
+                                                            rx.foreach(
+                                                                DashboardState.anomaly_cards,
+                                                                anomaly_card,
+                                                            ),
+                                                            width="100%",
+                                                            spacing="3",
                                                         ),
                                                         width="100%",
-                                                        spacing="3",
+                                                        max_height="480px",
+                                                        overflow_y="auto",
+                                                    ),
+                                                    rx.cond(
+                                                        DashboardState.total_anomaly_count
+                                                        > 20,
+                                                        rx.text(
+                                                            "Showing the first 20 anomalies.",
+                                                            color=MUTED,
+                                                            font_size="0.85rem",
+                                                        ),
+                                                        rx.fragment(),
                                                     ),
                                                     width="100%",
-                                                    max_height="480px",
-                                                    overflow_y="auto",
-                                                ),
-                                                rx.cond(
-                                                    DashboardState.total_anomaly_count
-                                                    > 20,
-                                                    rx.text(
-                                                        "Showing the first 20 anomalies.",
-                                                        color=MUTED,
-                                                        font_size="0.85rem",
-                                                    ),
-                                                    rx.fragment(),
+                                                    spacing="4",
                                                 ),
                                                 width="100%",
-                                                spacing="4",
-                                                padding_top="1rem",
+                                                padding="1.25rem",
+                                                background="#FFFDFC",
+                                                border_top=f"1px solid {BORDER}",
                                             ),
-                                            color_scheme="red",
-                                            variant="surface",
+                                            background=SURFACE,
                                         ),
                                         type="single",
                                         collapsible=True,
                                         width="100%",
+                                        background=SURFACE,
+                                        border=f"1px solid {BORDER}",
+                                        border_radius="16px",
+                                        overflow="hidden",
+                                        box_shadow="0 8px 24px rgba(22,53,76,0.05)",
                                     ),
                                     rx.callout(
                                         (

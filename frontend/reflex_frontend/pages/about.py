@@ -264,7 +264,7 @@ def about() -> rx.Component:
                     border_radius="999px",
                 ),
                 rx.heading(
-                    "Making household energy decisions simpler",
+                    "Smarter energy decisions with your AI coach for lower electricity bills",
                     size="9",
                     color=PRIMARY,
                     max_width="850px",
@@ -274,8 +274,7 @@ def about() -> rx.Component:
                 ),
                 rx.text(
                     (
-                        "Volti turns complex smart meter information into clear, "
-                        "practical guidance that households can understand and act on."
+                        "Volti learns from your historical half-hourly smart meter data to predict future electricity costs and transform complex energy insights into simple, personalised daily actions helping you save money and reduce your carbon footprint."
                     ),
                     color=MUTED,
                     font_size="1.12rem",
@@ -296,21 +295,17 @@ def about() -> rx.Component:
             rx.flex(
                 information_card(
                     "OUR MISSION",
-                    "Turn energy data into useful action",
+                    "Turn energy data to action",
                     (
-                        "Smart meters generate valuable information, but "
-                        "consumption charts rarely explain what someone "
-                        "should do next. Volti bridges that gap."
+                        "Most energy apps stop at charts. Volti goes one step further by telling you exactly what to do, when to do it and how much you could save."
                     ),
                     dark=True,
                 ),
                 information_card(
                     "WHO IT IS FOR",
-                    "Built for real households",
+                    "Built for smart meter users",
                     (
-                        "Volti is designed for busy households that want "
-                        "to reduce energy costs without spending hours "
-                        "analysing tariffs or technical data."
+                        "Built for smart meter users from homes and small businesses to solar and EV users who want to reduce electricity costs with personalised recommendations, without becoming energy experts."
                     ),
                 ),
                 information_card(

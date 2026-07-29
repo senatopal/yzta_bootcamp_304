@@ -160,7 +160,7 @@ def action_result_section() -> rx.Component:
             letter_spacing="0.14em",
         ),
         rx.heading(
-            "Receive one clear action",
+            "Save money with one simple action",
             size="8",
             color=PRIMARY,
             letter_spacing="-0.035em",
@@ -168,9 +168,7 @@ def action_result_section() -> rx.Component:
         ),
         rx.text(
             (
-                "Volti converts complex energy analysis into one "
-                "practical recommendation that explains what to "
-                "change, when to change it and why it matters."
+                "Instead of showing complicated charts, Volti gives you one personalised recommendation that helps reduce both your electricity bill and carbon footprint."
             ),
             color=MUTED,
             font_size="1.05rem",
@@ -188,7 +186,7 @@ def action_result_section() -> rx.Component:
                     margin_top="0.5rem",
                 ),
                 rx.text(
-                    "See the best time to run a flexible appliance.",
+                    "Run appliances when electricity is cheapest.",
                     color=PRIMARY,
                     line_height="1.65",
                 ),
@@ -205,7 +203,24 @@ def action_result_section() -> rx.Component:
                     margin_top="0.5rem",
                 ),
                 rx.text(
-                    "Understand the estimated cost and carbon benefit.",
+                    "See your estimated savings in £ and CO₂.",
+                    color=PRIMARY,
+                    line_height="1.65",
+                ),
+                align="start",
+                spacing="3",
+            ),
+            rx.hstack(
+                rx.box(
+                    width="9px",
+                    height="9px",
+                    border_radius="50%",
+                    background=ACCENT,
+                    flex_shrink="0",
+                    margin_top="0.5rem",
+                ),
+                rx.text(
+                    "Understand why each recommendation matters.",
                     color=PRIMARY,
                     line_height="1.65",
                 ),
@@ -335,17 +350,15 @@ def how_it_works() -> rx.Component:
                 process_step(
                     step_number="STEP 01",
                     eyebrow="CONNECT",
-                    title="Connect your energy data",
+                    title="Let Volti learn your electricity usage",
                     description=(
-                        "Volti uses half-hourly smart meter data to "
-                        "understand when and how much electricity "
-                        "your home consumes."
+                        "Volti analyses your historical half-hourly smart meter data to build a personalised understanding of your electricity usage."
                     ),
                     image_src="/illustrations/step-connect-data.svg",
                     details=[
-                        "Reads household consumption at half-hour intervals.",
-                        "Connects usage with tariff and pricing information.",
-                        "Keeps the original energy data structured and traceable.",
+                        "Learns your daily energy habits.",
+                        "Understands when you use the most electricity.",
+                        "Creates a personalised energy profile before making recommendations.",
                     ],
                     image_left=True,
                 ),
@@ -353,17 +366,15 @@ def how_it_works() -> rx.Component:
                 process_step(
                     step_number="STEP 02",
                     eyebrow="ANALYSE",
-                    title="Analyse usage, prices and patterns",
+                    title="Understand where your money goes",
                     description=(
-                        "Consumption, tariff and forecast information are "
-                        "compared to identify costly periods, unusual "
-                        "activity and flexible loads."
+                        "Volti combines your electricity usage, dynamic tariff prices and AI forecasting to identify the cheapest times to use energy and detect unusual consumption."
                     ),
                     image_src="/illustrations/step-analyse.svg",
                     details=[
                         "Compares consumption with changing electricity prices.",
                         "Forecasts expected demand for the next 24 hours.",
-                        "Detects unusual usage and potential energy waste.",
+                        "Detects unusual energy usage before it becomes expensive.",
                     ],
                     image_left=False,
                 ),
@@ -389,16 +400,14 @@ def how_it_works() -> rx.Component:
                         letter_spacing="0.12em",
                     ),
                     rx.heading(
-                        "Designed for everyday households",
+                        "Built for every way you use energy",
                         size="8",
                         color=PRIMARY,
                         letter_spacing="-0.03em",
                     ),
                     rx.text(
                         (
-                            "You do not need an electric vehicle, battery "
-                            "or additional monitoring equipment to receive "
-                            "useful energy insights."
+                            "Whether you're managing a home, running a small business, or using solar panels and an EV, Volti works with the smart meter data you already have no extra hardware required."
                         ),
                         color=MUTED,
                         font_size="1.05rem",
@@ -412,8 +421,9 @@ def how_it_works() -> rx.Component:
                 rx.vstack(
                     rx.text("✓ Personalised consumption overview"),
                     rx.text("✓ Peak and lower-cost period identification"),
-                    rx.text("✓ Appliance scheduling recommendations"),
-                    rx.text("✓ Cost and carbon impact together"),
+                    rx.text("✓ AI-powered savings recommendations"),
+                    rx.text("✓ Cost and carbon tracking"),
+                    rx.text("✓ No extra hardware required"),
                     color=PRIMARY,
                     font_weight="600",
                     line_height="1.8",
