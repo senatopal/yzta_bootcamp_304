@@ -847,7 +847,7 @@ class DashboardState(rx.State):
                         {
                             "timestamp": str(
                                 item.get("timestamp", "Unknown time")
-                            ),
+                            ).replace("T", " ")[:16],
                             "usage": (
                                 "Expected "
                                 f"{to_float(item.get('expected_kwh')):.2f} kWh "
