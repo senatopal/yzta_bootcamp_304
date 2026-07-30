@@ -40,20 +40,48 @@
 #     # Start web server on port 8000
 #     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 
+
+import uvicorn
 import os
 from pathlib import Path
 import pandas as pd
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from app.core.database import SessionLocal, engine
-from app.models.household import Base, Household
 
-app = FastAPI()
+from app.core.config import settings
+from app.core.database import Base, engine, get_db, SessionLocal
+from app.models.household import Household
+
+# Endpoint modüllerin
+from app.api.endpoints import (
+    health,
+    households,
+    simulation,
+    consumption,
+    forecast,
+    coach,
+)
+
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    openapi_url=f"{settings.API_V1_STR}/openapi.json",
+    docs_url="/docs",
+    redoc_url="/redoc"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 Base.metadata.create_all(bind=engine)
 
-def seed_db_if_empty():
-    db: Session = SessionLocal()
+def quick_seed():
+    db = SessionLocal()
     try:
         if db.query(Household).first() is not None:
             return
@@ -63,7 +91,6 @@ def seed_db_if_empty():
 
         if os.path.exists(dataset_dir):
             unique_households = set()
-
             for file_name in os.listdir(dataset_dir):
                 if file_name.endswith(".parquet"):
                     file_path = os.path.join(dataset_dir, file_name)
@@ -74,10 +101,34 @@ def seed_db_if_empty():
             household_objects = [Household(LCLid=lclid) for lclid in unique_households]
             db.bulk_save_objects(household_objects)
             db.commit()
-
-    except Exception:
+            print("[+] Seed başarıyla tamamlandı.")
+    except Exception as e:
+        print(f"[!] Seed hatası: {e}")
         db.rollback()
     finally:
         db.close()
 
-seed_db_if_empty()
+quick_seed()
+
+
+# ==========================================
+# FRONTEND UYUMLU HOUSEHOLDS ENDPOINT'LERİ
+# ==========================================
+
+@app.get("/households", tags=["Households"])
+@app.get(f"{settings.API_V1_STR}/households", tags=["Households"])
+def get_household_list(db: Session = Depends(get_db)):
+    households = db.query(Household.LCLid).all()
+    
+    return [h[0] for h in households]
+
+
+app.include_router(health.router)
+app.include_router(households.router, prefix=settings.API_V1_STR)
+app.include_router(simulation.router, prefix=settings.API_V1_STR)
+app.include_router(consumption.router, prefix=settings.API_V1_STR)
+app.include_router(forecast.router, prefix=settings.API_V1_STR)
+app.include_router(coach.router, prefix=settings.API_V1_STR)
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
