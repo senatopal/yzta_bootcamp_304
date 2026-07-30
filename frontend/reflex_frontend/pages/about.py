@@ -21,6 +21,7 @@ TEAM_MEMBERS = [
         "image_src": "/team/merve.jpg",
         "linkedin_url": "https://www.linkedin.com/in/merve-gunsay/",
         "image_position": "center 60%",
+        "image_scale": "1.18",
     },
     {
         "name": "Senanur Topal",
@@ -29,6 +30,7 @@ TEAM_MEMBERS = [
         "image_src": "/team/sena.jpg",
         "linkedin_url": "https://www.linkedin.com/in/senanur-topal-77ab7b254/",
         "image_position": "center 27%",
+        "image_scale": "1.18",
     },
     {
         "name": "Yasemin Koçbıyık",
@@ -36,13 +38,16 @@ TEAM_MEMBERS = [
         "initials": "03",
         "image_src": "/team/yasemin.jpg",
         "linkedin_url": "https://www.linkedin.com/in/yasemin-kocbiyik/",
+        "image_scale": "1.18",
     },
     {
         "name": "Reyyan Temel",
         "role": "Data / Backend Developer",
         "initials": "04",
-        "image_src": "",
+        "image_src": "/team/reyyan.jpeg",
         "linkedin_url": "https://www.linkedin.com/in/reyyan-temel-845258219/",
+        "image_position": "center 60%",
+        "image_scale": "1.20",
     },
     {
         "name": "Betül İrem Yardımcı",
