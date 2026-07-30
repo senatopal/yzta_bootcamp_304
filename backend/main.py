@@ -43,9 +43,12 @@
 import os
 from pathlib import Path
 import pandas as pd
+from fastapi import FastAPI
 from sqlalchemy.orm import Session
 from app.core.database import SessionLocal, engine
 from app.models.household import Base, Household
+
+app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
 
