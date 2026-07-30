@@ -35,14 +35,17 @@ port = os.getenv("PORT")
 frontend_port = int(port) if port is not None else 3000
 backend_port = int(port) if port is not None else 8001
 
-default_deploy_url = f"http://127.0.0.1:{frontend_port}"
+# Render provides the public service URL in RENDER_EXTERNAL_URL.
+# Use that as the Reflex app URL. Do not use API_URL for the Reflex websocket host.
+frontend_root = os.getenv("FRONTEND_ROOT", os.getenv("RENDER_EXTERNAL_URL"))
+default_deploy_url = frontend_root or f"http://127.0.0.1:{frontend_port}"
 
 config = rx.Config(
     app_name="reflex_frontend",
     frontend_port=frontend_port,
     backend_port=backend_port,
     backend_host="0.0.0.0",
-    api_url=os.getenv("API_URL", resolve_backend_root()),
+    api_url=frontend_root or os.getenv("API_URL", default_deploy_url),
     deploy_url=os.getenv("DEPLOY_URL", default_deploy_url),
     plugins=[
         rx.plugins.SitemapPlugin(),
