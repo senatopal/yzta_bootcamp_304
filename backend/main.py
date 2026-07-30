@@ -40,7 +40,6 @@
 #     # Start web server on port 8000
 #     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 
-
 import os
 from pathlib import Path
 import pandas as pd
@@ -55,28 +54,25 @@ def seed_db_if_empty():
     try:
         if db.query(Household).first() is not None:
             return
-        
-        print("[*] Veritabanı boş. Parquet dosyalarından yükleme başlatılıyor...")
-        
-        base_dir = Path(__file__).resolve().parent.parent  
+
+        base_dir = Path(__file__).resolve().parent.parent
         dataset_dir = os.path.join(base_dir, "dataset")
 
         if os.path.exists(dataset_dir):
+            unique_households = set()
+
             for file_name in os.listdir(dataset_dir):
                 if file_name.endswith(".parquet"):
                     file_path = os.path.join(dataset_dir, file_name)
-                    df = pd.read_parquet(file_path)
-                    
-                    unique_ids = df['LCLid'].unique()
-                    
-                    for lclid in unique_ids:
-                        household = Household(LCLid=lclid)
-                        db.add(household)
-                    
-                    db.commit()
-                    print(f"[+] {file_name} veritabanına başarıyla yazıldı.")
-    except Exception as e:
-        print(f"[!] Otomatik veri yükleme hatası: {e}")
+                    df_ids = pd.read_parquet(file_path, columns=['LCLid'])
+                    unique_households.update(df_ids['LCLid'].unique().tolist())
+                    del df_ids
+
+            household_objects = [Household(LCLid=lclid) for lclid in unique_households]
+            db.bulk_save_objects(household_objects)
+            db.commit()
+
+    except Exception:
         db.rollback()
     finally:
         db.close()
