@@ -41,33 +41,32 @@
 #     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 
 
-import uvicorn
 import os
 from pathlib import Path
-import pandas as pd
-from fastapi import FastAPI, Depends
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import pandas as pd
+from sqlalchemy import text
 from sqlalchemy.orm import Session
+import uvicorn
 
-from app.core.config import settings
-from app.core.database import Base, engine, get_db, SessionLocal
-from app.models.household import Household
-
-# Endpoint modüllerin
 from app.api.endpoints import (
+    coach,
+    consumption,
+    forecast,
     health,
     households,
     simulation,
-    consumption,
-    forecast,
-    coach,
 )
+from app.core.config import settings
+from app.core.database import Base, SessionLocal, engine, get_db
+from app.models.household import Household
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
 )
 
 app.add_middleware(
@@ -80,33 +79,66 @@ app.add_middleware(
 
 Base.metadata.create_all(bind=engine)
 
+
 def quick_seed():
     db = SessionLocal()
     try:
         if db.query(Household).first() is not None:
+            print("[i] Household tablosunda veri zaten mevcut, seed atlandı.")
             return
 
-        base_dir = Path(__file__).resolve().parent.parent
-        dataset_dir = os.path.join(base_dir, "dataset")
+        unique_households = set()
 
-        if os.path.exists(dataset_dir):
-            unique_households = set()
-            for file_name in os.listdir(dataset_dir):
-                if file_name.endswith(".parquet"):
-                    file_path = os.path.join(dataset_dir, file_name)
-                    df_ids = pd.read_parquet(file_path, columns=['LCLid'])
-                    unique_households.update(df_ids['LCLid'].unique().tolist())
+        try:
+            result = db.execute(
+                text('SELECT DISTINCT "LCLid" FROM consumption_records;')
+            )
+            db_ids = [row[0] for row in result.fetchall() if row[0]]
+            if db_ids:
+                unique_households.update(db_ids)
+                print(
+                    f"[*] Neon 'consumption_records' tablosundan {len(db_ids)} ev bulundu."
+                )
+        except Exception as db_err:
+            print(
+                f"[!] Veritabanından LCLid okunurken hata/tablo yok: {db_err}"
+            )
+
+        if not unique_households:
+            BASE_DIR = Path(__file__).resolve().parent
+            dataset_dir = BASE_DIR.parent / "dataset"
+            if not dataset_dir.exists():
+                dataset_dir = BASE_DIR.parent.parent / "dataset"
+
+            if dataset_dir.exists():
+                parquet_files = sorted(dataset_dir.glob("*.parquet"))
+                if parquet_files:
+                    sample_file = parquet_files[0]
+                    print(
+                        f"[*] Dosyadan okunuyor: {sample_file.name}..."
+                    )
+                    df_ids = pd.read_parquet(sample_file, columns=["LCLid"])
+                    unique_households.update(df_ids["LCLid"].unique().tolist())
                     del df_ids
 
-            household_objects = [Household(LCLid=lclid) for lclid in unique_households]
+        if unique_households:
+            household_objects = [
+                Household(LCLid=lclid) for lclid in unique_households
+            ]
             db.bulk_save_objects(household_objects)
             db.commit()
-            print("[+] Seed başarıyla tamamlandı.")
+            print(
+                f"[+] {len(household_objects)} adet ev (LCLid) başarıyla 'Household' tablosuna eklendi."
+            )
+        else:
+            print("[!] Hiçbir LCLid kaynağı bulunamadı.")
+
     except Exception as e:
-        print(f"[!] Seed hatası: {e}")
+        print(f"[!] Seed genel hatası: {e}")
         db.rollback()
     finally:
         db.close()
+
 
 quick_seed()
 
@@ -115,11 +147,11 @@ quick_seed()
 # FRONTEND UYUMLU HOUSEHOLDS ENDPOINT'LERİ
 # ==========================================
 
+
 @app.get("/households", tags=["Households"])
 @app.get(f"{settings.API_V1_STR}/households", tags=["Households"])
 def get_household_list(db: Session = Depends(get_db)):
     households = db.query(Household.LCLid).all()
-    
     return [h[0] for h in households]
 
 
