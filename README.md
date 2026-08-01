@@ -1,14 +1,22 @@
+
+<img width="1536" height="572" alt="yazılı volti logo" src="https://github.com/user-attachments/assets/d9a6d709-ce5a-42a3-8b4b-196774f1e9ac" />
+
+
 ## Takım İsmi
-Voltra
+VOLTRA
 
 # Ürün İle İlgili Bilgiler
 
-## Takım Elemanları
-- Merve Günsay: Product Owner (ayrıca Frontend – UX/UI katkısı)
-- Senanur Topal: Scrum Master (ayrıca Backend geliştirmeye katkı)
-- Yasemin Koçbıyık: Team Member / ML & Model Geliştirici
-- Reyyan Temel: Team Member / Veri & Backend Geliştirici
-- Betül İrem Yardımcı: Team Member / Arayüz & LLM Entegrasyon
+### Takım Rolleri
+
+| İsim | Rol | İletişim |
+|---|---|---|
+| Merve Günsay | Product Owner + Frontend (UX/UI) | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](www.linkedin.com/in/merve-gunsay) |
+| Senanur Topal | Scrum Master + Backend | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://linkedin.com/in/kullanici-adi) |
+| Yasemin Koçbıyık | Team Member — ML & Model Geliştirici | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://linkedin.com/in/kullanici-adi) |
+| Reyyan Temel | Team Member — Veri & Backend Geliştirici | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://linkedin.com/in/kullanici-adi) |
+| Betül İrem Yardımcı | Team Member — Arayüz & LLM Entegrasyon | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://linkedin.com/in/kullanici-adi) |
+
 
 ## Ürün İsmi
 --Volti--
