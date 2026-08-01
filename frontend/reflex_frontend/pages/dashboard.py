@@ -103,8 +103,8 @@ def hourly_chart(data) -> rx.Component:
                     ),
                     rx.text(
                         (
-                            "Total consumption grouped by hour for "
-                            "the selected period."
+                            "Bars show total consumption, while the orange "
+                            "line shows the average electricity price by hour."
                         ),
                         color=MUTED,
                     ),
@@ -112,7 +112,7 @@ def hourly_chart(data) -> rx.Component:
                     spacing="1",
                 ),
                 rx.badge(
-                    "Simulation hours",
+                    "Consumption + price",
                     color_scheme="teal",
                     variant="soft",
                 ),
@@ -120,7 +120,85 @@ def hourly_chart(data) -> rx.Component:
                 justify="between",
                 align="center",
             ),
-            rx.recharts.bar_chart(
+
+            rx.cond(
+                DashboardState.hourly_price_available,
+                rx.cond(
+                    DashboardState.household_tariff == "Std",
+                    rx.box(
+                        rx.hstack(
+                            rx.text(
+                                "Fixed-price tariff",
+                                color=ACCENT,
+                                font_weight="700",
+                            ),
+                            rx.text(
+                                DashboardState.fixed_price_text,
+                                color=PRIMARY,
+                                font_weight="600",
+                            ),
+                            spacing="3",
+                            align="center",
+                            flex_wrap="wrap",
+                        ),
+                        width="100%",
+                        padding="0.85rem 1rem",
+                        background=SOFT_GREEN,
+                        border=f"1px solid {BORDER}",
+                        border_radius="12px",
+                    ),
+                    rx.flex(
+                        rx.box(
+                            rx.vstack(
+                                rx.text(
+                                    "Cheapest hour",
+                                    color=MUTED,
+                                    font_size="0.78rem",
+                                ),
+                                rx.text(
+                                    DashboardState.cheapest_hour_text,
+                                    color=ACCENT,
+                                    font_weight="700",
+                                ),
+                                align="start",
+                                spacing="1",
+                            ),
+                            flex="1 1 220px",
+                            padding="0.85rem 1rem",
+                            background=SOFT_GREEN,
+                            border=f"1px solid {BORDER}",
+                            border_radius="12px",
+                        ),
+                        rx.box(
+                            rx.vstack(
+                                rx.text(
+                                    "Highest-price hour",
+                                    color=MUTED,
+                                    font_size="0.78rem",
+                                ),
+                                rx.text(
+                                    DashboardState.most_expensive_hour_text,
+                                    color="#C77900",
+                                    font_weight="700",
+                                ),
+                                align="start",
+                                spacing="1",
+                            ),
+                            flex="1 1 220px",
+                            padding="0.85rem 1rem",
+                            background="#FFF8E8",
+                            border="1px solid #F0D9A6",
+                            border_radius="12px",
+                        ),
+                        width="100%",
+                        gap="0.75rem",
+                        flex_wrap="wrap",
+                    ),
+                ),
+                rx.fragment(),
+            ),
+
+            rx.recharts.composed_chart(
                 rx.recharts.cartesian_grid(
                     stroke_dasharray="4 4",
                     stroke="#DDE7E4",
@@ -129,20 +207,37 @@ def hourly_chart(data) -> rx.Component:
                     data_key="hour",
                     min_tick_gap=18,
                 ),
-                rx.recharts.y_axis(),
+                rx.recharts.y_axis(
+                    y_axis_id="consumption",
+                ),
+                rx.recharts.y_axis(
+                    y_axis_id="price",
+                    orientation="right",
+                ),
                 rx.recharts.graphing_tooltip(),
+                rx.recharts.legend(),
                 rx.recharts.bar(
                     data_key="consumption",
                     name="Consumption (kWh)",
+                    y_axis_id="consumption",
                     fill=ACCENT,
                     radius=[6, 6, 0, 0],
                 ),
+                rx.recharts.line(
+                    data_key="price_pence",
+                    name="Price (p/kWh)",
+                    y_axis_id="price",
+                    stroke="#E5A11A",
+                    stroke_width=3,
+                    dot=False,
+                    type_="monotone",
+                ),
                 data=data,
                 width="100%",
-                height=320,
+                height=340,
                 margin={
                     "top": 10,
-                    "right": 20,
+                    "right": 35,
                     "left": 0,
                     "bottom": 10,
                 },
@@ -1080,10 +1175,45 @@ def dashboard() -> rx.Component:
 
                 rx.cond(
                     DashboardState.dashboard_loaded,
-                    rx.callout(
-                        "Energy data loaded successfully.",
-                        color_scheme="green",
+                    rx.vstack(
+                        rx.callout(
+                            "Energy data loaded successfully.",
+                            color_scheme="green",
+                            width="100%",
+                        ),
+                        rx.cond(
+                            DashboardState.household_tariff == "Std",
+                            rx.callout(
+                                (
+                                    "This household uses a standard fixed-price tariff. "
+                                    "Electricity prices remain the same throughout the day, "
+                                    "so shifting appliance use to another hour does not "
+                                    "create a cost saving."
+                                ),
+                                color_scheme="blue",
+                                width="100%",
+                            ),
+                            rx.cond(
+                                DashboardState.household_tariff == "ToU",
+                                rx.callout(
+                                    (
+                                        "This household uses a Time-of-Use tariff. "
+                                        "Electricity prices vary depending on the time of day, "
+                                        "so Volti can identify lower-cost periods for "
+                                        "appliance use."
+                                    ),
+                                    color_scheme="teal",
+                                    width="100%",
+                                ),
+                                rx.callout(
+                                    "Tariff information is unavailable for this household.",
+                                    color_scheme="gray",
+                                    width="100%",
+                                ),
+                            ),
+                        ),
                         width="100%",
+                        spacing="3",
                     ),
                     rx.fragment(),
                 ),
