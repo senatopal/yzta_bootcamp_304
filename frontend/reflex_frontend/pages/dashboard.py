@@ -787,6 +787,76 @@ def coach_popup() -> rx.Component:
             ),
 
             rx.cond(
+                DashboardState.show_coach_suggestions,
+                rx.vstack(
+                    rx.text(
+                        "Choose a quick question",
+                        color=MUTED,
+                        font_size="0.78rem",
+                        font_weight="600",
+                    ),
+                    rx.button(
+                        "Show my weekly energy use and cost",
+                        on_click=DashboardState.send_coach_message(
+                            "Show my weekly energy use and cost."
+                        ),
+                        width="100%",
+                        justify_content="start",
+                        background="#F2F7F5",
+                        color=PRIMARY,
+                        border=f"1px solid {BORDER}",
+                        border_radius="10px",
+                        cursor="pointer",
+                        disabled=DashboardState.coach_is_sending,
+                        _hover={
+                            "border_color": ACCENT,
+                            "color": ACCENT,
+                        },
+                    ),
+                    rx.button(
+                        "Find my best saving opportunity",
+                        on_click=DashboardState.send_coach_message(
+                            "What is my best saving opportunity?"
+                        ),
+                        width="100%",
+                        justify_content="start",
+                        background="#F2F7F5",
+                        color=PRIMARY,
+                        border=f"1px solid {BORDER}",
+                        border_radius="10px",
+                        cursor="pointer",
+                        disabled=DashboardState.coach_is_sending,
+                        _hover={
+                            "border_color": ACCENT,
+                            "color": ACCENT,
+                        },
+                    ),
+                    rx.button(
+                        "Check for unusual energy use",
+                        on_click=DashboardState.send_coach_message(
+                            "Was any unusual energy use detected?"
+                        ),
+                        width="100%",
+                        justify_content="start",
+                        background="#F2F7F5",
+                        color=PRIMARY,
+                        border=f"1px solid {BORDER}",
+                        border_radius="10px",
+                        cursor="pointer",
+                        disabled=DashboardState.coach_is_sending,
+                        _hover={
+                            "border_color": ACCENT,
+                            "color": ACCENT,
+                        },
+                    ),
+                    width="100%",
+                    align="stretch",
+                    spacing="2",
+                ),
+                rx.fragment(),
+            ),
+
+            rx.cond(
                 DashboardState.coach_error != "",
                 rx.callout(
                     DashboardState.coach_error,
@@ -818,7 +888,7 @@ def coach_popup() -> rx.Component:
                     ),
                     rx.button(
                         "Send",
-                        on_click=DashboardState.send_coach_message,
+                        on_click=DashboardState.send_coach_message(""),
                         loading=DashboardState.coach_is_sending,
                         disabled=DashboardState.coach_is_sending,
                         background=ACCENT,

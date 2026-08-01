@@ -211,62 +211,8 @@ def create_coach_message(
     fallback_recommendation: str,
     anomaly_detected: bool,
 ) -> str:
-    parts: list[str] = []
+    return "Hi! How can Volti help you today?"
 
-    weekly_summary = coach_payload.get("weekly_summary")
-    if isinstance(weekly_summary, dict):
-        weekly_consumption = to_float(
-            weekly_summary.get("total_consumption_kwh")
-        )
-        weekly_cost = to_float(weekly_summary.get("total_cost_pounds"))
-
-        parts.append(
-            "I have loaded the latest available household data. "
-            f"During the latest week, your home used "
-            f"{weekly_consumption:.2f} kWh and cost approximately "
-            f"£{weekly_cost:.2f}."
-        )
-    else:
-        parts.append(
-            "I have loaded the selected household data. "
-            f"The selected period used {selected_consumption_kwh:.2f} kWh "
-            f"and cost approximately £{selected_cost_pounds:.2f}."
-        )
-
-    recommendations = coach_payload.get("recommendations")
-    if isinstance(recommendations, list) and recommendations:
-        recommendation = recommendations[0]
-        if isinstance(recommendation, dict):
-            device = translate_device(recommendation.get("device"))
-            recommended_hour = recommendation.get(
-                "recommended_hour", "a cheaper period"
-            )
-            saving = to_float(
-                recommendation.get("estimated_savings_pounds")
-            )
-            parts.append(
-                f"One useful option is to run your {device} at "
-                f"{recommended_hour}, with an estimated saving of "
-                f"£{saving:.2f}."
-            )
-    elif fallback_recommendation:
-        parts.append(fallback_recommendation)
-
-    coach_anomalies = coach_payload.get("anomalies")
-    has_coach_anomaly = (
-        isinstance(coach_anomalies, list) and bool(coach_anomalies)
-    )
-
-    if has_coach_anomaly or anomaly_detected:
-        parts.append(
-            "Unusual consumption was detected, so it may be worth checking "
-            "whether an appliance was left running."
-        )
-    else:
-        parts.append("No unusual consumption was detected.")
-
-    parts.append("Ask me a question about this household's energy use.")
-    return " ".join(parts)
 
 
 class DashboardState(rx.State):
@@ -533,6 +479,13 @@ class DashboardState(rx.State):
         return f"{self.fixed_price_pence:.3f} p/kWh throughout the day"
 
     @rx.var
+    def show_coach_suggestions(self) -> bool:
+        return (
+            len(self.coach_messages) <= 1
+            and not self.coach_is_sending
+        )
+
+    @rx.var
     def total_consumption_text(self) -> str:
         return f"{self.total_consumption_kwh:.2f} kWh"
 
@@ -621,8 +574,8 @@ class DashboardState(rx.State):
                 self.households_loaded = False
 
     @rx.event
-    async def send_coach_message(self):
-        message = self.coach_input.strip()
+    async def send_coach_message(self, suggestion: str):
+        message = suggestion.strip() or self.coach_input.strip()
 
         if not message or self.coach_is_sending:
             return

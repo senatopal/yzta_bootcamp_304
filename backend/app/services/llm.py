@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 from typing import Any
 
 from dotenv import load_dotenv
@@ -26,6 +27,20 @@ Rules:
 8. Stay focused on household energy and energy efficiency.
 9. Keep answers practical and usually under 180 words.
 10. Prefer one clear next action over a long generic list.
+11. Write like a warm, encouraging personal energy coach.
+12. Begin with a friendly and positive observation.
+13. Use short, natural paragraphs.
+14. Give one clear action rather than several commands.
+15. Prefer phrases such as "Try...", "A good option is..." or "You could..." instead of repeatedly saying "You should".
+16. Highlight only the most useful 2–3 numbers.
+17. End with a simple practical tip.
+18. Do not use Markdown headings, asterisks, bullet lists or labels such as "Clear Next Action".
+19. Keep the response under 120 words unless the user asks for detail.
+20. Never invent values; only use numbers supplied in the household context.
+21. Answer only the user's current question.
+22. If the user only greets you, reply with a brief greeting and ask how Volti can help.
+23. Do not automatically summarise consumption, cost, recommendations, or anomalies unless asked.
+24. Do not repeat the same household summary in every response.
 """.strip()
 
 
@@ -90,6 +105,41 @@ class LLMService:
 
         if not clean_message:
             raise LLMServiceError("The user message is empty.")
+
+        normalized_message = re.sub(
+            r"[^a-zA-ZçğıöşüÇĞİÖŞÜ]+",
+            " ",
+            clean_message,
+        ).strip().casefold()
+
+        english_greetings = {
+            "hi",
+            "hello",
+            "hey",
+            "hi volti",
+            "hello volti",
+            "hey volti",
+        }
+        turkish_greetings = {
+            "merhaba",
+            "selam",
+            "merhaba volti",
+            "selam volti",
+        }
+
+        if normalized_message in english_greetings:
+            return {
+                "answer": "Hi! How can Volti help you today?",
+                "model": "Volti",
+                "response_id": None,
+            }
+
+        if normalized_message in turkish_greetings:
+            return {
+                "answer": "Merhaba! Volti bugün sana nasıl yardımcı olabilir?",
+                "model": "Volti",
+                "response_id": None,
+            }
 
         clean_context = prompt_context.strip() or (
             "No household-specific grounding data is currently available."
