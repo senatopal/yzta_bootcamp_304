@@ -58,6 +58,7 @@ class HourlyPoint(TypedDict):
     hour: str
     consumption: float
     cost: float
+    price_pence: float
 
 
 class CoachChatMessage(TypedDict):
@@ -99,7 +100,12 @@ def create_hourly_fallback(
     records: list[dict[str, Any]],
 ) -> list[HourlyPoint]:
     totals: dict[str, dict[str, float]] = defaultdict(
-        lambda: {"consumption": 0.0, "cost": 0.0}
+        lambda: {
+            "consumption": 0.0,
+            "cost": 0.0,
+            "price_total": 0.0,
+            "price_count": 0.0,
+        }
     )
 
     for item in records:
@@ -115,11 +121,25 @@ def create_hourly_fallback(
         )
         totals[label]["cost"] += to_float(item.get("cost_pounds"))
 
+        if item.get("avg_price_pence") is not None:
+            totals[label]["price_total"] += to_float(
+                item.get("avg_price_pence")
+            )
+            totals[label]["price_count"] += 1
+
     return [
         {
             "hour": hour,
             "consumption": round(values["consumption"], 3),
             "cost": round(values["cost"], 2),
+            "price_pence": round(
+                (
+                    values["price_total"] / values["price_count"]
+                    if values["price_count"] > 0
+                    else 0.0
+                ),
+                3,
+            ),
         }
         for hour, values in sorted(totals.items())
     ]
@@ -164,6 +184,13 @@ def parse_hour_rows(payload: Any) -> list[HourlyPoint]:
                         or item.get("total_cost_pounds")
                     ),
                     2,
+                ),
+                "price_pence": round(
+                    to_float(
+                        item.get("price_pence")
+                        or item.get("avg_price_pence")
+                    ),
+                    3,
                 ),
             }
         )
@@ -266,6 +293,13 @@ class DashboardState(rx.State):
     household_tariff: str = ""
     household_group: str = ""
 
+    hourly_price_available: bool = False
+    cheapest_hour: str = ""
+    cheapest_price_pence: float = 0.0
+    most_expensive_hour: str = ""
+    most_expensive_price_pence: float = 0.0
+    fixed_price_pence: float = 0.0
+
     consumption_data: dict[str, Any] = {}
     costs_data: dict[str, Any] = {}
     recommendations_data: dict[str, Any] = {}
@@ -315,6 +349,13 @@ class DashboardState(rx.State):
 
         self.household_tariff = ""
         self.household_group = ""
+
+        self.hourly_price_available = False
+        self.cheapest_hour = ""
+        self.cheapest_price_pence = 0.0
+        self.most_expensive_hour = ""
+        self.most_expensive_price_pence = 0.0
+        self.fixed_price_pence = 0.0
 
         self.consumption_data = {}
         self.costs_data = {}
@@ -447,8 +488,9 @@ class DashboardState(rx.State):
                 "is expected to increase."
             ),
             (
-                "Each bar groups total electricity use by hour of the day. "
-                "Taller bars reveal the hours with the highest consumption."
+                "The bars show total electricity use by hour, while the "
+                "orange line shows the average electricity price. Use both "
+                "to compare high-consumption and high-price periods."
             ),
         )
         return descriptions[min(max(self.tour_step, 0), 2)]
@@ -458,13 +500,37 @@ class DashboardState(rx.State):
         tips = (
             "Look for repeated peaks to identify high-use routines.",
             "Use the forecast to plan flexible appliances before demand rises.",
-            "Compare bar heights to find the best hours to shift usage away from.",
+            "Compare the bars with the price line before shifting flexible usage.",
         )
         return tips[min(max(self.tour_step, 0), 2)]
 
     @rx.var
     def tour_next_label(self) -> str:
         return "Finish" if self.tour_step == 2 else "Next"
+
+    @rx.var
+    def cheapest_hour_text(self) -> str:
+        if not self.hourly_price_available:
+            return "Unavailable"
+        return (
+            f"{self.cheapest_hour} · "
+            f"{self.cheapest_price_pence:.3f} p/kWh"
+        )
+
+    @rx.var
+    def most_expensive_hour_text(self) -> str:
+        if not self.hourly_price_available:
+            return "Unavailable"
+        return (
+            f"{self.most_expensive_hour} · "
+            f"{self.most_expensive_price_pence:.3f} p/kWh"
+        )
+
+    @rx.var
+    def fixed_price_text(self) -> str:
+        if not self.hourly_price_available:
+            return "Price unavailable"
+        return f"{self.fixed_price_pence:.3f} p/kWh throughout the day"
 
     @rx.var
     def total_consumption_text(self) -> str:
@@ -786,7 +852,9 @@ class DashboardState(rx.State):
                     "devices": {},
                 }
 
-                self.hourly_chart_data = create_hourly_fallback(records)
+                fallback_hourly_data = create_hourly_fallback(records)
+                self.hourly_chart_data = fallback_hourly_data
+
                 try:
                     hours_response = await client.post(
                         f"{FASTAPI_URL}/simulation/hours",
@@ -797,10 +865,64 @@ class DashboardState(rx.State):
                     parsed_hours = parse_hour_rows(hours_payload)
 
                     if parsed_hours:
+                        fallback_by_hour = {
+                            item["hour"]: item
+                            for item in fallback_hourly_data
+                        }
+
+                        for item in parsed_hours:
+                            fallback_item = fallback_by_hour.get(
+                                item["hour"]
+                            )
+
+                            if fallback_item:
+                                if item["price_pence"] == 0:
+                                    item["price_pence"] = fallback_item[
+                                        "price_pence"
+                                    ]
+
+                                if item["cost"] == 0:
+                                    item["cost"] = fallback_item["cost"]
+
                         self.hours_data = hours_payload
                         self.hourly_chart_data = parsed_hours
                 except (httpx.HTTPError, TypeError, ValueError):
                     optional_failures.append("hourly simulation")
+
+                priced_hours = [
+                    item
+                    for item in self.hourly_chart_data
+                    if item["price_pence"] > 0
+                ]
+
+                if priced_hours:
+                    cheapest = min(
+                        priced_hours,
+                        key=lambda item: item["price_pence"],
+                    )
+                    most_expensive = max(
+                        priced_hours,
+                        key=lambda item: item["price_pence"],
+                    )
+
+                    self.hourly_price_available = True
+                    self.cheapest_hour = cheapest["hour"]
+                    self.cheapest_price_pence = cheapest["price_pence"]
+                    self.most_expensive_hour = most_expensive["hour"]
+                    self.most_expensive_price_pence = most_expensive[
+                        "price_pence"
+                    ]
+
+                    if (
+                        abs(
+                            self.most_expensive_price_pence
+                            - self.cheapest_price_pence
+                        )
+                        < 0.001
+                    ):
+                        self.fixed_price_pence = (
+                            self.cheapest_price_pence
+                        )
 
                 costs_response = await client.post(
                     f"{FASTAPI_URL}/simulation/costs",
