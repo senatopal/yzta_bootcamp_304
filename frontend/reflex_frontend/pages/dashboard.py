@@ -1080,10 +1080,45 @@ def dashboard() -> rx.Component:
 
                 rx.cond(
                     DashboardState.dashboard_loaded,
-                    rx.callout(
-                        "Energy data loaded successfully.",
-                        color_scheme="green",
+                    rx.vstack(
+                        rx.callout(
+                            "Energy data loaded successfully.",
+                            color_scheme="green",
+                            width="100%",
+                        ),
+                        rx.cond(
+                            DashboardState.household_tariff == "Std",
+                            rx.callout(
+                                (
+                                    "This household uses a standard fixed-price tariff. "
+                                    "Electricity prices remain the same throughout the day, "
+                                    "so shifting appliance use to another hour does not "
+                                    "create a cost saving."
+                                ),
+                                color_scheme="blue",
+                                width="100%",
+                            ),
+                            rx.cond(
+                                DashboardState.household_tariff == "ToU",
+                                rx.callout(
+                                    (
+                                        "This household uses a Time-of-Use tariff. "
+                                        "Electricity prices vary depending on the time of day, "
+                                        "so Volti can identify lower-cost periods for "
+                                        "appliance use."
+                                    ),
+                                    color_scheme="teal",
+                                    width="100%",
+                                ),
+                                rx.callout(
+                                    "Tariff information is unavailable for this household.",
+                                    color_scheme="gray",
+                                    width="100%",
+                                ),
+                            ),
+                        ),
                         width="100%",
+                        spacing="3",
                     ),
                     rx.fragment(),
                 ),
