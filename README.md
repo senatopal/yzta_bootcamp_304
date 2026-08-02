@@ -150,7 +150,7 @@ Sprint Board Ekran Görüntüleri
   - [Veritabanı tasarımı ve kurulumu](https://github.com/senatopal/yzta_bootcamp_304/blob/main/database_design_report.md)
   - [Backend / LLM](https://github.com/senatopal/yzta_bootcamp_304/tree/main/backend)
   - [Veri seti (parquet)](https://github.com/senatopal/yzta_bootcamp_304/tree/main/dataset)
-  - [Frontend)](https://github.com/senatopal/yzta_bootcamp_304/tree/main/frontend)
+  - [Frontend](https://github.com/senatopal/yzta_bootcamp_304/tree/main/frontend)
     
   **Arayüz Tasarımı (Mockup geliştirme sürüyor):**
 
