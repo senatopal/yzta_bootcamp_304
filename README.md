@@ -249,12 +249,13 @@ Sprint Board Ekran Görüntüleri
 
   🔗 **Repo / kod linkleri:** Buradaki linkler ve daha fazlası repomuzda public bir şekilde bulunmakta. İncelerken kolaylık sağlanması için bazı linkleri aşağıda sıraladık:
   
-  - [Veri hazırlığı](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/Sprint%202/veri_hazirligi)
+  - [Veri Hazırlığı](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/Sprint%202/veri_hazirligi)
   - [ML Modeli](https://github.com/senatopal/yzta_bootcamp_304/tree/dce39bb02211cb5fc92cabd0716c238f1371d84e/src)
-  - [Veritabanı tasarımı ve kurulumu](https://github.com/senatopal/yzta_bootcamp_304/blob/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/database_design_report.md)
+  - [Veritabanı Tasarımı ve Kurulumu](https://github.com/senatopal/yzta_bootcamp_304/blob/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/database_design_report.md)
   - [Backend / API](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/backend)
-  - [Veri seti (parquet)](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/dataset)
-  - [Arayüz iskeleti (dashboard)](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/dashboard/lib)
+  - [Veri Seti (parquet)](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/dataset)
+  - [Arayüz İskeleti (dashboard)](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/dashboard/lib)
+  - [Ürün Çalıştırma Kılavuzu](https://github.com/senatopal/yzta_bootcamp_304/blob/6e84091850c3a6b1e2cacadb4d030711b48eef95/calistirma_kilavuzu.md)
 
 - **Sprint Review:**
   Tamamlananlar: Ürünümüzün web sitesi tamamlandı. Web sitesi kullanıcı odaklı analiz edilerek yeniden düzenlendi.Gerçek veri–panel entegrasyonu, anomali tespiti, LLM koç katmanı görevleri tamamlandı. Ürünümüzün canlıya alma çalışmaları yapıldı. Araştırmalarımız sonucu 15 dakikalık sürelerle ürünün canlıda kalmasını sağlayan araç denendi fakat kısıtlı süresi nedeniyle kullanım açısında işe yaramadı.
