@@ -11,6 +11,7 @@ Bu kılavuz; backend (FastAPI), veritabanı (PostgreSQL) ve arayüz (Reflex) bil
 - Çalışan bir PostgreSQL sunucusu
 - `pip`
 - Reflex
+- Google AI Studio üzerinden oluşturulmuş bir Gemini API anahtarı
 ---
 
 ## 1. Kurulum ve Bağımlılıklar
@@ -40,7 +41,14 @@ VOLTI_DB_PORT=5432
 VOLTI_DB_NAME=volti_db
 VOLTI_DB_USER=postgres
 VOLTI_DB_PASS=sifreniz_buraya
+
+GEMINI_API_KEY=google_ai_studio_api_key_buraya
+GEMINI_MODEL=gemini-3.6-flash
 ```
+*Not: GEMINI_API_KEY değişkeninin karşısına Google AI Studio üzerinden oluşturulan API anahtarı yazılmalıdır. API anahtarının başına veya sonuna boşluk eklenmemeli ve anahtar tırnak içine alınmamalıdır.
+
+*Örnek: GEMINI_API_KEY=AIzaSy...
+
 
 Hem backend sunucusu hem de veritabanı yükleme script'i bu dosyayı otomatik olarak okuyacaktır.
 
@@ -127,6 +135,13 @@ Proje kök dizininden:
 cd frontend
 reflex run
 
+#Arayüz aşağıdaki adreste açılacaktı:
+http://localhost:3001/
+
+#Yapay zekâ koçunun çalışabilmesi için backend sunucusunun açık olması ve 
+#backend/.env dosyasında geçerli bir GEMINI_API_KEY bulunması gerekir.
+```
+
 ## Önerilen hızlı çalıştırma özeti
 ```markdown
 ## Hızlı Başlangıç
@@ -137,7 +152,7 @@ reflex run
 cd backend
 python -m uvicorn main:app --reload --port 8000
 
-### Terminal 1 — Backend
+### Terminal 2 — Frontend
 cd frontend
 reflex run
 
