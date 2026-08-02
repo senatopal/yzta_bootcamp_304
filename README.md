@@ -146,11 +146,11 @@ Sprint Board Ekran Görüntüleri
 - **Ürün Durumu:** Sprint 2 sonunda üründeki gelişmeler:
   Repomuzda ürünün gelişim aşamalarını eklenen dosyalarda yakından takip edebilirsiniz. Bulması daha kolay olsun diye linkleri aşağıda eklendi:
 
-  - [Veri hazırlığı](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/Sprint%202/veri_hazirligi)
-  - [Veritabanı tasarımı ve kurulumu](https://github.com/senatopal/yzta_bootcamp_304/blob/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/database_design_report.md)
-  - [Backend / API](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/backend)
-  - [Veri seti (parquet)](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/dataset)
-  - [Arayüz iskeleti (dashboard)](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/dashboard/lib)
+  - [Veri hazırlığı](https://github.com/senatopal/yzta_bootcamp_304/tree/main/Sprint%202)
+  - [Veritabanı tasarımı ve kurulumu](https://github.com/senatopal/yzta_bootcamp_304/blob/main/database_design_report.md)
+  - [Backend / LLM](https://github.com/senatopal/yzta_bootcamp_304/tree/main/backend)
+  - [Veri seti (parquet)](https://github.com/senatopal/yzta_bootcamp_304/tree/main/dataset)
+  - [Frontend)](https://github.com/senatopal/yzta_bootcamp_304/tree/main/frontend)
     
   **Arayüz Tasarımı (Mockup geliştirme sürüyor):**
 
