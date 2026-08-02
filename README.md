@@ -20,9 +20,11 @@ VOLTRA
 Aşağıdaki bağlantılar üzerinden projenin ilgili bölümlerine ve dosyalarına kolayca ulaşabilirsiniz.
   - [Veri hazırlığı](https://github.com/senatopal/yzta_bootcamp_304/tree/main/Sprint%202)
   - [Veritabanı tasarımı ve kurulumu](https://github.com/senatopal/yzta_bootcamp_304/blob/main/database_design_report.md)
+  - [ML Model](https://github.com/senatopal/yzta_bootcamp_304/tree/main/src)
   - [Backend / LLM](https://github.com/senatopal/yzta_bootcamp_304/tree/main/backend)
   - [Veri seti (parquet)](https://github.com/senatopal/yzta_bootcamp_304/tree/main/dataset)
   - [Frontend](https://github.com/senatopal/yzta_bootcamp_304/tree/main/frontend)
+  - [Ürün Çalıştırma Klavuzu](https://github.com/senatopal/yzta_bootcamp_304/blob/main/calistirma_kilavuzu.md)
 
 ## Ürün İsmi
 **Volti**
