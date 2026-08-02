@@ -244,17 +244,16 @@ Sprint Board Ekran Görüntüleri
 - **Ana Sayfa** — Hero bölümü, "Why Volti?" fayda kartları (Save money / Take one clear action / Use greener energy), 3 adımlı "How It Works" özeti ve gerçek dashboard önizlemesi (Best action today kartı + Hourly energy breakdown grafiği) eklendi.
   - **How It Works Sayfası** — Kullanıcı odaklı, 3 adımlık detaylı anlatım (Connect → Analyse → Act) ve "Built for homes and small businesses" bölümü ile güncellendi.
   - **Dashboard** — Tüketim tahmini, kişiselleştirilmiş öneriler (Personalised recommendations), anomali tespiti (Consumption anomalies), saatlik tüketim dağılımı (Hourly energy breakdown), 24 saatlik tahmin (Next 24-hour forecast) ve tüketim geçmişi (Consumption history) grafiklerini içeren, gerçek veriyle çalışan tam işlevsel panel tamamlandı. Planlanan kullnaıcı dostu AI featuresi eklendi. Kullanımın kolaylaşması ve dashboardların daha kolay anlaşılması için Quick Tour eklendi.
-
   _
 
   🔗 **Repo / kod linkleri:** Buradaki linkler ve daha fazlası repomuzda public bir şekilde bulunmakta. İncelerken kolaylık sağlanması için bazı linkleri aşağıda sıraladık:
   
-  - [Veri Hazırlığı](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/Sprint%202/veri_hazirligi)
+  - [Veri Hazırlığı](https://github.com/senatopal/yzta_bootcamp_304/tree/23854600d3327fa4739f570e1ffdd2fc114ded28/Sprint%202)
   - [ML Modeli](https://github.com/senatopal/yzta_bootcamp_304/tree/dce39bb02211cb5fc92cabd0716c238f1371d84e/src)
-  - [Veritabanı Tasarımı ve Kurulumu](https://github.com/senatopal/yzta_bootcamp_304/blob/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/database_design_report.md)
-  - [Backend / API](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/backend)
+  - [Veritabanı Tasarımı ve Kurulumu](https://github.com/senatopal/yzta_bootcamp_304/blob/23854600d3327fa4739f570e1ffdd2fc114ded28/database_design_report.md)
+  - [Backend / API](https://github.com/senatopal/yzta_bootcamp_304/tree/23854600d3327fa4739f570e1ffdd2fc114ded28/backend)
   - [Veri Seti (parquet)](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/dataset)
-  - [Arayüz İskeleti (dashboard)](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/dashboard/lib)
+  - [Arayüz İskeleti (dashboard)](https://github.com/senatopal/yzta_bootcamp_304/tree/23854600d3327fa4739f570e1ffdd2fc114ded28/frontend)
   - [Ürün Çalıştırma Kılavuzu](https://github.com/senatopal/yzta_bootcamp_304/blob/6e84091850c3a6b1e2cacadb4d030711b48eef95/calistirma_kilavuzu.md)
 
 - **Sprint Review:**
