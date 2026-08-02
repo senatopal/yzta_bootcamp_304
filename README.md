@@ -11,15 +11,15 @@ VOLTRA
 
 | İsim | Rol | İletişim |
 |---|---|---|
-| Merve Günsay | Product Owner + Frontend (UX/UI) | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](www.linkedin.com/in/merve-gunsay) |
-| Senanur Topal | Scrum Master + Backend | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://linkedin.com/in/kullanici-adi) |
-| Yasemin Koçbıyık | Team Member — ML & Model Geliştirici | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://linkedin.com/in/kullanici-adi) |
-| Reyyan Temel | Team Member — Veri & Backend Geliştirici | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://linkedin.com/in/kullanici-adi) |
-| Betül İrem Yardımcı | Team Member — Arayüz & LLM Entegrasyon | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://linkedin.com/in/kullanici-adi) |
+| Merve Günsay | Product Owner & Frontend (UX/UI) | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/merve-gunsay/) |
+| Senanur Topal | Scrum Master & Backend | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/senanur-topal-77ab7b254/) |
+| Yasemin Koçbıyık | ML & Model Geliştirici | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/yasemin-kocbiyik/) |
+| Reyyan Temel | Veri & Backend Geliştirici | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/reyyan-temel-845258219/) |
+| Betül İrem Yardımcı | Frontend & LLM Entegrasyon | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/bet%C3%BCl-irem-yard%C4%B1mc%C4%B1-aa17a2217/) |
 
 
 ## Ürün İsmi
---Volti--
+**Volti**
 
 ## Ürün Açıklaması
 - Volti; bir hanenin veya küçük işletmenin elektrik tüketimini geçmiş akıllı sayaç verisinden öğrenip tahmin eden, dinamik (zamana bağlı) tarifeye göre "neyi ne zaman çalıştırırsan ne kadar tasarruf edersin" diye hesaplayan ve bu önerileri sade, gündelik dille anlatan yapay zekâ destekli bir enerji tasarruf koçudur. Kullanıcının hem elektrik faturasını hem karbon ayak izini düşürmesine somut ve kişiselleştirilmiş önerilerle yardımcı olur. Volti'yi bir veri analizi çalışmasından ayıran şey karar/aksiyon katmanıdır: sadece "tüketimin şöyle" demez, "şimdi ne yapmalısın" der.
@@ -39,7 +39,7 @@ VOLTRA
 — Olağandışı yüksek tüketimi yakalar; olası arıza veya boşa harcamayı kullanıcı fark etmeden önce bildirir.
 
 - **Sade Dilli Yapay Zekâ Koçu** 
-— Teknik sonuçları herkesin anlayacağı gündelik dile çevirir; yalnızca gerçek verilere dayanır, sayı uydurmaz (grounding).
+— Teknik sonuçları herkesin anlayacağı gündelik dile çevirir; yalnızca gerçek verilere dayanır, sayı uydurmaz.
 
 - **Tasarruf & Karbon Etkisi** 
 — Kazancı hem **£ (sterlin)** hem **kg CO₂** olarak gösterir; para tasarrufunu çevresel katkıyla birlikte sunar.
@@ -48,7 +48,7 @@ VOLTRA
 — Tüketim grafiği, öneriler ve koç mesajını tek bir sade arayüzde toplar.
 
 - **Kişiselleştirilmiş Deneyim** 
-— Her hane kendi tüketim geçmişine ve profiline göre öneri alır; genel tavsiyeler değil, sana özel içgörüler.
+— Her profil kendi tüketim geçmişine ve planlarına göre öneri alır; genel tavsiyeler değil, kişiye özel içgörüler.
 
 > **Not:** Veri seti Londra'ya ait olduğundan tüm maliyet/tasarruf hesapları **sterlin (£/pence)** cinsindendir (veri setindeki dinamik tarife pence/kWh olarak verilir).
 
@@ -181,7 +181,90 @@ Sprint Board Ekran Görüntüleri
 
 # Sprint 3
 
-**Planlanan hedef:** Yük kaydırma önerisi + anomali tespiti + grounding'li LLM koç katmanı + tüketim/öneri paneli (dashboard) + karbon etkisi + çalışan demo ve sunum.
+- **Sprint Notu:** Sprint 3, ürünün son kullanıcıya gösterilecek hale getirildiği sprint oldu. Hedef; Sprint 2'de kurulan tahmin modeli ve arayüz iskeletini gerçek veriyle birleştirmek, yük kaydırma önerisi ve anomali tespitini panele bağlamak, LLM tabanlı koç katmanını grounding'li şekilde devreye almak ve ürünü pazarlama/SEO açısından son haline getirmekti.
+
+- **Backlog Dağıtma Mantığı: Sprint 3'te öncelik, ürünü son haline getirip canlıya almaktı. İşler yine beceriye göre dağıtıldı: arayüz tamamlanması Betül'de; veri setinin genişletilmesi, temizlenmesi ve modele aktarılması Reyyan ve Yasemin'de; ürünün canlıya alınma çalışmaları Senanur'da yürütüldü. Arayüz testi, sprintin kapanışı için tanıtım videosu ve README dokümantasyonu Merve tarafından hazırlandı. Ürünün tamamlanması için yapılması gerekilen ve yeni planlanan görevler zaman kısıtı göz önünde bulundurularak sıralandı ve trelloda öncelik takibi sağlanarak ilerlendi.
+ 
+- **Daily Scrum:** Daily scrum'lar Slack, huddle ve WhatsApp üzerinden yürütüldü; notlar ve projenin görsel ilerleyişi Notion'da 'Daily Scrum' başlığı altında tutulmaya devam edildi.
+
+  🔗 **Daily Scrum & İlerleme Notları (Notion):** https://fortunate-infinity-26e.notion.site/GENEL-3897fe6d9df780458100d3ac3d4b7dc6?source=copy_link
+  🔗 **Ekip toplantı notları ve görselleri (Slack-huddle-whatsapp):** https://app.notion.com/p/EK-P-TOPLANTISI-NOTLARI-3977fe6d9df780c688efc822f4dd11dc?source=copy_link
+
+- **Sprint Board Update:** Görevler Trello'da "Product Backlog → Sprint 2 → Sprint 3 → Done" akışında takip edilmeye devam edildi. Sprint 3'te gerçek veri–panel entegrasyonu, yük kaydırma önerisi, anomali tespiti ve LLM koç katmanı tamamlandı. Arayüz tasarımı revizeleri ayrı kartta takip edildi. Öncelik sırasında en üstte gelen görevlerin tamamlanmasına özen gösterildi, kalan zamanda yeşil etiketli planlamalar değerlendirildi.
+
+  🔗 **Sprint Board (Trello):** https://trello.com/invite/b/6a4a912914a9f05fbfc01f49/ATTI0db497b4a727e1df105d043d01a7b763620E97A8/volti-proje-gelistime
+
+  Sprint Board Ekran Görüntüleri
+  
+ <img width="1920" height="1020" alt="Volti Proje Geliştime _ Trello ve diğer 9 sayfa - Kişisel - Microsoft​ Edge 28 07 2026 22_29_14" src="https://github.com/user-attachments/assets/3b27cd74-341a-40b5-b6e7-68e79bc141ab" /> 
+
+<img width="1881" height="905" alt="Ekran görüntüsü_29-7-2026_20470_trello com" src="https://github.com/user-attachments/assets/0fbb0db1-2ff0-41bd-955e-3dca8644bdbd" />
+
+<img width="1894" height="910" alt="Ekran görüntüsü_29-7-2026_205147_trello com" src="https://github.com/user-attachments/assets/a4beacdb-833c-460c-97f9-663edf97abc5" />
+
+
+<img width="1901" height="899" alt="trello" src="https://github.com/user-attachments/assets/f5ec5ce3-2d5f-49fd-9a3a-cc2510518a6c" />
+
+
+**Ürün Durumu:** Sprint 3 sonunda üründeki gelişmeler: Web sitemiz Home - Dashboard - How It Works - About sayfalarından oluşmaktadır. Aşağıda her bir sayfanın görseli mevcuttur.
+
+**Home**
+<img width="1763" height="1664" alt="image" src="https://github.com/user-attachments/assets/3dd8b1f6-d908-4061-8182-4d736c78ac89" />
+
+
+**Dashboard_1**
+<img width="1026" height="455" alt="Ekran görüntüsü_2-8-2026_22429_www canva com" src="https://github.com/user-attachments/assets/c52bc6c1-18ad-445c-8b9f-c32f219264ee" />
+
+**Dashboard_2**
+<img width="1280" height="721" alt="WhatsApp Image 2026-08-01 at 21 44 23" src="https://github.com/user-attachments/assets/362e6474-14c1-4dba-b61f-d6bd01840fd9" />
+
+**Dashboard_3**
+ <img width="1280" height="720" alt="WhatsApp Image 2026-08-01 at 21 50 27 (1)" src="https://github.com/user-attachments/assets/75ec8998-ff2f-49cc-bf04-1228dd1f1dfd" />
+
+**Dashboard_4**
+<img width="1280" height="727" alt="WhatsApp Image 2026-08-01 at 21 50 46 (1)" src="https://github.com/user-attachments/assets/2f695ca7-105a-4e01-9a33-31f9345c2442" />
+
+**Dashboard_5**
+<img width="1280" height="725" alt="WhatsApp Image 2026-08-01 at 21 51 16 (1)" src="https://github.com/user-attachments/assets/61334618-d283-41a7-a79a-bdad3c9f73f6" />
+
+**Dashboard_6**
+<img width="1280" height="468" alt="WhatsApp Image 2026-08-01 at 21 53 00 (1)" src="https://github.com/user-attachments/assets/78e31556-a6c5-4458-b0b3-3d6262678b33" />
+
+**Dashboard_7**
+<img width="1280" height="725" alt="WhatsApp Image 2026-08-01 at 21 53 19 (1)" src="https://github.com/user-attachments/assets/29a35732-a255-43e9-874f-5b682006ca12" />
+
+**How It Works**
+<img width="1763" height="2447" alt="image" src="https://github.com/user-attachments/assets/b6928018-dc41-45ef-b39b-756c34477f05" />
+
+**About**
+<img width="1763" height="2007" alt="image" src="https://github.com/user-attachments/assets/45f17e37-7127-4f3a-be94-c6abd527e220" />
+
+
+
+- **Ana Sayfa** — Hero bölümü, "Why Volti?" fayda kartları (Save money / Take one clear action / Use greener energy), 3 adımlı "How It Works" özeti ve gerçek dashboard önizlemesi (Best action today kartı + Hourly energy breakdown grafiği) eklendi.
+  - **How It Works Sayfası** — Kullanıcı odaklı, 3 adımlık detaylı anlatım (Connect → Analyse → Act) ve "Built for homes and small businesses" bölümü ile güncellendi.
+  - **Dashboard** — Tüketim tahmini, kişiselleştirilmiş öneriler (Personalised recommendations), anomali tespiti (Consumption anomalies), saatlik tüketim dağılımı (Hourly energy breakdown), 24 saatlik tahmin (Next 24-hour forecast) ve tüketim geçmişi (Consumption history) grafiklerini içeren, gerçek veriyle çalışan tam işlevsel panel tamamlandı. Planlanan kullnaıcı dostu AI featuresi eklendi. Kullanımın kolaylaşması ve dashboardların daha kolay anlaşılması için Quick Tour eklendi.
+
+  _
+
+  🔗 **Repo / kod linkleri:** Buradaki linkler ve daha fazlası repomuzda public bir şekilde bulunmakta. İncelerken kolaylık sağlanması için bazı linkleri aşağıda sıraladık:
+  
+  - [Veri hazırlığı](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/Sprint%202/veri_hazirligi)
+  - [Veritabanı tasarımı ve kurulumu](https://github.com/senatopal/yzta_bootcamp_304/blob/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/database_design_report.md)
+  - [Backend / API](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/backend)
+  - [Veri seti (parquet)](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/dataset)
+  - [Arayüz iskeleti (dashboard)](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/dashboard/lib)
+
+- **Sprint Review:**
+  Tamamlananlar: Ürünümüzün web sitesi tamamlandı. Web sitesi kullanıcı odaklı analiz edilerek yeniden düzenlendi.Gerçek veri–panel entegrasyonu, anomali tespiti, LLM koç katmanı görevleri tamamlandı. Ürünümüzün canlıya alma çalışmaları yapıldı. Araştırmalarımız sonucu 15 dakikalık sürelerle ürünün canlıda kalmasını sağlayan araç denendi fakat kısıtlı süresi nedeniyle kullanım açısında işe yaramadı.
+  Alınan Kararlar: Ürünü sürekli bir biçimde canlıda tutmak için ücretsiz bir araç bulunamadı. Bootcamp sürecinde ücretli araçların kullanımı önerilmediği için ücretli araç kullanılmamasına karar verildi. Ürünün bütün detaylarıyla incelenebilmesi için bütün web sayfalarının README'ye eklenmesine karar verildi.
+  İlerleyen süreçlerde kullanıcı açıısndan daha efektif bir biçimde ürünü kullanabilmesi için ürünün mobil versiyonu çalışmaları yapılabilinir diye konuşuldu.
+  Sprint Review katılımcıları: Merve Günsay, Senanur Topal, Yasemin Koçbıyık, Reyyan Temel, Betül İrem Yardımcı.
+
+- **Sprint Retrospective:**
+  - **İyi giden:** Voltra ekip üyeleri sürece daha geç başlamalarına rağmen, her bir ekip üyesi almış olduğu sorumluluğu hiçbir zorluk çıkarmadan yerine getirmiştir. Bu süreçte ekip içerinde sık iletişimde kalarak, haftada en az iki ün ekip toplantısı yaparak süreci planlanan şekilde ilerletebildik. Bootcamp sürecinde hem öğrenip hem de birbirimize öğrettiğimiz süreç sonucunda istediğimiz ürünü çıkarabildik.
+  - **Geliştirilecek:** Hedef kitlemizin ürünümüzü daha kolay benimsemesi ve daha kolay kullanabilmesi için mobil çalışması da yapmayı düşünüyoruz.
+  - **Aksiyon (sonraki adımlar):** Hedef kitle analizlerinin sonucunda web sitemizi oluştururken aynı zamanda rakiplerimizi de daha yakından tanıma fırsatı elde ettik. İlerleyen sürçlerde bu araştırmaları daha da derinleştirerek bizi rakiplerden daha çok öne geçirecek özellikler kazandırmaya çalışacağız ürünümüze. Data setini kullandığımız Londra haneleri dışında, daha başka marketler arayışı içerinde bulunmayı da planlarımız arasına dahil ettik.
 
 ---
 
