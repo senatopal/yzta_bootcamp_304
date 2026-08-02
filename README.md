@@ -17,6 +17,12 @@ VOLTRA
 | Reyyan Temel | Veri & Backend Geliştirici | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/reyyan-temel-845258219/) |
 | Betül İrem Yardımcı | Frontend & LLM Entegrasyon | [![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/bet%C3%BCl-irem-yard%C4%B1mc%C4%B1-aa17a2217/) |
 
+Aşağıdaki bağlantılar üzerinden projenin ilgili bölümlerine ve dosyalarına kolayca ulaşabilirsiniz.
+  - [Veri hazırlığı](https://github.com/senatopal/yzta_bootcamp_304/tree/main/Sprint%202)
+  - [Veritabanı tasarımı ve kurulumu](https://github.com/senatopal/yzta_bootcamp_304/blob/main/database_design_report.md)
+  - [Backend / LLM](https://github.com/senatopal/yzta_bootcamp_304/tree/main/backend)
+  - [Veri seti (parquet)](https://github.com/senatopal/yzta_bootcamp_304/tree/main/dataset)
+  - [Frontend](https://github.com/senatopal/yzta_bootcamp_304/tree/main/frontend)
 
 ## Ürün İsmi
 **Volti**
@@ -141,16 +147,6 @@ Sprint Board Ekran Görüntüleri
 
   <img width="1444" height="866" alt="Volti Proje Geliştime _ Trello ve diğer 9 sayfa - Kişisel - Microsoft​ Edge 19 07 2026 22_22_44" src="https://github.com/user-attachments/assets/0b10a0ee-3c0d-4bad-a12b-41f7b1d449ff" />
 
-
-
-- **Ürün Durumu:** Sprint 2 sonunda üründeki gelişmeler:
-  Repomuzda ürünün gelişim aşamalarını eklenen dosyalarda yakından takip edebilirsiniz. Bulması daha kolay olsun diye linkleri aşağıda eklendi:
-
-  - [Veri hazırlığı](https://github.com/senatopal/yzta_bootcamp_304/tree/main/Sprint%202)
-  - [Veritabanı tasarımı ve kurulumu](https://github.com/senatopal/yzta_bootcamp_304/blob/main/database_design_report.md)
-  - [Backend / LLM](https://github.com/senatopal/yzta_bootcamp_304/tree/main/backend)
-  - [Veri seti (parquet)](https://github.com/senatopal/yzta_bootcamp_304/tree/main/dataset)
-  - [Frontend](https://github.com/senatopal/yzta_bootcamp_304/tree/main/frontend)
     
   **Arayüz Tasarımı (Mockup geliştirme sürüyor):**
 
