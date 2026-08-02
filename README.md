@@ -250,6 +250,7 @@ Sprint Board Ekran Görüntüleri
   🔗 **Repo / kod linkleri:** Buradaki linkler ve daha fazlası repomuzda public bir şekilde bulunmakta. İncelerken kolaylık sağlanması için bazı linkleri aşağıda sıraladık:
   
   - [Veri hazırlığı](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/Sprint%202/veri_hazirligi)
+  - [ML Modeli](https://github.com/senatopal/yzta_bootcamp_304/tree/dce39bb02211cb5fc92cabd0716c238f1371d84e/src)
   - [Veritabanı tasarımı ve kurulumu](https://github.com/senatopal/yzta_bootcamp_304/blob/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/database_design_report.md)
   - [Backend / API](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/backend)
   - [Veri seti (parquet)](https://github.com/senatopal/yzta_bootcamp_304/tree/0cf46afef680cf4bc4bd82e91a6374983ae7c5f6/dataset)
